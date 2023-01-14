@@ -1,0 +1,1 @@
+export const commonSocialIconClasses = "w-[168px] h-[60px] flex justify-between items-center ml-[-140px] hover:ml-[-40px] duration-300 ";
