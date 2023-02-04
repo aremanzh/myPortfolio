@@ -20,10 +20,10 @@ const Work = () => {
 {/* Container */}
         <div className='grid sm:grid-cols-2 md:grid-cols-2 gap-4'>
             {/* Grid Item */}
-          <GridItem img={wordpressImg} title="Woocommerce" descriptions="An Ecommerce website using wordpress" url="https://gobosku.mumtaz.ml" code="https://github.com/"/>
-          <GridItem img={blogImg} title="Anonymous Blog" descriptions="A concept blog web app for everyone!" url="https://blog.mumtaaz.xyz" code="https://github.com/"/>
+          <GridItem img={wordpressImg} title="Woocommerce" descriptions="An Ecommerce website using wordpress" url="https://gobosku.mumtaz.ml" code="#"/>
+          <GridItem img={blogImg} title="Anonymous Blog" descriptions="A concept blog web app for everyone!" url="https://blog.mumtaaz.xyz" code="https://github.com/aremanzh/anonymous-blog"/>
           <GridItem img={comingSoon} title="Landing Page" descriptions="A concept website for email newsletter" url="/" code="https://github.com/"/>
-          <GridItem img={weatherImg} title="Weather App" descriptions="A simple Weather API visualization" url="https://weather.mumtaaz.xyz" code="https://github.com/"/>
+          <GridItem img={weatherImg} title="Weather App" descriptions="A simple Weather API visualization" url="https://weather.mumtaaz.xyz" code="https://github.com/aremanzh/SimpleWeatherStatus"/>
         </div>
       </div>
     </div>
