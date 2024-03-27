@@ -6,29 +6,31 @@ import Skills from "./components/Skills";
 import Work from "./components/Work";
 import Footer from "./components/Footer";
 import AnimatedCursor from "react-animated-cursor";
+import Showcase from "./components/Showcase";
 
 function App() {
   return (
-    <div>
+    <>
       <AnimatedCursor
-        color="251, 209, 10"
+        color="177, 173, 208"
         innerSize={8}
         outerSize={35}
         innerScale={1}
         outerScale={1.7}
         outerAlpha={0}
         outerStyle={{
-          border: "3px solid #fbd10a",
+          border: "3px solid #B1ADD0",
         }}
       />
       <Navbar />
       <Home />
-      <About />
+      <Showcase />
+      {/* <About />
       <Skills />
       <Work />
       <Contact />
-      <Footer />
-    </div>
+      <Footer /> */}
+    </>
   );
 }
 
