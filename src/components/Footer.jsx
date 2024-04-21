@@ -18,10 +18,10 @@ function Footer() {
         </div>
         <div className="text-base font-light grid grid-cols-3 m-2 content-end">
           <a href="https://www.linkedin.com/in/mumtaz-che-ismail/">
-            <FaLinkedin className="text-4xl hover:text-button-light hover:animate-float" />
+            <FaLinkedin className="text-4xl hover:text-button-light transition-transform transform hover:animate-flipUpside" />
           </a>
           <a href="https://github.com/aremanzh">
-            <FaGithub className="text-4xl hover:text-button-light hover:animate-float" />
+            <FaGithub className="text-4xl hover:text-button-light transition-transform transform hover:animate-float" />
           </a>
           <a href="https://www.instagram.com/ismi_mumtaz/">
             <FaInstagram className="text-4xl hover:text-button-light hover:animate-float" />

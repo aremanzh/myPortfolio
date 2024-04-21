@@ -5,6 +5,7 @@ import { BsFillPersonLinesFill } from "react-icons/bs";
 import MenuLink from "./MenuLink";
 import MenuLinkMobile from "./MenuLinkMobile";
 import SocialIcons from "./SocialIcons";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [nav, setNav] = useState(false);
@@ -13,16 +14,19 @@ const Navbar = () => {
     <div className="fixed w-full h-[50px] flex justify-between items-center px-2 text-white z-50">
       <div className="flex w-full h-[50px] items-center justify-between bg-primary px-6 bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 border-b border-button-dark border-opacity-30">
         <div>
-          <a href="/" className="ml-4 font-semibold text-xl drop-shadow-glow">
+          <Link
+            to={`/`}
+            className="ml-4 font-semibold text-xl drop-shadow-glow"
+          >
             {"<mumtaaz.dev/>"}
-          </a>
+          </Link>
         </div>
 
         {/* menu */}
         <ul className="hidden md:flex h-full items-center">
-          <MenuLink to="home" menu="Home" />
-          <MenuLink to="project" menu="Work" />
-          <MenuLink to="contact" menu="Contact" />
+          <MenuLink to={`/`} menu="Home" />
+          <MenuLink to={`/works`} menu="Works" />
+          <MenuLink to={`/contacts`} menu="Contact" />
           {/* <MenuLink to="about" menu="About" />
           <MenuLink to="skills" menu="Skills" />
           <MenuLink to="project" menu="Project" />

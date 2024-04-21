@@ -1,4 +1,4 @@
-import { React } from "react";
+import { React, useRef } from "react";
 import { HiArrowNarrowRight } from "react-icons/hi";
 import { Link } from "react-scroll";
 import TypeText from "./TypeText";
@@ -12,21 +12,19 @@ function Home() {
         id="title"
         className="max-w-[1000px] sm:ml-20 lg:mx-auto px-8 flex flex-col justify-center h-full"
       >
-        <p className="text-secondary">Hi, my name is</p>
-        <h1 className="text-4xl sm:text-7xl font-bold text-primary-light drop-shadow-glow">
+        <p className="text-secondary uppercase">Hi, my name is</p>
+        <h1 className="nama uppercase text-4xl sm:text-7xl font-bold text-white drop-shadow-glow">
           Mumtaz Che Ismail
         </h1>
         <div className="flex">
-          <h2 className="mr-4 text-4xl sm:text-6xl font-bold text-secondary-dark">
+          <h2 className="uppercase mr-4 text-4xl sm:text-6xl font-bold text-gray-400">
             I am
           </h2>
           <TypeText
-            text1="fullstack dev"
-            text2="a web developer"
-            text3="an app developer"
-            style={
-              "inline-block text-4xl sm:text-6xl font-bold text-secondary-dark"
-            }
+            text1="FULLSTACK DEV"
+            text2="A WEB DEVELOPER"
+            text3="AN APP DEVELOPER"
+            style={"inline-block text-4xl sm:text-6xl font-bold text-gray-400"}
           />
         </div>
         <div>
@@ -35,7 +33,7 @@ function Home() {
               to="project"
               smooth={true}
               duration={500}
-              className="items-center flex"
+              className="items-center flex uppercase"
             >
               View Project{" "}
               <span className="group-hover:rotate-90 duration-300">
