@@ -39,7 +39,7 @@ export default function Showcase() {
     >
       <div
         id="title"
-        className="max-w-[1000px] mx-20 lg:mx-auto px-8 flex flex-col justify-center h-full"
+        className="lg:max-w-[1000px] mx-20 lg:mx-auto lg:px-8 flex flex-col justify-center h-full"
       >
         <ProjectItem
           image={dashboard}

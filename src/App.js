@@ -1,12 +1,12 @@
-import About from "./components/About_2";
-import Contact from "./components/Contact";
-import Home from "./components/Home";
+// import About from "./components/About_2";
+// import Contact from "./components/Contact";
+// import Home from "./components/Home";
 import Navbar from "./components/Navbar";
-import Skills from "./components/Skills";
-import Work from "./components/Work";
+// import Skills from "./components/Skills";
+// import Work from "./components/Work";
 import Footer from "./components/Footer";
 import AnimatedCursor from "react-animated-cursor";
-import Showcase from "./components/Showcase";
+// import Showcase from "./components/Showcase";
 import { Outlet } from "react-router-dom";
 
 function App() {

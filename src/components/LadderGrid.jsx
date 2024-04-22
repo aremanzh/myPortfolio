@@ -55,7 +55,7 @@ export default function LadderGrid() {
   return (
     <div ref={container} id="itemsWrapperLinks" className="z-10">
       <div className="portfolio-wrapper ladder-grid">
-        <div className="portfolio relative lg:justify-between h-[96rem]">
+        <div className="portfolio relative lg:justify-between lg:h-[96rem]">
           <div className="portfolio-item lg:absolute hover:animate-float">
             <div className="item-parallex">
               <div className="item-appear">

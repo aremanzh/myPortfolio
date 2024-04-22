@@ -1,6 +1,6 @@
 import React from "react";
 import mumtaz from "../assets/mumtaz.jpg";
-import { Button, Timeline } from "flowbite-react";
+// import { Button, Timeline } from "flowbite-react";
 import { HiArrowNarrowRight } from "react-icons/hi";
 
 function About() {

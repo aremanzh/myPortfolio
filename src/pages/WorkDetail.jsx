@@ -79,7 +79,7 @@ export default function WorkDetail() {
                         <img
                           key={item.id}
                           src={item.cover || null}
-                          className="w-full max-h-[60rem] object-cover object-top rounded-xl"
+                          className="w-full max-h-screen object-cover object-top rounded-xl"
                         />
                       </div>
                     </div>
