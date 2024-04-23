@@ -8,40 +8,42 @@ import { IoLogoJavascript } from "react-icons/io5";
 import { FaCss3Alt } from "react-icons/fa6";
 import { FaReact } from "react-icons/fa";
 
-import { gsap } from "gsap";
-import { useGSAP } from "@gsap/react";
-gsap.registerPlugin(useGSAP);
+// import { gsap } from "gsap";
+// import { useGSAP } from "@gsap/react";
+// gsap.registerPlugin(useGSAP);
 
-export default function Showcase() {
+export default function Showcase({ id }) {
   const container = useRef();
-  useGSAP(
-    () => {
-      // gsap code here...
-      gsap.from(".work", {
-        marker: true,
-        markerStart: "bottom start",
-        markerEnd: "100%",
-        opacity: 0,
-        duration: 1,
-        delay: 0.5,
-        stagger: {
-          each: 0.2,
-        },
-      }); // <-- automatically reverted
-    },
-    { scope: container }
-  ); // <-- scope is for selector text (optional)
+  // useGSAP(
+  //   () => {
+  //     // gsap code here...
+  //     gsap.from(".work", {
+  //       marker: true,
+  //       markerStart: "bottom start",
+  //       markerEnd: "100%",
+  //       opacity: 0,
+  //       duration: 1,
+  //       delay: 0.5,
+  //       stagger: {
+  //         each: 0.2,
+  //       },
+  //     }); // <-- automatically reverted
+  //   },
+  //   { scope: container }
+  // ); // <-- scope is for selector text (optional)
   return (
     <div
       ref={container}
       name="project"
+      id={id}
       className="project w-full h-full bg-primary py-16"
     >
       <div
-        id="title"
+        id="sss"
         className="lg:max-w-[1000px] mx-20 lg:mx-auto lg:px-8 flex flex-col justify-center h-full"
       >
         <ProjectItem
+          id="project-item"
           image={dashboard}
           title="Sistem Pengurusan Program"
           linkTitle="Learn more"
@@ -55,6 +57,7 @@ export default function Showcase() {
           className="work"
         />
         <ProjectItem
+          id="project-item"
           image={dashboard}
           title="Sistem Perkongsian Fail Multimedia"
           linkTitle="Learn more"

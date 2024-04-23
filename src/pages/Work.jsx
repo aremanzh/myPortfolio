@@ -16,22 +16,27 @@ export default function Work() {
         // yes, we can add it to an entire timeline!
         scrollTrigger: {
           trigger: ".hero-wrapper",
-          start: "0%",
-          end: "100%",
-          pin: true,
-          pinSpacing: false,
+          markers: { startColor: "teal", endColor: "teal" },
+          scrub: true,
+          start: "30% top",
+          end: "60% end",
         },
       });
+
+      tl.to(".hero-title", { opacity: 0 });
 
       const tlH = gsap.timeline({
         scrollTrigger: {
           trigger: ".content-wrapper",
           markers: { startColor: "pink", endColor: "pink" },
           scrub: true,
-          start: "-20%",
-          end: "100%",
+          pin: true,
+          start: "-20% top",
+          end: "10% end",
         },
       });
+
+      tlH.fromTo(".portfolio-item", { opacity: 0 }, { opacity: 100 });
     },
     { scope: container }
   ); // <-- scope is for selector text (optional)

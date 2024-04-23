@@ -3,9 +3,9 @@ import { HiArrowNarrowRight } from "react-icons/hi";
 import { Link } from "react-scroll";
 import TypeText from "./TypeText";
 
-function Home() {
+function Home({ id }) {
   return (
-    <div name="home" className="w-full h-screen bg-primary">
+    <div id={id} name="home" className="w-full h-screen bg-primary">
       <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_60%_60%_at_60%_60%,#000_20%,transparent_100%)] opacity-20"></div>
       {/* Container */}
       <div

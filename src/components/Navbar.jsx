@@ -58,25 +58,25 @@ const Navbar = () => {
       <div className="hidden lg:flex fixed flex-col top-[35%] left-8">
         <ul>
           <SocialIcons
-            className="bg-blue-600 hover:text-white"
+            className="bg-primary bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 border-t border-r hover:border-b border-button-dark border-opacity-30"
             href="https://www.linkedin.com/in/mumtaz-che-ismail"
             media="Linkedin"
             icon={<FaLinkedin size={30} color="white" />}
           />
           <SocialIcons
-            className="bg-[#333333]"
+            className="bg-primary bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 border-t border-r hover:border-b border-button-dark border-opacity-30"
             href="https://github.com/aremanzh"
             media="Github"
             icon={<FaGithub size={30} />}
           />
           <SocialIcons
-            className="bg-[#6fc2b0]"
+            className="bg-primary bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 border-t border-r hover:border-b border-button-dark border-opacity-30"
             href="mailto:mumtaz.che.ismail@gmail.com"
             media="Email"
             icon={<HiOutlineMail size={30} />}
           />
           <SocialIcons
-            className="bg-[#565f69]"
+            className="bg-primary bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-70 border-t border-r border-b border-button-dark border-opacity-30"
             href="/"
             media="Resume"
             icon={<BsFillPersonLinesFill size={30} />}

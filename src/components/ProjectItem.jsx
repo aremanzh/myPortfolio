@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 export default function ProjectItem({
+  id,
   image,
   title,
   linkTitle = "Visit website",
@@ -11,7 +12,7 @@ export default function ProjectItem({
   className,
 }) {
   return (
-    <div className={`my-8 ${className}`}>
+    <div id={id} className={`my-8 ${className}`}>
       <div className="mb-8">
         <Link to={link}>
           <img

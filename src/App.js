@@ -24,12 +24,13 @@ function App() {
         }}
       /> */}
       <AnimatedCursor
-        color="1,555,333"
-        innerSize={8}
-        outerSize={45}
+        color="240, 240, 240"
+        innerSize={0}
+        outerSize={50}
         innerScale={1.3}
         outerScale={1.7}
-        outerAlpha={1}
+        outerAlpha={0.3}
+        showSystemCursor
         innerStyle={{ color: "white" }}
         outerStyle={{ mixBlendMode: "exclusion", color: "white" }}
         trailingSpeed={3}
