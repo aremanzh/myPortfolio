@@ -13,7 +13,7 @@ export const site = {
 
   // Flip to false to swap the green "open" badge for a neutral one.
   available: true,
-  availabilityLabel: "Open for projects",
+  availabilityLabel: "Open to full-time and freelance",
   unavailableLabel: "Booked for now",
 
   // Getform endpoint the contact form posts to.
@@ -28,11 +28,12 @@ export const site = {
 
 export const about = {
   statement:
-    "I’m Mumtaz, a full-stack developer and DevOps engineer from Malaysia. I don’t hand work over the wall. I design the Laravel backend, build the front end in Vue or React, put it in a container, and keep it running in production.",
+    "I’m Mumtaz. I studied fine arts, then learned to run Kubernetes clusters, and I still care about both ends of the job. I design the Laravel backend, build the front end in Vue or React, put it in a container, and keep it running in production.",
   facts: [
     { label: "Based in", value: "Putrajaya, Malaysia" },
     { label: "Focus", value: "Laravel, Kubernetes, CI/CD" },
     { label: "Certified", value: "Kubernetes Administrator (CKA)" },
+    { label: "Studied", value: "Fine Arts, Universiti Sains Malaysia" },
   ],
 };
 

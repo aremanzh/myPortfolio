@@ -58,7 +58,7 @@ export default function About() {
         <div className="lg:col-span-8 lg:pt-14">
           <ScrubWords className="t-lead max-w-[26ch]">{about.statement}</ScrubWords>
 
-          <FadeUp as="dl" className="mt-[clamp(3rem,6vw,6rem)] grid gap-8 sm:grid-cols-3">
+          <FadeUp as="dl" className="mt-[clamp(3rem,6vw,6rem)] grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
             {about.facts.map((fact) => (
               <div key={fact.label} className="border-t border-[color:var(--line)] pt-4">
                 <dt className="t-mono text-[color:var(--muted)]">{fact.label}</dt>

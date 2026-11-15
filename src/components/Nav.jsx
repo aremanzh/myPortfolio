@@ -5,6 +5,9 @@ import { reducedMotion } from "../lib/env";
 import { lockScroll } from "../lib/scroll";
 import { site } from "../data/site";
 import { TLink } from "./Transition";
+import { OPEN_PALETTE } from "./CommandPalette";
+
+const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 
 const LINKS = [
   { to: "/works", label: "Work" },
@@ -91,7 +94,7 @@ export default function Nav() {
         </TLink>
 
         <nav aria-label="Primary" className="hidden md:block">
-          <ul className="t-mono flex gap-9">
+          <ul className="t-mono flex items-center gap-9">
             {LINKS.map((link) => (
               <li key={link.to}>
                 <TLink
@@ -104,6 +107,16 @@ export default function Nav() {
                 </TLink>
               </li>
             ))}
+            <li>
+              <button
+                type="button"
+                className="nav__kbd"
+                aria-label="Open command palette"
+                onClick={() => window.dispatchEvent(new Event(OPEN_PALETTE))}
+              >
+                {isMac ? "⌘K" : "Ctrl K"}
+              </button>
+            </li>
           </ul>
         </nav>
 
@@ -119,7 +132,7 @@ export default function Nav() {
         </button>
       </header>
 
-      <div ref={menu} id="menu" className="menu theme-paper md:hidden" aria-hidden={!open}>
+      <div ref={menu} id="menu" className="menu theme-paper md:hidden" aria-hidden={!open} data-lenis-prevent>
         <nav aria-label="Mobile">
           <ul className="grid gap-1">
             {[{ to: "/", label: "Home" }, ...LINKS].map((link) => (

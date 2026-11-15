@@ -25,10 +25,13 @@ All copy lives in two files. Components only render it.
 | `src/data/projects.js` | Projects, in display order. The first four show on the home page |
 
 Adding a project: append an object to `projects`. With `cover: null` the site
-draws a typographic cover from `mark`; with a screenshot, add 800px and 1600px
-wide WebP files to `src/assets/work/` and reference them. `year` and `role`
-are optional and appear on the case page when set. Add the new URL to
-`public/sitemap.xml`.
+sets the project's `mark` in pods as its cover; with a screenshot, add 800px
+and 1600px wide WebP files (16:9) to `src/assets/work/` and reference them.
+`highlights`, `year` and `role` are optional and appear on the case page when
+set. Add the new URL to `public/sitemap.xml`.
+
+Project copy is taken from public sources only (the GitHub profile README and
+the public repositories' READMEs). Keep it that way for client work.
 
 ## Layout
 
@@ -39,12 +42,15 @@ src/
   data/                 content (see above)
   lib/
     gsap.js             plugin registration, scroll-restoration policy
+    podSim.js           the pod simulation and its layouts (cluster, lettering)
     scroll.js           Lenis instance + scroll helpers
     ready.js            "preloader finished" signal
     hooks.js            useIntro, useDocumentTitle, useLocalTime
     env.js              reduced-motion and pointer checks
   components/
-    PodCluster.jsx      hero canvas simulation
+    PodCluster.jsx      hero cluster (podSim + node layout)
+    PodType.jsx         a word set in pods: generated covers, 404
+    CommandPalette.jsx  Cmd/Ctrl+K launcher
     Transition.jsx      route curtain + <TLink>
     Reveal.jsx          SplitReveal, ScrubWords, FadeUp
     WorkList.jsx        project index with cursor-following preview
@@ -54,6 +60,13 @@ src/
 ```
 
 ## Behaviour worth knowing
+
+- **One simulation, three uses.** `lib/podSim.js` runs the hero cluster, the
+  generated project covers and the 404 lettering. Only the layout differs.
+  Thumbnails draw a single frame (`live={false}`); the hero, the case-page
+  cover and the 404 run live and pause off screen.
+- **Command palette.** Cmd/Ctrl+K or `/` opens it. It lists pages, projects
+  and a few actions; nothing in it is exclusive to the keyboard.
 
 - **Reduced motion.** With `prefers-reduced-motion: reduce` there is no
   preloader, smooth scroll, custom cursor or text animation, and route changes

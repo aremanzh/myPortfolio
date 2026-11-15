@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
-import { gsap, useGSAP } from "../lib/gsap";
-import { reducedMotion } from "../lib/env";
+import { finePointer, reducedMotion } from "../lib/env";
 import { useDocumentTitle, useIntro } from "../lib/hooks";
 import { findProject, projects } from "../data/projects";
 import { TLink } from "../components/Transition";
@@ -12,11 +11,63 @@ import NotFound from "./NotFound";
 
 const pad = (n) => String(n).padStart(2, "0");
 
-function Meta({ label, children }) {
+/**
+ * Project facts, laid out like a manifest. It is still a plain definition
+ * list underneath; the YAML look is CSS.
+ */
+function Manifest({ project }) {
+  const rows = [
+    ["kind", project.type],
+    project.year && ["year", project.year],
+    project.role && ["role", project.role],
+  ].filter(Boolean);
+
   return (
-    <div className="border-t border-[color:var(--line)] pt-4">
-      <dt className="t-mono text-[color:var(--muted)]">{label}</dt>
-      <dd className="mt-2 text-lg font-medium leading-snug tracking-tight">{children}</dd>
+    <div className="manifest t-mono">
+      <p className="manifest__file" aria-hidden="true">
+        {project.slug}.yaml
+      </p>
+      <dl>
+        {rows.map(([key, value]) => (
+          <div key={key} className="manifest__row">
+            <dt>{key}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+        {project.stack.length > 0 && (
+          <div className="manifest__row manifest__row--list">
+            <dt>stack</dt>
+            <dd>
+              <ul>
+                {project.stack.map((tool) => (
+                  <li key={tool}>{tool}</li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        )}
+        {project.links.length > 0 && (
+          <div className="manifest__row manifest__row--list">
+            <dt>links</dt>
+            <dd>
+              <ul>
+                {project.links.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="link link--on inline-flex items-center gap-2"
+                    >
+                      {link.label} <ArrowUpRight className="h-2.5 w-2.5" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        )}
+      </dl>
     </div>
   );
 }
@@ -31,22 +82,12 @@ function Case({ project, index, next }) {
       .from(".case__cover", { clipPath: "inset(100% 0 0 0)", duration: 1.4, ease: "power4.inOut" }, 0.35);
   });
 
-  useGSAP(
-    () => {
-      if (reducedMotion) return;
-
-      gsap.fromTo(
-        ".case__cover .frame__in",
-        { yPercent: -5 },
-        {
-          yPercent: 5,
-          ease: "none",
-          scrollTrigger: { trigger: ".case__cover", start: "top bottom", end: "bottom top", scrub: true },
-        }
-      );
-    },
-    { scope: root }
-  );
+  const [lead, ...rest] = project.body;
+  const caption = project.cover
+    ? project.cover.caption
+    : `No public screenshots for this one, so the cover is set in pods. ${
+        reducedMotion ? "" : finePointer ? "Point at it." : "Tap it."
+      }`;
 
   return (
     <article ref={root} className="theme-ink">
@@ -67,46 +108,50 @@ function Case({ project, index, next }) {
         </h1>
       </header>
 
-      <div className="wrap">
-        <div className="case__cover frame aspect-[16/10] md:aspect-[16/8]" style={{ clipPath: "inset(0)" }}>
-          <div className="frame__in">
-            <ProjectCover project={project} sizes="94vw" eager />
+      <figure className="wrap">
+        <div
+          className="case__cover frame aspect-[16/9]"
+          style={{ clipPath: "inset(0)" }}
+          data-cursor={project.cover ? undefined : "Kill pods"}
+        >
+          {/* Shown whole and still: screenshots are UI, so nothing is cropped,
+              and a generated cover is a live canvas under the pointer. */}
+          <div className="absolute inset-0">
+            <ProjectCover project={project} sizes="94vw" eager live />
           </div>
         </div>
-      </div>
+        {caption && (
+          <figcaption className="case__fade t-mono mt-4 text-[color:var(--muted)]">{caption}</figcaption>
+        )}
+      </figure>
 
       <div className="wrap grid gap-12 py-[clamp(4rem,9vw,9rem)] lg:grid-cols-12 lg:gap-10">
-        <FadeUp as="dl" className="grid content-start gap-8 lg:col-span-4">
-          <Meta label="Type">{project.type}</Meta>
-          {project.role && <Meta label="Role">{project.role}</Meta>}
-          {project.year && <Meta label="Year">{project.year}</Meta>}
-          {project.stack.length > 0 && <Meta label="Stack">{project.stack.join(", ")}</Meta>}
-          {project.links.length > 0 && (
-            <Meta label="Links">
-              <ul className="grid gap-2">
-                {project.links.map((link) => (
-                  <li key={link.href}>
-                    <a
-                      href={link.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="link link--on inline-flex items-center gap-2"
-                    >
-                      {link.label} <ArrowUpRight className="h-3 w-3" />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </Meta>
-          )}
+        <FadeUp className="lg:col-span-4">
+          <Manifest project={project} />
         </FadeUp>
 
         <div className="grid content-start gap-8 lg:col-span-8">
-          {project.body.map((paragraph, i) => (
-            <SplitReveal key={paragraph} className={i === 0 ? "t-lead max-w-[24ch]" : "t-body max-w-[60ch]"}>
+          <SplitReveal className="t-lead max-w-[24ch]">{lead}</SplitReveal>
+          {rest.map((paragraph) => (
+            <SplitReveal key={paragraph} className="t-body max-w-[58ch] text-[clamp(1.05rem,1.4vw,1.35rem)]">
               {paragraph}
             </SplitReveal>
           ))}
+
+          {project.highlights && (
+            <FadeUp as="ol" className="mt-[clamp(1.5rem,3vw,3rem)]" stagger={0.06}>
+              {project.highlights.map((item, i) => (
+                <li
+                  key={item.title}
+                  className="grid gap-x-8 gap-y-2 border-t border-[color:var(--line)] py-6 md:grid-cols-[3rem_minmax(0,16rem)_minmax(0,1fr)]"
+                >
+                  <span className="t-mono pt-1 text-[color:var(--muted)]">{pad(i + 1)}</span>
+                  <h2 className="text-xl font-semibold leading-tight tracking-tight">{item.title}</h2>
+                  <p className="t-body">{item.text}</p>
+                </li>
+              ))}
+            </FadeUp>
+          )}
         </div>
       </div>
 

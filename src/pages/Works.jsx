@@ -63,7 +63,7 @@ export default function Works() {
               className="card group block"
               data-cursor="Open"
             >
-              <div className="frame aspect-[16/11]">
+              <div className="frame aspect-[16/10]">
                 <ProjectCover project={project} sizes="(min-width: 768px) 46vw, 92vw" />
               </div>
               <div className="mt-5 flex items-start justify-between gap-6">

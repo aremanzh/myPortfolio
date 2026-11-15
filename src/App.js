@@ -4,6 +4,7 @@ import { initScroll } from "./lib/scroll";
 import { TransitionProvider } from "./components/Transition";
 import Preloader from "./components/Preloader";
 import Cursor from "./components/Cursor";
+import CommandPalette from "./components/CommandPalette";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 
@@ -24,6 +25,7 @@ export default function App({ children }) {
       <Preloader />
       <Cursor />
       <Nav />
+      <CommandPalette />
       {/* tabIndex lets the skip link move focus here, not just the scroll. */}
       <main id="main" tabIndex={-1} className="outline-none">
         {children || <Outlet />}

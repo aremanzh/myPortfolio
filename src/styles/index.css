@@ -549,6 +549,121 @@ body::after {
   font-size: clamp(3.5rem, 20vw, 8rem);
 }
 
+.nav__kbd {
+  padding: 0.3rem 0.55rem;
+  border: 1px solid currentColor;
+  border-radius: 0.3rem;
+  font: inherit;
+  letter-spacing: inherit;
+  opacity: 0.75;
+  transition: opacity 0.3s;
+}
+.nav__kbd:hover {
+  opacity: 1;
+}
+
+/* -------------------------------------------------------------------------
+   Command palette
+   ---------------------------------------------------------------------- */
+.palette {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 16vh var(--gutter) 2rem;
+  background: color-mix(in srgb, var(--ink) 72%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  animation: palette-in 0.25s var(--ease-out);
+}
+.palette__panel {
+  --fg: var(--paper);
+  --line: color-mix(in srgb, var(--paper) 16%, transparent);
+  --muted: color-mix(in srgb, var(--paper) 64%, transparent);
+  width: min(40rem, 100%);
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--ink-2);
+  color: var(--paper);
+  box-shadow: 0 2rem 5rem rgb(0 0 0 / 0.5);
+  overflow: hidden;
+  animation: palette-panel-in 0.35s var(--ease-out);
+}
+@keyframes palette-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes palette-panel-in {
+  from {
+    transform: translateY(0.75rem) scale(0.98);
+  }
+}
+.palette__input {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.95rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.palette__input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.palette__input input:focus,
+.palette__input input:focus-visible {
+  outline: none;
+}
+.palette__input input::placeholder {
+  color: color-mix(in srgb, var(--paper) 36%, transparent);
+}
+.palette__list {
+  max-height: min(22rem, 46vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.4rem;
+}
+.palette__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.palette__item.is-active {
+  background: var(--signal);
+  color: var(--ink);
+}
+.palette__group {
+  color: var(--muted);
+}
+.palette__item.is-active .palette__group {
+  color: inherit;
+}
+.palette__empty {
+  padding: 1.25rem 0.85rem;
+  color: var(--muted);
+}
+.palette__hint {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
 /* -------------------------------------------------------------------------
    Hero
    ---------------------------------------------------------------------- */
@@ -569,10 +684,6 @@ body::after {
   height: 100%;
 }
 .hud {
-  display: grid;
-  grid-template-columns: auto auto;
-  column-gap: 1.5rem;
-  row-gap: 0.25rem;
   padding: 0.85rem 1rem;
   border: 1px solid var(--line);
   border-radius: 0.5rem;
@@ -581,11 +692,40 @@ body::after {
   backdrop-filter: blur(8px);
   font-variant-numeric: tabular-nums;
 }
-.hud dt {
+.hud__stats {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 1.5rem;
+  row-gap: 0.25rem;
+}
+.hud__stats dt {
   color: var(--muted);
 }
-.hud dd {
+.hud__stats dd {
   text-align: right;
+}
+.hud__chaos {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--signal);
+  border-radius: 0.3rem;
+  color: var(--signal);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: uppercase;
+  transition: background 0.3s, color 0.3s;
+}
+@media (hover: hover) {
+  .hud__chaos:hover {
+    background: var(--signal);
+    color: var(--ink);
+  }
+}
+.hud__chaos:active {
+  background: var(--signal);
+  color: var(--ink);
 }
 
 /* -------------------------------------------------------------------------
@@ -765,28 +905,14 @@ body::after {
   background: #1f1d1a;
   color: var(--paper);
 }
-.cover__pods {
+.podtype {
   position: absolute;
   inset: 0;
-  background: currentColor;
-  opacity: 0.13;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect x='3' y='3' width='14' height='14' rx='2.5'/%3E%3C/svg%3E")
-    0 0 / 5cqw 5cqw;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Crect x='3' y='3' width='14' height='14' rx='2.5'/%3E%3C/svg%3E")
-    0 0 / 5cqw 5cqw;
 }
-.cover__mark {
-  position: absolute;
-  left: 4cqw;
-  bottom: 4.5cqw;
-  font-weight: 800;
-  font-stretch: 75%;
-  font-size: 34cqw;
-  line-height: 0.8;
-  letter-spacing: -0.04em;
-}
-.cover--ink .cover__mark {
-  color: var(--signal);
+.podtype canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .cover__meta {
   position: absolute;
@@ -806,6 +932,15 @@ body::after {
   border-radius: clamp(0.75rem, 1.4vw, 1.25rem);
   background: var(--ink-2);
 }
+/* Hairline edge, so dark screenshots don't dissolve into the dark page. */
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--line);
+  pointer-events: none;
+}
 .frame__in {
   position: absolute;
   inset: -8% 0;
@@ -817,6 +952,52 @@ body::after {
 }
 .frame .cover {
   transition: transform 1.1s var(--ease-out);
+}
+
+/* -------------------------------------------------------------------------
+   Case page manifest: a definition list dressed as YAML
+   ---------------------------------------------------------------------- */
+.manifest {
+  padding: 1.25rem 1.4rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--ink-2);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+.manifest__file {
+  margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+.manifest__file::before {
+  content: "# ";
+}
+.manifest__row {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.6em;
+}
+.manifest__row dt {
+  color: var(--signal);
+}
+.manifest__row dt::after {
+  content: ":";
+  color: var(--muted);
+}
+.manifest__row--list {
+  display: block;
+}
+.manifest__row--list li {
+  padding-left: 2.6em;
+  text-indent: -1.3em;
+}
+.manifest__row--list li::before {
+  content: "- ";
+  color: var(--muted);
 }
 
 /* -------------------------------------------------------------------------

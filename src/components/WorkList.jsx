@@ -11,7 +11,7 @@ function Meta({ project, className = "" }) {
   return (
     <span className={`t-mono flex flex-wrap gap-x-4 gap-y-1 text-[color:var(--muted)] ${className}`}>
       <span>{project.type}</span>
-      {project.stack.length > 0 && <span>{project.stack.join(", ")}</span>}
+      {project.stack.length > 0 && <span>{project.stack.slice(0, 3).join(", ")}</span>}
     </span>
   );
 }

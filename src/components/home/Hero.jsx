@@ -1,24 +1,48 @@
-import React, { useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useIntro } from "../../lib/hooks";
 import { scrollToTarget } from "../../lib/scroll";
-import { finePointer } from "../../lib/env";
+import { finePointer, reducedMotion } from "../../lib/env";
 import { site } from "../../data/site";
 import PodCluster from "../PodCluster";
 import Magnetic from "../Magnetic";
 import { TLink } from "../Transition";
 import { ArrowDown, ArrowUpRight } from "../Icons";
+import { RUN_CHAOS } from "../CommandPalette";
+
+const pad = (n) => String(n).padStart(4, "0");
 
 export default function Hero() {
   const root = useRef(null);
+  const cluster = useRef(null);
+  const status = useRef(null);
+  const ready = useRef(null);
+  const killed = useRef(null);
+  const healed = useRef(null);
 
-  // The canvas writes its counters straight into these nodes, so the
-  // simulation never triggers a React render.
-  const hud = useRef({
-    ready: React.createRef(),
-    killedEl: React.createRef(),
-    healedEl: React.createRef(),
-    status: React.createRef(),
-  }).current;
+  // The simulation reports at frame rate, so its counters are written
+  // straight into the DOM and never go through React state.
+  const onStats = useCallback((stats) => {
+    if (!status.current) return;
+    ready.current.textContent = `${pad(stats.running)}/${pad(stats.total)}`;
+    killed.current.textContent = pad(stats.killed);
+    healed.current.textContent = pad(stats.healed);
+
+    const healthy = stats.running >= stats.total * 0.985;
+    const [text, color] = healthy
+      ? ["Healthy", "var(--ok)"]
+      : stats.killed > stats.healed
+      ? ["Self-healing", "var(--signal)"]
+      : ["Rolling update", "var(--fg)"];
+    status.current.textContent = text;
+    status.current.style.color = color;
+  }, []);
+
+  // The command palette can trigger the chaos test too.
+  useEffect(() => {
+    const onChaos = () => cluster.current && cluster.current.chaos(0.4);
+    window.addEventListener(RUN_CHAOS, onChaos);
+    return () => window.removeEventListener(RUN_CHAOS, onChaos);
+  }, []);
 
   useIntro(root, (tl) => {
     tl.from(".hero__cluster", { opacity: 0, duration: 2.2, ease: "power2.out" }, 0)
@@ -28,22 +52,34 @@ export default function Hero() {
 
   return (
     <section ref={root} className="hero theme-ink">
-      <PodCluster hudRefs={hud} />
+      <PodCluster ref={cluster} onStats={onStats} />
 
       <div className="wrap relative flex flex-1 flex-col justify-between gap-10 pb-[calc(clamp(1.25rem,3vw,2.5rem)+1.25rem)] pt-24 md:pt-28">
         <div className="hero__fade flex justify-end">
-          <dl className="hud t-mono">
-            <dt>Cluster</dt>
-            <dd ref={hud.status} style={{ color: "var(--ok)" }}>
-              Healthy
-            </dd>
-            <dt>Pods ready</dt>
-            <dd ref={hud.ready}>0000/0000</dd>
-            <dt>Killed by you</dt>
-            <dd ref={hud.killedEl}>0000</dd>
-            <dt>Self-healed</dt>
-            <dd ref={hud.healedEl}>0000</dd>
-          </dl>
+          <div className="hud t-mono">
+            <dl className="hud__stats">
+              <dt>Cluster</dt>
+              <dd ref={status} style={{ color: "var(--ok)" }}>
+                Healthy
+              </dd>
+              <dt>Pods ready</dt>
+              <dd ref={ready}>0000/0000</dd>
+              <dt>Killed by you</dt>
+              <dd ref={killed}>0000</dd>
+              <dt>Self-healed</dt>
+              <dd ref={healed}>0000</dd>
+            </dl>
+            {!reducedMotion && (
+              <button
+                type="button"
+                className="hud__chaos"
+                onClick={() => cluster.current.chaos(0.4)}
+                data-cursor="Break it"
+              >
+                Run chaos test
+              </button>
+            )}
+          </div>
         </div>
 
         <div>
