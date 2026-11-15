@@ -1,94 +1,25 @@
-import React, { useRef } from "react";
-import Main from "../components/Home";
-import Showcase from "../components/Showcase";
-import Marquee from "react-fast-marquee";
-
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger"; // Import ScrollTrigger
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger);
+import React from "react";
+import { useDocumentTitle } from "../lib/hooks";
+import { marquee } from "../data/site";
+import Hero from "../components/home/Hero";
+import About from "../components/home/About";
+import Pipeline from "../components/home/Pipeline";
+import SelectedWork from "../components/home/SelectedWork";
+import VelocityMarquee from "../components/VelocityMarquee";
 
 export default function Home() {
-  const container = useRef();
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          markers: true,
-          scrub: 1,
-          trigger: "#showcase",
-          start: "-20% 20%",
-          endTrigger: "#showcase",
-          end: "40% 40%",
-        },
-      });
-
-      const hero = gsap.timeline({
-        scrollTrigger: {
-          markers: true,
-          scrub: 1,
-          trigger: "#hero",
-          start: "20% start",
-          endTrigger: "#hero",
-          end: "55% end",
-        },
-      });
-      const marquee = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".marquee-text",
-          markers: true,
-          start: "top bottom",
-          end: "bottom+=10 top",
-          scrub: true,
-        },
-      });
-
-      hero.to("#title", { opacity: 0 });
-
-      tl.from(".work", { opacity: 0 });
-
-      marquee
-        .fromTo("#first-marquee", { x: "20%" }, { x: "0%" }, 0)
-        .fromTo("#second-marquee", { x: "-20%" }, { x: "0%" }, 0);
-    },
-    { scope: container }
-  );
+  useDocumentTitle("");
 
   return (
-    <div ref={container}>
-      <Main id="hero" />
-      <div className="marquee-text">
-        <Marquee
-          direction="right"
-          speed={100}
-          className={"bg-primary text-secondary-dark"}
-          play={false}
-        >
-          <h1
-            id="first-marquee"
-            className="text-7xl font-bold uppercase bg-transparent overflow-hidden py-2"
-          >
-            I can be a React component, multiple React components, or just some
-            text.
-          </h1>
-        </Marquee>
-        <Marquee
-          direction="left"
-          speed={100}
-          className={"bg-primary text-secondary-dark"}
-          play={false}
-        >
-          <h1
-            id="second-marquee"
-            className="text-7xl font-bold uppercase bg-transparent overflow-hidden py-2"
-          >
-            I can be a React component, multiple React components, or just some
-            text.
-          </h1>
-        </Marquee>
+    <>
+      <Hero />
+      <About />
+      <div className="theme-ink t-display grid gap-2 pt-[clamp(4rem,8vw,8rem)]">
+        <VelocityMarquee items={marquee} direction={-1} />
+        <VelocityMarquee items={[...marquee].reverse()} direction={1} outline />
       </div>
-      <Showcase id="showcase" />
-    </div>
+      <Pipeline />
+      <SelectedWork />
+    </>
   );
 }

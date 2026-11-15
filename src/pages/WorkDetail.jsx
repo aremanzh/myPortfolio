@@ -1,95 +1,138 @@
 import React, { useRef } from "react";
-import { TbArrowDownRight } from "react-icons/tb";
-import { Link } from "react-scroll";
-import mumtaz from "../assets/mumtaz.jpg";
+import { useParams } from "react-router-dom";
+import { gsap, useGSAP } from "../lib/gsap";
+import { reducedMotion } from "../lib/env";
+import { useDocumentTitle, useIntro } from "../lib/hooks";
+import { findProject, projects } from "../data/projects";
+import { TLink } from "../components/Transition";
+import ProjectCover from "../components/ProjectCover";
+import { FadeUp, SplitReveal } from "../components/Reveal";
+import { ArrowUpRight } from "../components/Icons";
+import NotFound from "./NotFound";
 
-import { gsap } from "gsap";
-import { useGSAP } from "@gsap/react";
-gsap.registerPlugin(useGSAP);
+const pad = (n) => String(n).padStart(2, "0");
 
-export default function WorkDetail() {
-  const item = {
-    id: 1,
-    title: "london royal theater",
-    category: "branding",
-    cover: mumtaz,
-  };
+function Meta({ label, children }) {
   return (
-    <>
-      <div name="work-section" className="pt-32 pb-16 w-full bg-primary">
-        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_60%_60%_at_60%_60%,#000_20%,transparent_100%)] opacity-20"></div>
-        <div
-          id="hero"
-          className="max-w-[1000px] ml-4 lg:mx-auto px-8 flex flex-col justify-center h-full"
-        >
-          <div className="hero-wrapper pt-28 ">
-            <div className="hero-title flex flex-col">
-              <span className="uppercase text-7xl lg:text-9xl font-bold text-white drop-shadow-glow">
-                project
-              </span>
-              <span className="uppercase text-7xl lg:ml-52 lg:text-9xl font-bold text-white drop-shadow-glow">
-                name
-              </span>
-            </div>
-            <div className="hero-footer h-20 py-20 flex justify-between">
-              <div className="hero-footer-left">
-                <div className="button-wrap-scroll hover:animate-flipUpside">
-                  <div className="button-text block">
-                    <Link
-                      to="main"
-                      smooth={true}
-                      duration={500}
-                      className="flex items-center"
-                    >
-                      <div className="btn-text">
-                        <h5 className="uppercase text-sm lg:text-sm font-light text-white drop-shadow-glow">
-                          Scroll to explore
-                        </h5>
-                      </div>
-                      <div className="btn-icon ml-4">
-                        <TbArrowDownRight size={25} className="text-white" />
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="hero-footer-left">
-                <div className="button-text ">
-                  <div className="btn-text hover:animate-float">
-                    <h5 className="uppercase text-sm lg:text-sm font-light text-white drop-shadow-glow">
-                      share project
-                    </h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          name="main"
-          className="content-wrapper max-w-full  lg:mx-auto flex flex-col justify-center h-screen"
-        >
-          <div id="itemsWrapperLinks" className="z-10">
-            <div className="portfolio-wrapper ladder-grid">
-              <div className="portfolio lg:justify-between">
-                <div className="portfolio-item hover:animate-float h-screen">
-                  <div className="item-parallex">
-                    <div className="item-appear">
-                      <div className="item-content">
-                        <img
-                          key={item.id}
-                          src={item.cover || null}
-                          className="w-full max-h-screen object-cover object-top rounded-xl"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div className="border-t border-[color:var(--line)] pt-4">
+      <dt className="t-mono text-[color:var(--muted)]">{label}</dt>
+      <dd className="mt-2 text-lg font-medium leading-snug tracking-tight">{children}</dd>
+    </div>
+  );
+}
+
+function Case({ project, index, next }) {
+  const root = useRef(null);
+  useDocumentTitle(project.title);
+
+  useIntro(root, (tl) => {
+    tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.1 })
+      .from(".case__fade", { y: 24, opacity: 0, duration: 1, ease: "expo.out", stagger: 0.08 }, 0.5)
+      .from(".case__cover", { clipPath: "inset(100% 0 0 0)", duration: 1.4, ease: "power4.inOut" }, 0.35);
+  });
+
+  useGSAP(
+    () => {
+      if (reducedMotion) return;
+
+      gsap.fromTo(
+        ".case__cover .frame__in",
+        { yPercent: -5 },
+        {
+          yPercent: 5,
+          ease: "none",
+          scrollTrigger: { trigger: ".case__cover", start: "top bottom", end: "bottom top", scrub: true },
+        }
+      );
+    },
+    { scope: root }
+  );
+
+  return (
+    <article ref={root} className="theme-ink">
+      <header className="wrap pb-[clamp(2.5rem,5vw,5rem)] pt-[clamp(8rem,16vw,14rem)]">
+        <p className="case__fade t-mono eyebrow">
+          <TLink to="/works" name="Work" className="link">
+            Work
+          </TLink>
+          <span>/</span>
+          <span>
+            {pad(index + 1)} of {pad(projects.length)}
+          </span>
+        </p>
+        <h1 className="t-display mt-8 max-w-[14ch]">
+          <span className="line">
+            <span className="line__in">{project.title}</span>
+          </span>
+        </h1>
+      </header>
+
+      <div className="wrap">
+        <div className="case__cover frame aspect-[16/10] md:aspect-[16/8]" style={{ clipPath: "inset(0)" }}>
+          <div className="frame__in">
+            <ProjectCover project={project} sizes="94vw" eager />
           </div>
         </div>
       </div>
-    </>
+
+      <div className="wrap grid gap-12 py-[clamp(4rem,9vw,9rem)] lg:grid-cols-12 lg:gap-10">
+        <FadeUp as="dl" className="grid content-start gap-8 lg:col-span-4">
+          <Meta label="Type">{project.type}</Meta>
+          {project.role && <Meta label="Role">{project.role}</Meta>}
+          {project.year && <Meta label="Year">{project.year}</Meta>}
+          {project.stack.length > 0 && <Meta label="Stack">{project.stack.join(", ")}</Meta>}
+          {project.links.length > 0 && (
+            <Meta label="Links">
+              <ul className="grid gap-2">
+                {project.links.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="link link--on inline-flex items-center gap-2"
+                    >
+                      {link.label} <ArrowUpRight className="h-3 w-3" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </Meta>
+          )}
+        </FadeUp>
+
+        <div className="grid content-start gap-8 lg:col-span-8">
+          {project.body.map((paragraph, i) => (
+            <SplitReveal key={paragraph} className={i === 0 ? "t-lead max-w-[24ch]" : "t-body max-w-[60ch]"}>
+              {paragraph}
+            </SplitReveal>
+          ))}
+        </div>
+      </div>
+
+      <TLink
+        to={`/works/${next.slug}`}
+        name={next.title}
+        className="group block border-t border-[color:var(--line)]"
+        data-cursor="Next"
+      >
+        <div className="wrap py-[clamp(3.5rem,8vw,8rem)]">
+          <p className="t-mono eyebrow">Next project</p>
+          <p className="t-display mt-6 transition-transform duration-700 ease-out group-hover:translate-x-4">
+            {next.title}
+          </p>
+        </div>
+      </TLink>
+    </article>
   );
+}
+
+export default function WorkDetail() {
+  const { slug } = useParams();
+  const found = findProject(slug);
+
+  if (!found) return <NotFound />;
+
+  // Keyed so intro and scroll animations rebuild when moving between cases.
+  return <Case key={found.project.slug} {...found} />;
 }

@@ -1,43 +1,42 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./index.css";
-import "./script.js";
-import App from "./App.js";
-import Error404 from "./pages/Error404.jsx";
-import Contact from "./components/Contact.jsx";
-import Home from "./pages/Home.jsx";
-import Work from "./pages/Work.jsx";
-import WorkDetail from "./pages/WorkDetail.jsx";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+
+import "@fontsource-variable/bricolage-grotesque/standard.css";
+import "@fontsource/instrument-serif/latin-400-italic.css";
+import "@fontsource-variable/jetbrains-mono/wght.css";
+import "lenis/dist/lenis.css";
+import "./styles/index.css";
+
+import App from "./App";
+import Home from "./pages/Home";
+import Works from "./pages/Works";
+import WorkDetail from "./pages/WorkDetail";
+import Contact from "./pages/Contact";
+import NotFound from "./pages/NotFound";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <Error404 />,
+    errorElement: (
+      <App>
+        <NotFound />
+      </App>
+    ),
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "works",
-        element: <Work />,
-      },
-      {
-        path: "works/:workId",
-        element: <WorkDetail />,
-      },
-      {
-        path: "contacts",
-        element: <Contact />,
-      },
+      { index: true, element: <Home /> },
+      { path: "works", element: <Works /> },
+      { path: "works/:slug", element: <WorkDetail /> },
+      { path: "contact", element: <Contact /> },
+      // The old site linked to /contacts.
+      { path: "contacts", element: <Navigate to="/contact" replace /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>

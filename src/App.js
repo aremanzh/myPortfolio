@@ -1,65 +1,35 @@
-// import About from "./components/About_2";
-// import Contact from "./components/Contact";
-// import Home from "./components/Home";
-import Navbar from "./components/Navbar";
-// import Skills from "./components/Skills";
-// import Work from "./components/Work";
+import React, { useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import { initScroll } from "./lib/scroll";
+import { TransitionProvider } from "./components/Transition";
+import Preloader from "./components/Preloader";
+import Cursor from "./components/Cursor";
+import Nav from "./components/Nav";
 import Footer from "./components/Footer";
-import AnimatedCursor from "react-animated-cursor";
-// import Showcase from "./components/Showcase";
-import { Outlet } from "react-router-dom";
 
-function App() {
+/**
+ * Page shell: everything that persists across routes. `children` lets the
+ * router's error boundary reuse the same chrome around the 404 page.
+ */
+export default function App({ children }) {
+  const { pathname } = useLocation();
+
+  useEffect(() => initScroll(), []);
+
   return (
-    <>
-      {/* <AnimatedCursor
-        color="177, 173, 208"
-        innerSize={8}
-        outerSize={35}
-        innerScale={1}
-        outerScale={1.2}
-        outerAlpha={0}
-        outerStyle={{
-          border: "3px solid #B1ADD0",
-        }}
-      /> */}
-      <AnimatedCursor
-        color="240, 240, 240"
-        innerSize={0}
-        outerSize={50}
-        innerScale={1.3}
-        outerScale={1.7}
-        outerAlpha={0.3}
-        showSystemCursor
-        innerStyle={{ color: "white" }}
-        outerStyle={{ mixBlendMode: "exclusion", color: "white" }}
-        trailingSpeed={3}
-        clickables={[
-          "a",
-          'input[type="text"]',
-          'input[type="email"]',
-          'input[type="number"]',
-          'input[type="submit"]',
-          'input[type="image"]',
-          "label[for]",
-          "select",
-          "textarea",
-          "button",
-          ".link",
-        ]}
-      />
-      <Navbar />
-      <Outlet />
-      <Footer />
-      {/* <Home />
-      <Showcase />
-      <About />
-      <Skills />
-      <Work />
-      <Contact />
-      <Footer /> */}
-    </>
+    <TransitionProvider>
+      <a href="#main" className="skip-link t-mono">
+        Skip to content
+      </a>
+      <Preloader />
+      <Cursor />
+      <Nav />
+      {/* tabIndex lets the skip link move focus here, not just the scroll. */}
+      <main id="main" tabIndex={-1} className="outline-none">
+        {children || <Outlet />}
+      </main>
+      {/* The contact page already is the call to action. */}
+      <Footer cta={pathname !== "/contact"} />
+    </TransitionProvider>
   );
 }
-
-export default App;
