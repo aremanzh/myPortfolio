@@ -15,6 +15,13 @@ npm start        # dev server on :3000
 npm run build    # production bundle in ./build
 ```
 
+### Preview build
+
+`PUBLIC_URL=. REACT_APP_PREVIEW=1 npm run build` makes a copy that runs from
+any folder or inside a sandboxed frame: asset paths are relative, routing is
+in memory (mirrored to a plain `#works` / `#work-<slug>` hash) and the contact
+form never sends. Use it to review the site without deploying it.
+
 ## Edit the content
 
 Content is managed through a CMS at **`/admin`**. It is [Sveltia CMS](https://sveltiacms.app),

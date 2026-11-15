@@ -85,6 +85,8 @@
   }
 
   body {
+    /* Explicit, so an embedding page's background never shows through. */
+    background: var(--ink);
     min-height: 100svh;
     overflow-x: clip;
     font-size: 1rem;
@@ -512,7 +514,8 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.35rem var(--gutter);
+  /* Clears the notch / status bar when the page runs edge to edge. */
+  padding: calc(1.35rem + env(safe-area-inset-top, 0px)) var(--gutter) 1.35rem;
   color: #fff;
   mix-blend-mode: difference;
   pointer-events: none;

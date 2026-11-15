@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useDocumentTitle, useIntro, useLocalTime } from "../lib/hooks";
 import { site } from "../data/site";
+import { preview } from "../lib/env";
 import { ArrowUpRight } from "../components/Icons";
 
 const IDLE = "idle";
@@ -24,6 +25,12 @@ function ContactForm() {
     }
     data.delete("website");
 
+    // A preview build has nowhere to send this, and must not pretend it did.
+    if (preview) {
+      setStatus(SENT);
+      return;
+    }
+
     setStatus(SENDING);
     try {
       const response = await fetch(site.formEndpoint, {
@@ -46,7 +53,11 @@ function ContactForm() {
         <p className="t-lead">
           Message sent. <span className="serif accent">Thank you.</span>
         </p>
-        <p className="t-body mt-4">I’ll reply to the address you gave.</p>
+        <p className="t-body mt-4">
+          {preview
+            ? "Preview build: this is what a visitor sees after sending. Nothing was actually sent."
+            : "I’ll reply to the address you gave."}
+        </p>
         <button type="button" className="btn t-mono mt-8" onClick={() => setStatus(IDLE)}>
           Send another
         </button>
@@ -55,7 +66,12 @@ function ContactForm() {
   }
 
   return (
-    <form action={site.formEndpoint} method="POST" onSubmit={submit} className="grid gap-10">
+    <form
+      action={preview ? undefined : site.formEndpoint}
+      method="POST"
+      onSubmit={submit}
+      className="grid gap-10"
+    >
       <div className="grid gap-10 sm:grid-cols-2">
         <div className="field">
           <label htmlFor="name" className="t-mono">

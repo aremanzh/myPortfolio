@@ -1,6 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  createMemoryRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 
 import "@fontsource-variable/bricolage-grotesque/standard.css";
 import "@fontsource/instrument-serif/latin-400-italic.css";
@@ -14,6 +19,7 @@ import Works from "./pages/Works";
 import WorkDetail from "./pages/WorkDetail";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import { preview } from "./lib/env";
 
 function AdminRedirect() {
   React.useEffect(() => {
@@ -22,7 +28,7 @@ function AdminRedirect() {
   return null;
 }
 
-const router = createBrowserRouter([
+const routes = [
   {
     path: "/",
     element: <App />,
@@ -44,7 +50,40 @@ const router = createBrowserRouter([
       { path: "*", element: <NotFound /> },
     ],
   },
-]);
+];
+
+/*
+ * A preview build may run inside a frame that has no address bar of its own
+ * and only passes a plain "#name" to the page. So it routes in memory and
+ * mirrors the current page into a simple hash (#works, #work-ringmaster),
+ * which keeps a refresh or a shared link on the same page.
+ */
+const hashToPath = () => {
+  const name = window.location.hash.slice(1);
+  if (name === "works" || name === "contact") return `/${name}`;
+  if (name.startsWith("work-")) return `/works/${name.slice(5)}`;
+  return "/";
+};
+const pathToHash = (pathname) => {
+  if (pathname === "/works" || pathname === "/contact") return pathname.slice(1);
+  if (pathname.startsWith("/works/")) return `work-${pathname.slice(7)}`;
+  return "home";
+};
+
+function createPreviewRouter() {
+  const memory = createMemoryRouter(routes, { initialEntries: [hashToPath()] });
+  memory.subscribe((state) => {
+    const name = pathToHash(state.location.pathname);
+    if (window.location.hash.slice(1) !== name) window.location.hash = name;
+  });
+  window.addEventListener("hashchange", () => {
+    const path = hashToPath();
+    if (path !== memory.state.location.pathname) memory.navigate(path);
+  });
+  return memory;
+}
+
+const router = preview ? createPreviewRouter() : createBrowserRouter(routes);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
