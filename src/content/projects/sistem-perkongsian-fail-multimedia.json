@@ -1,0 +1,39 @@
+{
+  "title": "Sistem Perkongsian Fail Multimedia",
+  "published": true,
+  "featured": true,
+  "order": 30,
+  "type": "Web and mobile",
+  "year": "",
+  "role": "",
+  "summary": "Organises media by multiple criteria, with role-based access and an approval workflow.",
+  "body": "A multimedia file sharing system that organises media by multiple criteria and controls who can see and publish it.\n\nBuilt on Laravel, with a REST API and a React Native mobile client made with Expo.",
+  "highlights": [
+    {
+      "title": "Role-based access",
+      "text": "What a person can view, upload or manage depends on their role."
+    },
+    {
+      "title": "Approval workflow",
+      "text": "Media goes through approval before it is shared."
+    },
+    {
+      "title": "Mobile client",
+      "text": "A React Native app built with Expo talks to the system over a REST API."
+    }
+  ],
+  "stack": [
+    "Laravel",
+    "PHP",
+    "MySQL",
+    "Apache",
+    "React Native (Expo)",
+    "REST API"
+  ],
+  "links": [],
+  "cover": "",
+  "coverAlt": "",
+  "coverCaption": "",
+  "mark": "SPFM",
+  "tone": "paper"
+}

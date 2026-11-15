@@ -1,17 +1,15 @@
 import React, { useRef } from "react";
 import { gsap, useGSAP } from "../../lib/gsap";
 import { reducedMotion } from "../../lib/env";
-import { about, site } from "../../data/site";
+import { about } from "../../data/site";
 import { FadeUp, ScrubWords } from "../Reveal";
-import portraitSm from "../../assets/portrait-640.webp";
-import portraitLg from "../../assets/portrait-1100.webp";
 
 export default function About() {
   const root = useRef(null);
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (reducedMotion || !about.portrait) return;
 
       // Portrait: unmask on entry, then drift inside its frame while scrolling.
       gsap.from(".about__frame", {
@@ -38,21 +36,23 @@ export default function About() {
       <div className="wrap grid gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-4">
           <h2 className="t-mono eyebrow">About</h2>
-          <div className="about__frame frame mt-8 aspect-[4/5] max-w-md" style={{ clipPath: "inset(0)" }}>
-            <div className="frame__in">
-              <img
-                className="about__img h-full w-full object-cover"
-                src={portraitSm}
-                srcSet={`${portraitSm} 640w, ${portraitLg} 1100w`}
-                sizes="(min-width: 1024px) 30vw, 90vw"
-                width="1100"
-                height="1650"
-                alt={`Portrait of ${site.name}, lit in red and blue against a dark background`}
-                loading="lazy"
-                decoding="async"
-              />
+          {about.portrait && (
+            <div className="about__frame frame mt-8 aspect-[4/5] max-w-md" style={{ clipPath: "inset(0)" }}>
+              <div className="frame__in">
+                <img
+                  className="about__img h-full w-full object-cover"
+                  src={about.portrait.sm}
+                  srcSet={about.portrait.srcSet}
+                  sizes="(min-width: 1024px) 30vw, 90vw"
+                  width={about.portrait.width}
+                  height={about.portrait.height}
+                  alt={about.portrait.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="lg:col-span-8 lg:pt-14">

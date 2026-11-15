@@ -15,6 +15,13 @@ import WorkDetail from "./pages/WorkDetail";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
+function AdminRedirect() {
+  React.useEffect(() => {
+    window.location.replace("/admin/index.html");
+  }, []);
+  return null;
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -31,6 +38,9 @@ const router = createBrowserRouter([
       { path: "contact", element: <Contact /> },
       // The old site linked to /contacts.
       { path: "contacts", element: <Navigate to="/contact" replace /> },
+      // The CMS is a static page outside the app. If the host's SPA fallback
+      // hands /admin to the router, send the browser to the real file.
+      { path: "admin", element: <AdminRedirect /> },
       { path: "*", element: <NotFound /> },
     ],
   },

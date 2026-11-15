@@ -1,0 +1,50 @@
+{
+  "stages": [
+    {
+      "name": "Build",
+      "summary": "Laravel backends with explicit, readable architecture, and a Vue or React front end on top. Code the next developer can pick up without a tour.",
+      "tools": [
+        "Laravel",
+        "PHP",
+        "Vue",
+        "React",
+        "Tailwind CSS",
+        "MySQL",
+        "MongoDB"
+      ]
+    },
+    {
+      "name": "Ship",
+      "summary": "Every change is built into an image and pushed through a pipeline, so a release is a repeatable step and not an event.",
+      "tools": [
+        "Docker",
+        "GitLab CI",
+        "Jenkins"
+      ]
+    },
+    {
+      "name": "Run",
+      "summary": "Kubernetes workloads, reverse proxies and Linux hosts, operated with uptime and observability ahead of feature speed.",
+      "tools": [
+        "Kubernetes",
+        "Nginx",
+        "Apache",
+        "Linux"
+      ]
+    }
+  ],
+  "marquee": [
+    "Laravel",
+    "Kubernetes",
+    "Vue",
+    "Docker",
+    "React",
+    "GitLab CI",
+    "PHP",
+    "Jenkins",
+    "Tailwind CSS",
+    "Nginx",
+    "MySQL",
+    "Linux"
+  ]
+}

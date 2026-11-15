@@ -1,0 +1,30 @@
+{
+  "title": "DailyJournal",
+  "published": true,
+  "featured": false,
+  "order": 50,
+  "type": "Mobile app",
+  "year": "",
+  "role": "",
+  "summary": "A free daily journal app for Android, published on Google Play.",
+  "body": "A daily journal app for capturing thoughts and feelings, free on Google Play.",
+  "highlights": [],
+  "stack": [
+    "Expo",
+    "Express",
+    "MongoDB",
+    "Cloudinary",
+    "Nginx"
+  ],
+  "links": [
+    {
+      "label": "Google Play",
+      "href": "https://play.google.com/store/apps/details?id=com.mumtaaz.xyz.daily.journal"
+    }
+  ],
+  "cover": "",
+  "coverAlt": "",
+  "coverCaption": "",
+  "mark": "DAILY",
+  "tone": "signal"
+}

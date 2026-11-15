@@ -22,7 +22,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "content": "node scripts/content.mjs",
+    "content:check": "node scripts/content.mjs --check",
+    "prestart": "node scripts/content.mjs",
     "start": "react-scripts start",
+    "prebuild": "node scripts/content.mjs",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -44,5 +48,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
   }
 }

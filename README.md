@@ -17,21 +17,63 @@ npm run build    # production bundle in ./build
 
 ## Edit the content
 
-All copy lives in two files. Components only render it.
+Content is managed through a CMS at **`/admin`**. It is [Sveltia CMS](https://sveltiacms.app),
+a Git-based CMS that runs in the browser: there is no server and no database.
+Saving an entry commits a JSON file to this repository, and the normal deploy
+pipeline rebuilds the site.
 
-| File | What it holds |
-| --- | --- |
-| `src/data/site.js` | Name, role, location, email, socials, availability badge, form endpoint, about text, pipeline stages, marquee words |
-| `src/data/projects.js` | Projects, in display order. The first four show on the home page |
+| In the CMS | File | What it holds |
+| --- | --- | --- |
+| Projects | `src/content/projects/*.json` | One file per project: text, highlights, stack, links, cover image, order, featured and published switches |
+| Site → Settings | `src/content/site.json` | Name, role, location, email, socials, availability badge, form endpoint |
+| Site → About | `src/content/about.json` | Statement, portrait, facts |
+| Site → What I do | `src/content/capabilities.json` | The three stage cards and the marquee words |
+| Media | `public/uploads/` | Uploaded images |
 
-Adding a project: append an object to `projects`. With `cover: null` the site
-sets the project's `mark` in pods as its cover; with a screenshot, add 800px
-and 1600px wide WebP files (16:9) to `src/assets/work/` and reference them.
-`highlights`, `year` and `role` are optional and appear on the case page when
-set. Add the new URL to `public/sitemap.xml`.
+Design, layout, headlines and motion are not in the CMS on purpose. They stay
+in code.
 
-Project copy is taken from public sources only (the GitHub profile README and
-the public repositories' READMEs). Keep it that way for client work.
+### Signing in
+
+- **On the live site:** open `/admin`, choose "Sign In Using Access Token" and
+  paste a GitHub fine-grained token limited to this repository with
+  *Contents: Read and write*. The token is kept in that browser only. Anyone
+  can open `/admin`; only a token with write access to the repo can change
+  anything.
+- **Locally:** run `npm start`, open `http://localhost:3000/admin/index.html`
+  in a Chromium browser and choose "Work with Local Repository". Edits are
+  written to your working tree and you commit them yourself.
+
+The CMS commits to the branch named in `public/admin/config.yml` (`main`).
+
+### What happens to an edit
+
+`scripts/content.mjs` runs before every `npm start` and `npm run build`:
+
+1. **Validates** the content. A missing title, a cover that points to no file,
+   an image without alt text, an invalid link or a bad file name stops the
+   build with a list of what to fix. A bad edit fails CI; it does not reach the
+   live site. `npm run content:check` runs this step alone.
+2. **Resizes** every image in `public/uploads` to 800px and 1600px WebP, so
+   upload the largest clean original you have.
+3. **Writes** `public/sitemap.xml` from the published projects.
+
+The resized images, the image manifest and the sitemap are generated, so they
+are in `.gitignore`. The build host needs to run `npm ci && npm run build`
+(not a bare `react-scripts build`).
+
+### Notes on projects
+
+- The file name is the URL: `ringmaster.json` is `/works/ringmaster`. Renaming
+  a title never changes the URL.
+- With no cover image, the project's **mark** (up to 6 characters) is drawn in
+  pods as its cover.
+- **Order** sorts the lists, lowest first. The home page shows the first four
+  projects marked **Featured**.
+- **Published** off removes a project from the site and the sitemap without
+  deleting it.
+- Project copy is taken from public sources only (the GitHub profile README
+  and the public repositories' READMEs). Keep it that way for client work.
 
 ## Layout
 
@@ -39,7 +81,8 @@ the public repositories' READMEs). Keep it that way for client work.
 src/
   index.js              routes
   App.js                page shell: preloader, cursor, nav, footer, transitions
-  data/                 content (see above)
+  content/              JSON the CMS edits (see above)
+  data/                 loaders that hand the content to components
   lib/
     gsap.js             plugin registration, scroll-restoration policy
     podSim.js           the pod simulation and its layouts (cluster, lettering)
@@ -57,6 +100,9 @@ src/
     home/               hero, about, pipeline, selected work
   pages/                Home, Works, WorkDetail, Contact, NotFound
   styles/index.css      tokens, type scale, component classes
+scripts/content.mjs     validate content, resize images, write the sitemap
+public/admin/           the CMS page and its config.yml
+public/uploads/         images uploaded through the CMS
 ```
 
 ## Behaviour worth knowing
@@ -89,7 +135,8 @@ cached forever; `index.html` should not be.
 
 ```nginx
 location / {
-    try_files $uri /index.html;
+    # $uri/index.html lets /admin/ resolve to the CMS page.
+    try_files $uri $uri/index.html /index.html;
     add_header Cache-Control "no-cache";
 }
 location /static/ {
@@ -97,5 +144,6 @@ location /static/ {
 }
 ```
 
-Canonical URL, Open Graph tags, `robots.txt` and `sitemap.xml` all assume
-`https://mumtaaz.xyz`. Change them together if the domain changes.
+The canonical URL and Open Graph tags in `public/index.html`, `robots.txt` and
+the CMS config assume `https://mumtaaz.xyz`; the sitemap uses the Site URL
+from the CMS. Change them together if the domain changes.

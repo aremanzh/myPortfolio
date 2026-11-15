@@ -1,0 +1,29 @@
+{
+  "title": "ApplyTracker",
+  "published": true,
+  "featured": true,
+  "order": 40,
+  "type": "Web app",
+  "year": "",
+  "role": "",
+  "summary": "An AI-powered job application journal.",
+  "body": "An AI-powered job application journal that keeps applications, interviews and follow-ups in one dashboard.",
+  "highlights": [],
+  "stack": [
+    "Vue",
+    "Laravel",
+    "MySQL",
+    "Gemini API"
+  ],
+  "links": [
+    {
+      "label": "Live site",
+      "href": "https://applytracker.mumtaaz.xyz"
+    }
+  ],
+  "cover": "",
+  "coverAlt": "",
+  "coverCaption": "",
+  "mark": "APPLY",
+  "tone": "ink"
+}

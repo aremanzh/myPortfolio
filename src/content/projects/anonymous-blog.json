@@ -1,0 +1,39 @@
+{
+  "title": "Anonymous Blog",
+  "published": true,
+  "featured": false,
+  "order": 60,
+  "type": "Web app",
+  "year": "",
+  "role": "",
+  "summary": "A blog where anyone can write without revealing who they are.",
+  "body": "A blog where people write anything meaningful, or just for fun, without revealing their identity.",
+  "highlights": [
+    {
+      "title": "Two ways to sign in",
+      "text": "Local accounts or Google sign-in, both through Passport."
+    },
+    {
+      "title": "Posts with images",
+      "text": "Writers can attach an image to a post."
+    }
+  ],
+  "stack": [
+    "Node.js",
+    "Express",
+    "EJS",
+    "MongoDB",
+    "Passport"
+  ],
+  "links": [
+    {
+      "label": "Source on GitHub",
+      "href": "https://github.com/aremanzh/anonymous-blog"
+    }
+  ],
+  "cover": "/uploads/anonymous-blog.jpg",
+  "coverAlt": "Anonymous Blog landing page with a Write Now button",
+  "coverCaption": "",
+  "mark": "ANON",
+  "tone": "ink"
+}

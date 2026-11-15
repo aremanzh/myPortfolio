@@ -1,0 +1,35 @@
+{
+  "title": "Sistem Pengurusan Program",
+  "published": true,
+  "featured": true,
+  "order": 20,
+  "type": "Web application",
+  "year": "",
+  "role": "",
+  "summary": "Manages participants across multiple programmes, with self-registration.",
+  "body": "A programme management system: one web application for managing participants across multiple programmes.\n\nParticipants can register themselves.",
+  "highlights": [
+    {
+      "title": "Many programmes, one system",
+      "text": "Participants are managed per programme from a single application."
+    },
+    {
+      "title": "Self-registration",
+      "text": "People sign themselves up for a programme and no one has to enter them by hand."
+    }
+  ],
+  "stack": [
+    "Laravel",
+    "PHP",
+    "MySQL",
+    "Tailwind CSS",
+    "Nginx",
+    "Linux"
+  ],
+  "links": [],
+  "cover": "",
+  "coverAlt": "",
+  "coverCaption": "",
+  "mark": "SPP",
+  "tone": "signal"
+}

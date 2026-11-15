@@ -17,11 +17,11 @@ export default function ProjectCover({ project, sizes = "100vw", eager = false, 
       <div className="cover">
         <img
           src={cover.sm}
-          srcSet={`${cover.sm} 800w, ${cover.lg} 1600w`}
+          srcSet={cover.srcSet}
           sizes={sizes}
           alt={cover.alt}
-          width="1600"
-          height="900"
+          width={cover.width}
+          height={cover.height}
           loading={eager ? "eager" : "lazy"}
           decoding="async"
         />
