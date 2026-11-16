@@ -170,25 +170,37 @@ submission/             award submission kit: text, screenshots, video (not depl
 
 ## Deploying
 
-Serve `build/client` as static files. Each prerendered page is
-`<path>/index.html`; everything else falls back to `__spa-fallback.html`.
-Hashed files under `/assets/` can be cached forever; HTML should not be.
+Production is a Docker image: Node builds and prerenders the site, and
+unprivileged nginx serves `build/client`. GitHub Actions builds the image,
+pushes it to GHCR and deploys it over SSM to the shared EC2 host behind its
+nginx, with a health check and automatic rollback. Setup, prerequisites and
+rollback are in [`deploy/README.md`](deploy/README.md).
 
-```nginx
-root /srv/portfolio/build/client;
-
-location / {
-    # $uri/index.html serves prerendered pages and /admin/ (the CMS).
-    try_files $uri $uri/index.html /__spa-fallback.html;
-    add_header Cache-Control "no-cache";
-}
-location /assets/ {
-    add_header Cache-Control "public, max-age=31536000, immutable";
-}
+```bash
+docker compose up --build                  # the production image on :8080
+docker build -t portfolio:test . && scripts/smoke-image.sh portfolio:test
 ```
 
-Unknown URLs still answer 200 with the app's 404 page, as any SPA fallback
-does. The fallback page is `noindex`, so they are not indexed.
+What the container's nginx (`docker/nginx.conf`) does:
+
+- Prerendered pages are served from `<path>/index.html`.
+- Any other path gets a **real 404 status**. The body is
+  `__spa-fallback.html`, which boots the app and shows its 404 page.
+- `/contacts` returns 301 to `/contact`, and `/admin` returns 301 to `/admin/`
+  (the CMS resolves `config.yml` relative to its own URL).
+- Hashed files (`/assets/`, `/uploads/_r/`) are cached for a year as
+  immutable. HTML is `no-cache`.
+- Text assets are gzip-compressed at build time and served with `gzip_static`.
+- Security headers are added: nosniff, referrer policy, frame options and a
+  permissions policy. HSTS belongs to Cloudflare and the host nginx.
+
+To host it without Docker, serve `build/client` with the same rules. The
+essential one is:
+
+```nginx
+try_files $uri $uri/index.html =404;
+error_page 404 /__spa-fallback.html;
+```
 
 Canonical URLs, Open Graph tags, JSON-LD and the sitemap use the Site URL
 from the CMS (`src/content/site.json`). `robots.txt` and the CMS config

@@ -1,0 +1,48 @@
+# Production: mumtaaz.xyz on the EC2 host SHARED with confession, journal,
+# store, applytracker and the rest.
+#
+# One container. Everything else is already on the host:
+#   host nginx — holds 80/443 for every *.mumtaaz.xyz site, TLS with the
+#                Cloudflare origin certificate. Vhost: deploy/nginx-portfolio.conf
+#   no database, no secrets — the site is static; content lives in the repo.
+#
+# The image is built by GitHub Actions and pushed to GHCR
+# (.github/workflows/deploy.yml); the host only pulls. Every deploy copies
+# this file to the host, so do NOT edit the copy there — it gets overwritten.
+#
+# Manual deploy (if CI is unavailable), from ~/apps/portfolio on the host:
+#   sudo docker compose -f compose.prod.yml --env-file .env up -d
+
+name: portfolio
+
+services:
+  web:
+    image: ghcr.io/aremanzh/myportfolio:${IMAGE_TAG:?set IMAGE_TAG in .env}
+    restart: unless-stopped
+    ports:
+      # 127.0.0.1 ONLY: just the host nginx reaches it. Without the prefix,
+      # Docker opens the port to the internet and bypasses the security group
+      # through iptables.
+      - '127.0.0.1:${HOST_PORT:-32791}:8080'
+    # Nothing in the container needs to write except nginx's pid and temp
+    # files, which go to /tmp.
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # Shared, tight host. nginx serving static files idles around 10 MB.
+    mem_limit: 64m
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+    healthcheck:
+      test: ['CMD', 'wget', '-q', '--spider', 'http://127.0.0.1:8080/healthz']
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
