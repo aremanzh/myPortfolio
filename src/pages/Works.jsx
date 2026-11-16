@@ -9,6 +9,45 @@ import ProjectCover from "../components/ProjectCover";
 
 const pad = (n) => String(n).padStart(2, "0");
 
+const leadSpans = projects.length % 2 === 1;
+
+/**
+ * A project card. The lead card sits beside its text instead of above it, so
+ * a full-width row stays about as tall as a normal one.
+ */
+function Card({ project, index, lead }) {
+  const meta = [project.type, project.year].filter(Boolean).join(" · ");
+
+  return (
+    <TLink
+      to={`/works/${project.slug}`}
+      name={project.title}
+      className={`card group block ${lead ? "md:grid md:grid-cols-12 md:items-end md:gap-8" : ""}`}
+      data-cursor="Open"
+    >
+      <div className={`frame aspect-[16/10] ${lead ? "md:col-span-8" : ""}`}>
+        <ProjectCover
+          project={project}
+          sizes={lead ? "(min-width: 768px) 62vw, 92vw" : "(min-width: 768px) 46vw, 92vw"}
+        />
+      </div>
+      <div className={`mt-5 flex items-start justify-between gap-6 ${lead ? "md:col-span-4 md:mt-0 md:pb-1" : ""}`}>
+        <div>
+          {/* Lead styling only applies where the card actually spans two columns. */}
+          {lead && <p className="t-mono mb-4 hidden text-[color:var(--muted)] md:block">{meta}</p>}
+          <h2
+            className={`t-title text-[clamp(1.6rem,3vw,3rem)] ${lead ? "md:text-[clamp(2rem,4.2vw,4.5rem)]" : ""}`}
+          >
+            {project.title}
+          </h2>
+          <p className="t-body mt-3 max-w-[38ch]">{project.summary}</p>
+        </div>
+        <span className="t-mono shrink-0 pt-2 text-[color:var(--muted)]">{pad(index + 1)}</span>
+      </div>
+    </TLink>
+  );
+}
+
 export default function Works() {
   const root = useRef(null);
   useDocumentTitle("Work");
@@ -55,30 +94,18 @@ export default function Works() {
       </header>
 
       <ul className="wrap grid gap-x-8 gap-y-16 pb-[clamp(5rem,10vw,10rem)] md:grid-cols-2 md:gap-y-24">
-        {projects.map((project, index) => (
-          // Odd cards drop down a step so the grid reads as a ladder.
-          <li key={project.slug} className={index % 2 === 1 ? "md:mt-32" : ""}>
-            <TLink
-              to={`/works/${project.slug}`}
-              name={project.title}
-              className="card group block"
-              data-cursor="Open"
-            >
-              <div className="frame aspect-[16/10]">
-                <ProjectCover project={project} sizes="(min-width: 768px) 46vw, 92vw" />
-              </div>
-              <div className="mt-5 flex items-start justify-between gap-6">
-                <div>
-                  <h2 className="t-title text-[clamp(1.6rem,3vw,3rem)]">{project.title}</h2>
-                  <p className="t-body mt-3 max-w-[38ch]">{project.summary}</p>
-                </div>
-                <span className="t-mono shrink-0 pt-2 text-[color:var(--muted)]">
-                  {pad(index + 1)}
-                </span>
-              </div>
-            </TLink>
-          </li>
-        ))}
+        {projects.map((project, index) => {
+          // With an odd count the first project spans both columns, so the
+          // rest always pair up and no card is left alone on the last row.
+          // Right-hand cards drop down a step so the grid reads as a ladder.
+          const isLead = leadSpans && index === 0;
+          const column = leadSpans ? (index - 1) % 2 : index % 2;
+          return (
+            <li key={project.slug} className={isLead ? "md:col-span-2" : column === 1 ? "md:mt-32" : ""}>
+              <Card project={project} index={index} lead={isLead} />
+            </li>
+          );
+        })}
       </ul>
 
       {archive.length > 0 && (
