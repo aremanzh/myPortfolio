@@ -957,6 +957,8 @@ body::after {
   overflow: hidden;
   pointer-events: none;
   opacity: 0;
+  /* Edge and lift, so a dark screenshot still separates from the dark page. */
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--paper) 22%, transparent), 0 1.5rem 4rem rgb(0 0 0 / 0.55);
 }
 .preview__slide {
   position: absolute;

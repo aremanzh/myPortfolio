@@ -113,6 +113,7 @@ src/
 scripts/content.mjs     validate content, resize images, write the sitemap
 public/admin/           the CMS page and its config.yml
 public/uploads/         images uploaded through the CMS
+submission/             award submission kit: text, screenshots, video (not deployed)
 ```
 
 ## Behaviour worth knowing
