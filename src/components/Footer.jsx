@@ -45,7 +45,8 @@ function CopyEmail() {
 function FooterBar() {
   return (
     <div className="t-mono grid gap-6 border-t border-[color:var(--line)] pt-6 md:grid-cols-[1fr_auto_1fr] md:items-baseline">
-      <p>
+      {/* The prerendered year is the build's; the browser may be in a newer one. */}
+      <p suppressHydrationWarning>
         © {new Date().getFullYear()} {site.name}
       </p>
 

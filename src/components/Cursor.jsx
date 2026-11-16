@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "../lib/gsap";
-import { finePointer, reducedMotion } from "../lib/env";
+import { finePointer, reducedMotion, useHydrated } from "../lib/env";
 
 const INTERACTIVE = "a, button, [role='button'], input, textarea, label";
 
@@ -12,9 +12,11 @@ const INTERACTIVE = "a, button, [role='button'], input, textarea, label";
 export default function Cursor() {
   const root = useRef(null);
   const label = useRef(null);
+  // Rendered after hydration only: the server cannot know about the pointer.
+  const on = useHydrated() && finePointer && !reducedMotion;
 
   useEffect(() => {
-    if (!finePointer || reducedMotion) return undefined;
+    if (!on) return undefined;
 
     const el = root.current;
     const moveX = gsap.quickTo(el, "x", { duration: 0.35, ease: "power3.out" });
@@ -53,9 +55,9 @@ export default function Cursor() {
       window.removeEventListener("mouseup", onUp);
       document.documentElement.removeEventListener("mouseleave", onLeave);
     };
-  }, []);
+  }, [on]);
 
-  if (!finePointer || reducedMotion) return null;
+  if (!on) return null;
 
   return (
     <div ref={root} className="cursor" aria-hidden="true">

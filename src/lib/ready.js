@@ -23,5 +23,6 @@ const subscribe = (fn) => {
 const getSnapshot = () => ready;
 
 export function useReady() {
-  return useSyncExternalStore(subscribe, getSnapshot);
+  // Never ready on the server: intros only ever play in the browser.
+  return useSyncExternalStore(subscribe, getSnapshot, () => false);
 }

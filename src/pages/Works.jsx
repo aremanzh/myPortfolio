@@ -6,6 +6,8 @@ import { archive, projects } from "../data/projects";
 import { ArrowUpRight } from "../components/Icons";
 import { TLink } from "../components/Transition";
 import ProjectCover from "../components/ProjectCover";
+import { pageMeta } from "../lib/meta";
+import { site } from "../data/site";
 
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -47,6 +49,13 @@ function Card({ project, index, lead }) {
     </TLink>
   );
 }
+
+export const meta = () =>
+  pageMeta({
+    title: "Work",
+    description: `Case studies by ${site.name}: ${projects.map((p) => p.title).join(", ")}. Laravel products, the pipelines that ship them and the clusters they run on.`,
+    path: "/works",
+  });
 
 export default function Works() {
   const root = useRef(null);

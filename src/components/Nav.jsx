@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { gsap, useGSAP } from "../lib/gsap";
-import { reducedMotion } from "../lib/env";
+import { normalizePath, reducedMotion, useHydrated } from "../lib/env";
 import { lockScroll } from "../lib/scroll";
 import { site } from "../data/site";
 import { TLink } from "./Transition";
 import { OPEN_PALETTE } from "./CommandPalette";
 
-const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
+const isMac = () => /Mac|iPhone|iPad/.test(navigator.platform);
 
 const LINKS = [
   { to: "/works", label: "Work" },
@@ -17,10 +17,11 @@ const LINKS = [
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const hydrated = useHydrated();
   const [hidden, setHidden] = useState(false);
   const menu = useRef(null);
   const toggle = useRef(null);
-  const { pathname } = useLocation();
+  const pathname = normalizePath(useLocation().pathname);
 
   // Any navigation closes the menu and brings the bar back.
   useEffect(() => {
@@ -114,7 +115,7 @@ export default function Nav() {
                 aria-label="Open command palette"
                 onClick={() => window.dispatchEvent(new Event(OPEN_PALETTE))}
               >
-                {isMac ? "⌘K" : "Ctrl K"}
+                {hydrated && isMac() ? "⌘K" : "Ctrl K"}
               </button>
             </li>
           </ul>

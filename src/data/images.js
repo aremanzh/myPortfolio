@@ -7,9 +7,9 @@ import manifest from "../content/_images.json";
  * Returns null when there is no image. If the path is not in the manifest
  * (for example an external URL), the original is used at every size.
  */
-// Empty on a normal build. A build made with PUBLIC_URL=. gets relative
-// paths, so the site also works when it is not served from a domain root.
-const base = process.env.PUBLIC_URL || "";
+// "" on a normal build. The preview build uses base "./", which makes this
+// "." and every path relative, so it also works away from a domain root.
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export function image(path, alt = "") {
   if (!path) return null;

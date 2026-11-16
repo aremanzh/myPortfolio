@@ -3,7 +3,7 @@ module.exports = {
   // hover: utilities only apply on devices that can hover, so a tap on a
   // phone does not leave an element stuck in its hover state.
   future: { hoverOnlyWhenSupported: true },
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       colors: {

@@ -6,6 +6,9 @@ import About from "../components/home/About";
 import Pipeline from "../components/home/Pipeline";
 import SelectedWork from "../components/home/SelectedWork";
 import VelocityMarquee from "../components/VelocityMarquee";
+import { pageMeta } from "../lib/meta";
+
+export const meta = () => pageMeta({ title: "" });
 
 export default function Home() {
   useDocumentTitle("");

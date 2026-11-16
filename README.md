@@ -1,7 +1,7 @@
 # Mumtaz Che Ismail · Portfolio
 
-Personal site. React 18, React Router, GSAP (ScrollTrigger, SplitText), Lenis
-smooth scroll and Tailwind, built with Create React App.
+Personal site. React 19, React Router 8 (framework mode, prerendered to static
+HTML), Vite, GSAP (ScrollTrigger, SplitText), Lenis smooth scroll and Tailwind.
 
 The idea behind the design: **build it, ship it, keep it up.** The hero is a
 small cluster simulation. Point at it and the pods die; the controller brings
@@ -9,18 +9,32 @@ them back.
 
 ## Run it
 
+Needs Node 20.19 or newer.
+
 ```bash
 npm install
-npm start        # dev server on :3000
-npm run build    # production bundle in ./build
+npm run dev      # dev server on :5173
+npm run build    # static site in ./build/client
 ```
+
+`npm run build` prerenders `/`, `/works`, `/contact` and every published case
+study to its own HTML file, with that page's title, description, canonical URL
+and Open Graph tags (a case study uses its cover image as the link preview).
+Any other path gets `build/client/__spa-fallback.html`, which boots the app
+and routes on the client: redirects, and the 404 page. There is no server at
+runtime; `build/client` is the whole site.
+
+Routes are in `src/routes.js`, the HTML document in `src/root.jsx` and the
+build settings in `react-router.config.js`. Adding a case study needs no
+route change: the prerender list is read from `src/content/projects`.
 
 ### Preview build
 
-`PUBLIC_URL=. REACT_APP_PREVIEW=1 npm run build` makes a copy that runs from
-any folder or inside a sandboxed frame: asset paths are relative, routing is
-in memory (mirrored to a plain `#works` / `#work-<slug>` hash) and the contact
-form never sends. Use it to review the site without deploying it.
+`npm run build:preview` makes a copy in `./build-preview` that runs from any
+folder or inside a sandboxed frame: one script, relative asset paths, routing
+in memory (mirrored to a plain `#works` / `#work-<slug>` hash) and a contact
+form that never sends. Use it to review the site without deploying it. Its
+entry is `src/preview.jsx`.
 
 ## Edit the content
 
@@ -47,7 +61,7 @@ in code.
   *Contents: Read and write*. The token is kept in that browser only. Anyone
   can open `/admin`; only a token with write access to the repo can change
   anything.
-- **Locally:** run `npm start`, open `http://localhost:3000/admin/index.html`
+- **Locally:** run `npm run dev`, open `http://localhost:5173/admin/index.html`
   in a Chromium browser and choose "Work with Local Repository". Edits are
   written to your working tree and you commit them yourself.
 
@@ -55,7 +69,7 @@ The CMS commits to the branch named in `public/admin/config.yml` (`main`).
 
 ### What happens to an edit
 
-`scripts/content.mjs` runs before every `npm start` and `npm run build`:
+`scripts/content.mjs` runs before every `npm run dev` and `npm run build`:
 
 1. **Validates** the content. A missing title, a cover that points to no file,
    an image without alt text, an invalid link or a bad file name stops the
@@ -67,7 +81,7 @@ The CMS commits to the branch named in `public/admin/config.yml` (`main`).
 
 The resized images, the image manifest and the sitemap are generated, so they
 are in `.gitignore`. The build host needs to run `npm ci && npm run build`
-(not a bare `react-scripts build`).
+(not a bare `react-router build`).
 
 ### Notes on projects
 
@@ -140,27 +154,43 @@ submission/             award submission kit: text, screenshots, video (not depl
   so assigning the property directly gets undone.
 - **CSS order.** `@tailwind utilities` sits at the bottom of
   `styles/index.css` so a utility always beats a component class on the same
-  element. Keep new component classes above it.
+  element. Keep new component classes above it, and don't put a display
+  utility (`block`, `hidden`) on an element whose display a component class
+  switches in a media query: the utility wins.
+- **Prerendering and hydration.** Pages are rendered to HTML at build time,
+  where there is no `window`, and React then hydrates that HTML in the
+  browser. Render output must not depend on the device: `reducedMotion`,
+  `finePointer`, the platform, the clock. Effects can read those freely; for
+  markup, check `useHydrated()` from `lib/env.js` first (false on the server
+  and during hydration), or let CSS decide, as the work list does with a
+  pointer media query. Compare paths with `normalizePath()`: a prerendered
+  page is a folder, so `/contact/` and `/contact` are the same page.
 - **Contact form** posts to the Getform endpoint in `site.js`. It submits with
   `fetch` and falls back to a plain form POST without JavaScript.
 
 ## Deploying
 
-The build is a static SPA, so the server has to return `index.html` for
-unknown paths (`/works/...`, `/contact`). Hashed files under `/static/` can be
-cached forever; `index.html` should not be.
+Serve `build/client` as static files. Each prerendered page is
+`<path>/index.html`; everything else falls back to `__spa-fallback.html`.
+Hashed files under `/assets/` can be cached forever; HTML should not be.
 
 ```nginx
+root /srv/portfolio/build/client;
+
 location / {
-    # $uri/index.html lets /admin/ resolve to the CMS page.
-    try_files $uri $uri/index.html /index.html;
+    # $uri/index.html serves prerendered pages and /admin/ (the CMS).
+    try_files $uri $uri/index.html /__spa-fallback.html;
     add_header Cache-Control "no-cache";
 }
-location /static/ {
+location /assets/ {
     add_header Cache-Control "public, max-age=31536000, immutable";
 }
 ```
 
-The canonical URL and Open Graph tags in `public/index.html`, `robots.txt` and
-the CMS config assume `https://mumtaaz.xyz`; the sitemap uses the Site URL
-from the CMS. Change them together if the domain changes.
+Unknown URLs still answer 200 with the app's 404 page, as any SPA fallback
+does. The fallback page is `noindex`, so they are not indexed.
+
+Canonical URLs, Open Graph tags, JSON-LD and the sitemap use the Site URL
+from the CMS (`src/content/site.json`). `robots.txt` and the CMS config
+(`public/admin/config.yml`) hard-code `https://mumtaaz.xyz`. Change them
+together if the domain changes.

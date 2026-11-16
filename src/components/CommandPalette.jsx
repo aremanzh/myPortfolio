@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { lockScroll, scrollToTarget } from "../lib/scroll";
-import { reducedMotion } from "../lib/env";
+import { normalizePath, reducedMotion } from "../lib/env";
 import { site } from "../data/site";
 import { projects } from "../data/projects";
 import { usePageTransition } from "./Transition";
@@ -25,7 +25,7 @@ export default function CommandPalette() {
   const list = useRef(null);
   const returnFocus = useRef(null);
   const { go } = usePageTransition();
-  const { pathname } = useLocation();
+  const pathname = normalizePath(useLocation().pathname);
 
   const commands = useMemo(() => {
     const nav = [

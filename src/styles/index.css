@@ -908,6 +908,13 @@ body::after {
 .work-list > li:last-child .work-row {
   border-bottom: 1px solid var(--line);
 }
+.work-row__thumb {
+  display: block;
+}
+.work-row__text {
+  display: grid;
+  gap: 0.75rem;
+}
 .work-row__title {
   transition: transform 0.35s var(--ease-out);
 }
@@ -917,18 +924,38 @@ body::after {
   transition: transform 0.35s var(--ease-out);
 }
 @media (min-width: 1024px) {
+  /* Touch and reduced motion: the cover rides in the row. */
   .work-row {
-    grid-template-columns: 5rem minmax(0, 1fr) minmax(0, 18rem) auto;
+    grid-template-columns: 5rem 14rem minmax(0, 1fr) auto;
     align-items: center;
     gap: 2rem;
     padding-block: clamp(1.4rem, 2.3vw, 2.4rem);
   }
-  /* Large touch screens: no hover preview, so the cover rides in the row. */
-  .work-row--inline {
-    grid-template-columns: 5rem 14rem minmax(0, 1fr) auto;
+}
+
+/* The preview only exists where a mouse can drive it. */
+.preview {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .work-row__thumb {
+    display: none;
+  }
+  .preview {
+    display: block;
   }
 }
-@media (hover: hover) and (min-width: 1024px) {
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  .work-row {
+    grid-template-columns: 5rem minmax(0, 1fr) minmax(0, 18rem) auto;
+  }
+  /* Title and meta become their own grid columns. */
+  .work-row__text {
+    display: contents;
+  }
+  .work-row__meta {
+    flex-direction: column;
+  }
   .work-list:hover .work-row {
     opacity: 0.32;
   }

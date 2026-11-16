@@ -49,12 +49,17 @@ const clock = new Intl.DateTimeFormat("en-GB", {
   timeZone: site.timeZone,
 });
 
-/** Wall-clock time where Mumtaz is, ticking once a second. */
+/**
+ * Wall-clock time where Mumtaz is, ticking once a second. A placeholder until
+ * mount: the prerendered HTML is from build time, so it cannot hold a time.
+ */
 export function useLocalTime() {
-  const [time, setTime] = useState(() => clock.format(new Date()));
+  const [time, setTime] = useState("--:--:--");
 
   useEffect(() => {
-    const id = setInterval(() => setTime(clock.format(new Date())), 1000);
+    const tick = () => setTime(clock.format(new Date()));
+    tick();
+    const id = setInterval(tick, 1000);
     return () => clearInterval(id);
   }, []);
 

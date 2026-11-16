@@ -3,6 +3,7 @@ import { useDocumentTitle, useIntro, useLocalTime } from "../lib/hooks";
 import { site } from "../data/site";
 import { preview } from "../lib/env";
 import { ArrowUpRight } from "../components/Icons";
+import { pageMeta } from "../lib/meta";
 
 const IDLE = "idle";
 const SENDING = "sending";
@@ -128,6 +129,13 @@ function ContactForm() {
     </form>
   );
 }
+
+export const meta = () =>
+  pageMeta({
+    title: "Contact",
+    description: `Tell ${site.shortName} what you are building. ${site.availabilityLabel}. Based in ${site.location}.`,
+    path: "/contact",
+  });
 
 export default function Contact() {
   const root = useRef(null);

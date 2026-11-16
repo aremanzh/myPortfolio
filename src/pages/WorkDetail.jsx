@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { useParams } from "react-router-dom";
-import { finePointer, reducedMotion } from "../lib/env";
+import { useParams } from "react-router";
+import { finePointer, reducedMotion, useHydrated } from "../lib/env";
 import { useDocumentTitle, useIntro } from "../lib/hooks";
 import { findProject, projects } from "../data/projects";
 import { TLink } from "../components/Transition";
@@ -8,6 +8,7 @@ import ProjectCover from "../components/ProjectCover";
 import { FadeUp, SplitReveal } from "../components/Reveal";
 import { ArrowUpRight } from "../components/Icons";
 import NotFound from "./NotFound";
+import { pageMeta } from "../lib/meta";
 
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -74,6 +75,7 @@ function Manifest({ project }) {
 
 function Case({ project, index, next }) {
   const root = useRef(null);
+  const hydrated = useHydrated();
   useDocumentTitle(project.title);
 
   useIntro(root, (tl) => {
@@ -86,7 +88,7 @@ function Case({ project, index, next }) {
   const caption = project.cover
     ? project.cover.caption
     : `No public screenshots for this one, so the cover is set in pods. ${
-        reducedMotion ? "" : finePointer ? "Point at it." : "Tap it."
+        !hydrated || reducedMotion ? "" : finePointer ? "Point at it." : "Tap it."
       }`;
 
   return (
@@ -212,6 +214,19 @@ function Case({ project, index, next }) {
       </TLink>
     </article>
   );
+}
+
+export function meta({ params }) {
+  const found = findProject(params.slug);
+  if (!found) return pageMeta({ title: "Not found", noindex: true });
+  const { project } = found;
+  return pageMeta({
+    title: project.title,
+    description: project.summary || project.body[0],
+    path: `/works/${project.slug}`,
+    image: project.coverSrc || undefined,
+    imageAlt: project.cover ? project.cover.alt : undefined,
+  });
 }
 
 export default function WorkDetail() {

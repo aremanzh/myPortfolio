@@ -26,3 +26,5 @@ yarn-error.log*
 /public/uploads/_r
 /src/content/_images.json
 /public/sitemap.xml
+/build-preview
+/.react-router

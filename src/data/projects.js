@@ -9,7 +9,7 @@ import { image } from "./images";
  * fails the build instead of reaching the live site. The defaults below are a
  * second line of defence, not the validation.
  */
-const files = require.context("../content/projects", false, /\.json$/);
+const files = import.meta.glob("../content/projects/*.json", { eager: true, import: "default" });
 
 const paragraphs = (text = "") =>
   text
@@ -17,13 +17,11 @@ const paragraphs = (text = "") =>
     .map((part) => part.trim())
     .filter(Boolean);
 
-const all = files
-  .keys()
-  .map((key) => {
-    const data = files(key);
+const all = Object.entries(files)
+  .map(([path, data]) => {
     const cover = image(data.cover, data.coverAlt);
     return {
-      slug: key.replace(/^\.\//, "").replace(/\.json$/, ""),
+      slug: path.split("/").pop().replace(/\.json$/, ""),
       title: data.title,
       order: Number(data.order) || 0,
       published: data.published !== false,
@@ -38,6 +36,8 @@ const all = files
       stack: data.stack || [],
       links: data.links || [],
       cover: cover && { ...cover, caption: data.coverCaption || "" },
+      // The original upload, for link previews (og:image wants JPEG or PNG).
+      coverSrc: data.cover || "",
       // More screens, shown under the case study.
       gallery: (data.gallery || [])
         .map((item) => {

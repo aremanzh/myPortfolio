@@ -2,14 +2,18 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
 } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router";
 import { gsap, ScrollTrigger } from "../lib/gsap";
-import { reducedMotion } from "../lib/env";
+import { normalizePath, reducedMotion } from "../lib/env";
 import { scrollToTarget } from "../lib/scroll";
+
+// useLayoutEffect warns when the page is prerendered; it only matters in the browser.
+const useBrowserLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 const TransitionContext = createContext({ go: () => {} });
 
@@ -38,7 +42,7 @@ export function TransitionProvider({ children }) {
     (to, name = "") => {
       const { path, hash } = splitTarget(to);
 
-      if (path === location.pathname) {
+      if (normalizePath(path) === normalizePath(location.pathname)) {
         scrollToTarget(hash || 0);
         return;
       }
@@ -64,7 +68,7 @@ export function TransitionProvider({ children }) {
     [location.pathname, navigate]
   );
 
-  useLayoutEffect(() => {
+  useBrowserLayoutEffect(() => {
     const target = location.hash && document.querySelector(location.hash);
     scrollToTarget(target || 0, { immediate: true });
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { useIntro } from "../../lib/hooks";
 import { scrollToTarget } from "../../lib/scroll";
-import { finePointer, reducedMotion } from "../../lib/env";
+import { finePointer, reducedMotion, useHydrated } from "../../lib/env";
 import { site } from "../../data/site";
 import PodCluster from "../PodCluster";
 import Magnetic from "../Magnetic";
@@ -13,6 +13,7 @@ const pad = (n) => String(n).padStart(4, "0");
 
 export default function Hero() {
   const root = useRef(null);
+  const hydrated = useHydrated();
   const cluster = useRef(null);
   const status = useRef(null);
   const ready = useRef(null);
@@ -69,7 +70,7 @@ export default function Hero() {
               <dt>Self-healed</dt>
               <dd ref={healed}>0000</dd>
             </dl>
-            {!reducedMotion && (
+            {!(hydrated && reducedMotion) && (
               <button
                 type="button"
                 className="hud__chaos"
@@ -126,7 +127,8 @@ export default function Hero() {
               <ArrowDown className="h-3 w-3" /> Scroll
             </button>
             <p className="text-right">
-              {finePointer ? "Hover the cluster" : "Tap the cluster"} to kill a pod. It comes back.
+              {hydrated && !finePointer ? "Tap the cluster" : "Hover the cluster"} to kill a pod. It comes
+              back.
             </p>
           </div>
         </div>

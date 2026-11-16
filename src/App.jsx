@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router";
 import { initScroll } from "./lib/scroll";
+import { normalizePath } from "./lib/env";
 import { TransitionProvider } from "./components/Transition";
 import Preloader from "./components/Preloader";
 import Cursor from "./components/Cursor";
@@ -13,7 +14,7 @@ import Footer from "./components/Footer";
  * router's error boundary reuse the same chrome around the 404 page.
  */
 export default function App({ children }) {
-  const { pathname } = useLocation();
+  const pathname = normalizePath(useLocation().pathname);
 
   useEffect(() => initScroll(), []);
 

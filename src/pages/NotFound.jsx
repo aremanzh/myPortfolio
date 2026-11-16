@@ -3,6 +3,9 @@ import { useDocumentTitle, useIntro } from "../lib/hooks";
 import { TLink } from "../components/Transition";
 import PodType from "../components/PodType";
 import { ArrowUpRight } from "../components/Icons";
+import { pageMeta } from "../lib/meta";
+
+export const meta = () => pageMeta({ title: "Not found", noindex: true });
 
 export default function NotFound() {
   const root = useRef(null);

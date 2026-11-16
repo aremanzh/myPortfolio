@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Content pipeline. Runs before `npm start` and `npm run build`.
+ * Content pipeline. Runs before `npm run dev` and `npm run build`.
  *
  *   1. Validates src/content (what the CMS writes). Any problem stops the
  *      build with a list of what to fix, so a bad edit never ships.
