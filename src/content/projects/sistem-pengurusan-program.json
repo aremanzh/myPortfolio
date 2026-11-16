@@ -5,25 +5,43 @@
   "archived": false,
   "order": 20,
   "type": "Web application",
-  "year": "",
-  "role": "",
-  "summary": "Manages participants across multiple programmes, with self-registration.",
-  "body": "A programme management system: one web application for managing participants across multiple programmes.\n\nParticipants can register themselves.",
+  "year": "2024–2025",
+  "role": "Sole developer",
+  "summary": "Programme and participant management: every programme gets a QR code, people register themselves with their IC number, and organisers get lists, Excel exports and reports.",
+  "body": "Programme and participant management, with a QR code at every event so people register themselves.\n\nEach programme gets its own QR code. Participants scan it, enter their IC number, and either confirm the details the system already holds or fill in the form once. Organisers see who joined what, move lists in and out of Excel, and report by state, region and year. It is a Laravel application with a Blade, Tailwind CSS and Flowbite interface.\n\nI have maintained it since January 2024, with fixes still going in at the end of 2025.",
   "highlights": [
     {
-      "title": "Many programmes, one system",
-      "text": "Participants are managed per programme from a single application."
+      "title": "A QR code per programme",
+      "text": "Creating a programme generates a QR code for its registration form. The link carries an encrypted programme ID, so form addresses cannot be guessed or stepped through."
     },
     {
-      "title": "Self-registration",
-      "text": "People sign themselves up for a programme and no one has to enter them by hand."
+      "title": "Register once, join many",
+      "text": "A participant is identified by their IC number. Returning participants confirm the details already on file instead of typing them again, each programme keeps its own participation record, and registering twice for the same programme is refused."
+    },
+    {
+      "title": "IC numbers checked at the door",
+      "text": "A number must be 12 digits with a valid state code before anything is saved."
+    },
+    {
+      "title": "Excel in and out",
+      "text": "Programmes and participant lists import from Excel, a thousand rows at a time for the bulk import, and export per programme, by division or by year."
+    },
+    {
+      "title": "Reports by state, region and year",
+      "text": "Programmes and participants are grouped by state and by region and filtered by year, with a printable report."
+    },
+    {
+      "title": "Accountable by default",
+      "text": "Three roles (super admin, admin and viewer). Logins are logged, every programme change is recorded with who made it, and accounts created with a system password must change it first."
     }
   ],
   "stack": [
     "Laravel",
-    "PHP",
     "MySQL",
     "Tailwind CSS",
+    "Laravel Excel",
+    "Flowbite",
+    "ApexCharts",
     "Nginx",
     "Linux"
   ],
