@@ -77,7 +77,7 @@ function Case({ project, index, next }) {
   useDocumentTitle(project.title);
 
   useIntro(root, (tl) => {
-    tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.1 })
+    tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.07 })
       .from(".case__fade", { y: 24, opacity: 0, duration: 1, ease: "expo.out", stagger: 0.08 }, 0.5)
       .from(".case__cover", { clipPath: "inset(100% 0 0 0)", duration: 1.4, ease: "power4.inOut" }, 0.35);
   });

@@ -135,9 +135,9 @@ export default function Contact() {
   useDocumentTitle("Contact");
 
   useIntro(root, (tl) => {
-    tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.1 }).from(
+    tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.07 }).from(
       ".contact__fade",
-      { y: 24, opacity: 0, duration: 1, ease: "expo.out", stagger: 0.1 },
+      { y: 24, opacity: 0, duration: 1, ease: "expo.out", stagger: 0.07 },
       0.5
     );
   });

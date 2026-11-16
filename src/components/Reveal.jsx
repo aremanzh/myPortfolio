@@ -61,7 +61,7 @@ export function ScrubWords({ as: Tag = "p", className = "", children }) {
             {
               opacity: 1,
               ease: "none",
-              stagger: 0.1,
+              stagger: 0.07,
               scrollTrigger: {
                 trigger: ref.current,
                 start: "top 82%",

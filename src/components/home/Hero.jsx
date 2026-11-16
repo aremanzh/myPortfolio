@@ -46,7 +46,7 @@ export default function Hero() {
 
   useIntro(root, (tl) => {
     tl.from(".hero__cluster", { opacity: 0, duration: 2.2, ease: "power2.out" }, 0)
-      .from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.1 }, 0.1)
+      .from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.07 }, 0.1)
       .from(".hero__fade", { y: 24, opacity: 0, duration: 1, ease: "expo.out", stagger: 0.08 }, 0.7);
   });
 

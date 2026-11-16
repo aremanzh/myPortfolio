@@ -31,7 +31,8 @@ export default function WorkList({ projects }) {
     if (!floating) return undefined;
 
     const el = preview.current;
-    gsap.set(el, { xPercent: -50, yPercent: -50, scale: 0.6 });
+    // Appear from just under full size; nothing grows from far smaller.
+    gsap.set(el, { xPercent: -50, yPercent: -50, scale: 0.92 });
     const moveX = gsap.quickTo(el, "x", { duration: 0.6, ease: "power3.out" });
     const moveY = gsap.quickTo(el, "y", { duration: 0.6, ease: "power3.out" });
 
@@ -50,8 +51,8 @@ export default function WorkList({ projects }) {
     if (!floating) return;
     gsap.to(preview.current, {
       opacity: active === -1 ? 0 : 1,
-      scale: active === -1 ? 0.6 : 1,
-      duration: 0.5,
+      scale: active === -1 ? 0.92 : 1,
+      duration: 0.3,
       ease: "power3.out",
       overwrite: "auto",
     });

@@ -53,7 +53,7 @@ export default function Works() {
   useDocumentTitle("Work");
 
   useIntro(root, (tl) => {
-    tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.1 }).from(
+    tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.07 }).from(
       ".works__fade",
       { y: 24, opacity: 0, duration: 1, ease: "expo.out", stagger: 0.08 },
       0.5

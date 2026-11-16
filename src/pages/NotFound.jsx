@@ -10,7 +10,7 @@ export default function NotFound() {
 
   useIntro(root, (tl) => {
     tl.from(".nf__type", { opacity: 0, duration: 1.6, ease: "power2.out" })
-      .from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.1 }, 0.1)
+      .from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.07 }, 0.1)
       .from(".nf__fade", { y: 24, opacity: 0, duration: 1, ease: "expo.out", stagger: 0.08 }, 0.5);
   });
 
