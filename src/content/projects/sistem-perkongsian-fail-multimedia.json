@@ -5,31 +5,44 @@
   "archived": false,
   "order": 30,
   "type": "Web and mobile",
-  "year": "",
-  "role": "",
-  "summary": "Organises media by multiple criteria, with role-based access and an approval workflow.",
-  "body": "A multimedia file sharing system that organises media by multiple criteria and controls who can see and publish it.\n\nBuilt on Laravel, with a REST API and a React Native mobile client made with Expo.",
+  "year": "2024",
+  "role": "Sole developer: backend, web admin and mobile app",
+  "summary": "A media library for event coverage: officers upload photos and videos by programme, admins approve them, and staff find and download them on the web or a phone.",
+  "body": "A media library for event coverage, from upload and approval to download on the web or a phone.\n\nOfficers file photos and videos under the programme they came from. An approval step decides what is published, and staff then browse, search and download it. One Laravel backend serves two clients: a web admin built with Blade, Tailwind CSS and Flowbite for uploads, approvals, users and reports, and a JWT-secured API for a React Native app built with Expo.\n\nIt started as a photo gallery app and grew into a full media workflow, with approvals, notifications, an audit trail and reports.",
   "highlights": [
     {
-      "title": "Role-based access",
-      "text": "What a person can view, upload or manage depends on their role."
+      "title": "Nothing goes public unapproved",
+      "text": "Programmes and media from officers start as pending. An administrator approves, rejects or cancels them, and the people involved are told in the app and by email. Uploads by a super admin publish directly."
     },
     {
-      "title": "Approval workflow",
-      "text": "Media goes through approval before it is shared."
+      "title": "Four roles, scoped by division",
+      "text": "Super admin, liaison officer, staff and stakeholder roles decide what each person can upload, approve and see. Review queues only show the reviewer's own division. Accounts created with a system password must change it before going further."
     },
     {
-      "title": "Mobile client",
-      "text": "A React Native app built with Expo talks to the system over a REST API."
+      "title": "Uploads that survive long videos",
+      "text": "Files upload in chunks, so a long event video does not hang on one fragile request. Each file's width and height are stored, read with FFprobe for video."
+    },
+    {
+      "title": "An audit trail for everything",
+      "text": "Every change to a programme, media file or user is written to an activity log, logins are recorded, and each file's download count comes from that log."
+    },
+    {
+      "title": "Reports for management",
+      "text": "Charts of programmes by month, category and year, media by year, downloads, and logins by division, with a printable version."
+    },
+    {
+      "title": "A mobile app for finding and saving",
+      "text": "The Expo app shows programmes in a masonry grid, searches programmes and media, plays video, and downloads a single file or a whole programme as a ZIP. The session token is kept in the phone's secure storage."
     }
   ],
   "stack": [
     "Laravel",
-    "PHP",
-    "MySQL",
-    "Apache",
     "React Native (Expo)",
-    "REST API"
+    "MySQL",
+    "Tailwind CSS",
+    "JWT",
+    "FFmpeg",
+    "Apache"
   ],
   "links": [],
   "cover": "",

@@ -1116,6 +1116,11 @@ body::after {
   content: ":";
   color: var(--muted);
 }
+/* A long scalar value wraps beside its key, as YAML would show it. */
+.manifest__row:not(.manifest__row--list) dd {
+  flex: 1 1 0;
+  min-width: 0;
+}
 .manifest__row--list {
   display: block;
 }
