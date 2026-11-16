@@ -134,6 +134,20 @@ collections:
         required: false
         hint: Required when there is a cover. Describe what the image shows.
       - { name: coverCaption, label: Cover caption, widget: string, required: false }
+      - name: gallery
+        label: More screens
+        label_singular: Screen
+        widget: list
+        required: false
+        summary: "{{caption}}"
+        thumbnail: image
+        hint: >-
+          Extra screenshots, shown two to a row under the case study. 16:9 works
+          best. An even number fills the rows.
+        fields:
+          - { name: image, label: Image, widget: image }
+          - { name: alt, label: Alt text, widget: string, hint: Describe what the screen shows. }
+          - { name: caption, label: Caption, widget: string, required: false }
       - name: mark
         label: Mark
         widget: string

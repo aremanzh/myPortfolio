@@ -75,6 +75,8 @@ are in `.gitignore`. The build host needs to run `npm ci && npm run build`
   a title never changes the URL.
 - With no cover image, the project's **mark** (up to 6 characters) is drawn in
   pods as its cover.
+- **More screens** adds a gallery under the case study, two to a row. Each
+  screen needs alt text; an even number fills the rows.
 - **Order** sorts the lists, lowest first. The home page shows the first four
   projects marked **Featured**.
 - **Archive only** lists a project as one line at the bottom of `/works`, with

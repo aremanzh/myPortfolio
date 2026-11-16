@@ -38,6 +38,13 @@ const all = files
       stack: data.stack || [],
       links: data.links || [],
       cover: cover && { ...cover, caption: data.coverCaption || "" },
+      // More screens, shown under the case study.
+      gallery: (data.gallery || [])
+        .map((item) => {
+          const picture = image(item.image, item.alt);
+          return picture && { ...picture, caption: item.caption || "" };
+        })
+        .filter(Boolean),
       // Word set in pods when there is no cover image.
       mark: (data.mark || data.title).toUpperCase(),
       tone: data.tone || "ink",

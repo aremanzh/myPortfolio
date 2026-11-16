@@ -155,6 +155,48 @@ function Case({ project, index, next }) {
         </div>
       </div>
 
+      {project.gallery.length > 0 && (
+        <section aria-labelledby="screens-title" className="wrap pb-[clamp(4rem,9vw,9rem)]">
+          <h2 id="screens-title" className="t-mono eyebrow">
+            Screens
+          </h2>
+          <FadeUp as="ul" className="mt-8 grid gap-x-8 gap-y-12 md:grid-cols-2" stagger={0.06}>
+            {project.gallery.map((shot) => (
+              <li key={shot.sm}>
+                <figure>
+                  <a
+                    href={shot.lg}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="card block"
+                    data-cursor="View"
+                    aria-label={`Open full size: ${shot.alt}`}
+                  >
+                    <span className="frame block aspect-[16/9]">
+                      <span className="cover">
+                        <img
+                          src={shot.sm}
+                          srcSet={shot.srcSet}
+                          sizes="(min-width: 768px) 46vw, 92vw"
+                          alt={shot.alt}
+                          width={shot.width}
+                          height={shot.height}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                    </span>
+                  </a>
+                  {shot.caption && (
+                    <figcaption className="t-mono mt-4 text-[color:var(--muted)]">{shot.caption}</figcaption>
+                  )}
+                </figure>
+              </li>
+            ))}
+          </FadeUp>
+        </section>
+      )}
+
       <TLink
         to={`/works/${next.slug}`}
         name={next.title}

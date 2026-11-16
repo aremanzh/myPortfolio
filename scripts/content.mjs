@@ -145,6 +145,10 @@ const projects = projectFiles
     }
     if (data.order !== undefined && !Number.isFinite(Number(data.order))) fail(file, `"order" must be a number`);
     checkImage(file, "cover", data.cover, data.coverAlt);
+    (data.gallery || []).forEach((item, i) => {
+      if (!item || !item.image) fail(file, `gallery[${i}] needs an image`);
+      else checkImage(file, `gallery[${i}]`, item.image, item.alt);
+    });
     checkLinks(file, "links", data.links);
     (data.highlights || []).forEach((item, i) => {
       if (!isText(item.title) || !isText(item.text)) fail(file, `highlights[${i}] needs a title and text`);

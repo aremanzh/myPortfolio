@@ -56,9 +56,41 @@
       "href": "https://applytracker.mumtaaz.xyz"
     }
   ],
-  "cover": "",
-  "coverAlt": "",
-  "coverCaption": "",
+  "cover": "/uploads/applytracker.jpg",
+  "coverAlt": "ApplyTracker dashboard greeting the user, with counts of active applications, interviews, response rate and offers, a pipeline bar, recent applications and an Up next list",
+  "coverCaption": "The dashboard. All screens are from a local run with fictional sample data.",
   "mark": "APPLY",
-  "tone": "ink"
+  "tone": "ink",
+  "gallery": [
+    {
+      "image": "/uploads/applytracker-board.jpg",
+      "alt": "Applications board with columns for Applied, Under Review, Phone Screen, Interview and Offered, each card showing role, company, salary band, working mode and next step",
+      "caption": "Applications as a board, one column per status."
+    },
+    {
+      "image": "/uploads/applytracker-analytics.jpg",
+      "alt": "Analytics page showing response and interview rates and a funnel of where applications stop",
+      "caption": "Analytics: where applications stop, from the status history."
+    },
+    {
+      "image": "/uploads/applytracker-interview.jpg",
+      "alt": "Interview reflection form with a confidence scale, topic chips and a note on what surprised the candidate",
+      "caption": "After each interview: confidence, topics and what to practise."
+    },
+    {
+      "image": "/uploads/applytracker-resume.jpg",
+      "alt": "Resume builder with a strength checklist, form fields and a live A4 preview",
+      "caption": "The resume builder, with a strength checklist and a live A4 preview."
+    },
+    {
+      "image": "/uploads/applytracker-card.jpg",
+      "alt": "Share card page with a green Got the offer card showing 22 applications, 6 interviews and 70 days of job hunting, beside download and copy link buttons",
+      "caption": "A milestone card, drawn on the server. The company name is hidden by default."
+    },
+    {
+      "image": "/uploads/applytracker-site.jpg",
+      "alt": "ApplyTracker public home page with the headline Every application, one calm place and an English and Malay language switch",
+      "caption": "The public site, in English and Malay."
+    }
+  ]
 }
