@@ -2,6 +2,7 @@
   "title": "DailyJournal",
   "published": true,
   "featured": false,
+  "archived": false,
   "order": 50,
   "type": "Mobile app",
   "year": "",

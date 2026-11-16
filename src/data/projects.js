@@ -17,7 +17,7 @@ const paragraphs = (text = "") =>
     .map((part) => part.trim())
     .filter(Boolean);
 
-export const projects = files
+const all = files
   .keys()
   .map((key) => {
     const data = files(key);
@@ -28,6 +28,7 @@ export const projects = files
       order: Number(data.order) || 0,
       published: data.published !== false,
       featured: Boolean(data.featured),
+      archived: Boolean(data.archived),
       type: data.type || "",
       year: data.year || "",
       role: data.role || "",
@@ -44,6 +45,13 @@ export const projects = files
   })
   .filter((project) => project.published)
   .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+
+// Case studies: the work the site is judged on, each with its own page.
+export const projects = all.filter((project) => !project.archived);
+
+// Older or smaller work: one line each at the bottom of /works, no page.
+// A short, strong list of case studies reads better than a long, uneven one.
+export const archive = all.filter((project) => project.archived);
 
 // Home page shows up to four featured projects; with none flagged, the first four.
 const flagged = projects.filter((project) => project.featured);

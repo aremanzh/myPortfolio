@@ -2,6 +2,7 @@
   "title": "Ringmaster",
   "published": true,
   "featured": true,
+  "archived": false,
   "order": 10,
   "type": "Open-source tool",
   "year": "2026",
@@ -47,7 +48,7 @@
   ],
   "cover": "/uploads/ringmaster.png",
   "coverAlt": "Ringmaster web UI listing three projects, the tasks of one of them with their status, and a live log pane",
-  "coverCaption": "The web UI running Ringmaster's bundled demo registry.",
+  "coverCaption": "The web UI running Ringmaster’s bundled demo registry. Captured on Linux, so the paths show /usr/bin/php rather than a Windows PHP install.",
   "mark": "RING",
   "tone": "ink"
 }

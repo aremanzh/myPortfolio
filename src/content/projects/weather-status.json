@@ -2,6 +2,7 @@
   "title": "Weather Status",
   "published": true,
   "featured": false,
+  "archived": true,
   "order": 80,
   "type": "Web app",
   "year": "",

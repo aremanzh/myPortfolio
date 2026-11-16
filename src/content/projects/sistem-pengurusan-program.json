@@ -2,6 +2,7 @@
   "title": "Sistem Pengurusan Program",
   "published": true,
   "featured": true,
+  "archived": false,
   "order": 20,
   "type": "Web application",
   "year": "",

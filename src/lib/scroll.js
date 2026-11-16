@@ -31,27 +31,35 @@ export function scrollVelocity() {
   return lenis ? lenis.velocity : 0;
 }
 
-export function scrollToTarget(target, { immediate = false, offset = 0 } = {}) {
-  if (lenis) {
-    // Lenis skips a scrollTo whose target equals the position it last knew
-    // about. If something moved the page natively in the meantime, that
-    // position is stale, so resync before asking for a jump.
-    if (immediate) lenis.resize();
-    if (immediate && typeof target === "number") window.scrollTo(0, target);
-    lenis.scrollTo(target, { immediate, offset, force: true });
-    return;
-  }
-
-  const behavior = immediate || reducedMotion ? "auto" : "smooth";
-  if (typeof target === "number") {
-    window.scrollTo({ top: target, behavior });
-    return;
-  }
-
+/**
+ * Elements and selectors are turned into a pixel position here, from the
+ * browser's own scrollY. Lenis can resolve an element itself, but it measures
+ * from its internal position, which lags behind after a native scroll (a
+ * dragged scrollbar, Page Down) and sends the page to the wrong place.
+ */
+function resolveTop(target, offset) {
+  if (typeof target === "number") return target + offset;
   const el = typeof target === "string" ? document.querySelector(target) : target;
-  if (!el) return;
-  const top = el.getBoundingClientRect().top + window.scrollY + offset;
-  window.scrollTo({ top, behavior });
+  if (!el) return null;
+  return el.getBoundingClientRect().top + window.scrollY + offset;
+}
+
+export function scrollToTarget(target, { immediate = false, offset = 0 } = {}) {
+  const top = resolveTop(target, offset);
+  if (top === null) return;
+
+  if (lenis) {
+    // Lenis also skips a scrollTo whose target equals the position it last
+    // knew about, so resync it first for an instant jump.
+    if (immediate) {
+      lenis.resize();
+      window.scrollTo(0, top);
+    }
+    lenis.scrollTo(top, { immediate, force: true });
+    return;
+  }
+
+  window.scrollTo({ top, behavior: immediate || reducedMotion ? "auto" : "smooth" });
 }
 
 export function lockScroll(locked) {

@@ -31,10 +31,10 @@ pipeline rebuilds the site.
 
 | In the CMS | File | What it holds |
 | --- | --- | --- |
-| Projects | `src/content/projects/*.json` | One file per project: text, highlights, stack, links, cover image, order, featured and published switches |
+| Projects | `src/content/projects/*.json` | One file per project: text, highlights, stack, links, cover image, order, and the featured, archive-only and published switches |
 | Site → Settings | `src/content/site.json` | Name, role, location, email, socials, availability badge, form endpoint |
 | Site → About | `src/content/about.json` | Statement, portrait, facts |
-| Site → What I do | `src/content/capabilities.json` | The three stage cards and the marquee words |
+| Site → What I do | `src/content/capabilities.json` | The three pipeline stages (summary, tools, job log) and the marquee words |
 | Media | `public/uploads/` | Uploaded images |
 
 Design, layout, headlines and motion are not in the CMS on purpose. They stay
@@ -77,6 +77,9 @@ are in `.gitignore`. The build host needs to run `npm ci && npm run build`
   pods as its cover.
 - **Order** sorts the lists, lowest first. The home page shows the first four
   projects marked **Featured**.
+- **Archive only** lists a project as one line at the bottom of `/works`, with
+  no page of its own and no place in the sitemap. Keep the case studies to the
+  four or five strongest; everything else goes here.
 - **Published** off removes a project from the site and the sitemap without
   deleting it.
 - Project copy is taken from public sources only (the GitHub profile README
@@ -118,6 +121,10 @@ public/uploads/         images uploaded through the CMS
   generated project covers and the 404 lettering. Only the layout differs.
   Thumbnails draw a single frame (`live={false}`); the hero, the case-page
   cover and the 404 run live and pause off screen.
+- **The pipeline runs as you scroll.** In "What I do", each stage goes
+  queued, running, passed as its card reaches the top, prints its job log, and
+  passes when the visitor moves on. Stages run in order and every duration is
+  the real time spent on that card. The log lines come from the CMS.
 - **Command palette.** Cmd/Ctrl+K or `/` opens it. It lists pages, projects
   and a few actions; nothing in it is exclusive to the keyboard.
 

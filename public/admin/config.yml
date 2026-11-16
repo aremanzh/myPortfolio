@@ -49,7 +49,7 @@ collections:
       preview: false
     slug: "{{title}}"
     identifier_field: title
-    summary: "{{order}} · {{title}} ({{type}})"
+    summary: "{{order}} · {{title}} ({{type}}){{archived | ternary(' · archive', '')}}"
     sortable_fields: [order, title, type]
     fields:
       - { name: title, label: Title, widget: string }
@@ -63,6 +63,14 @@ collections:
         widget: boolean
         default: false
         hint: The home page shows the first four featured projects.
+      - name: archived
+        label: Archive only
+        widget: boolean
+        default: false
+        hint: >-
+          On: listed as one line in the archive at the bottom of Work, with no
+          project page. Use it for older or smaller work, so the case studies
+          stay a short, strong list.
       - name: order
         label: Order
         widget: number
@@ -82,11 +90,15 @@ collections:
       - name: summary
         label: Summary
         widget: text
-        hint: One sentence. Shown in lists and cards.
+        required: false
+        hint: One sentence. Shown in lists and cards. Required unless the project is archive only.
       - name: body
         label: Description
         widget: text
-        hint: Leave a blank line between paragraphs. The first paragraph is set large.
+        required: false
+        hint: >-
+          Leave a blank line between paragraphs. The first paragraph is set
+          large. Required unless the project is archive only.
       - name: highlights
         label: Highlights
         label_singular: Highlight
@@ -125,7 +137,8 @@ collections:
       - name: mark
         label: Mark
         widget: string
-        hint: Up to 6 letters or digits, drawn in pods when there is no cover image.
+        required: false
+        hint: Up to 6 letters or digits, drawn in pods when there is no cover image. Required then.
         pattern: ["^[A-Za-z0-9]{1,6}$", "1 to 6 letters or digits"]
       - name: tone
         label: Generated cover colour
@@ -212,6 +225,14 @@ collections:
               - { name: name, label: Name, widget: string, hint: "One short word. It is set very large." }
               - { name: summary, label: Summary, widget: text }
               - { name: tools, label: Tools, widget: list, required: false }
+              - name: log
+                label: Job log
+                widget: list
+                required: false
+                hint: >-
+                  Up to 5 lines, printed one by one while this stage runs as
+                  the visitor scrolls. Start a command with "$ "; other lines
+                  are shown as output. "Job succeeded" is added automatically.
           - name: marquee
             label: Marquee words
             widget: list

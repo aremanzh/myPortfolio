@@ -19,6 +19,7 @@ export const pipeline = (capabilities.stages || []).map((stage) => ({
   ...stage,
   id: stage.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
   tools: stage.tools || [],
+  log: stage.log || [],
 }));
 
 export const marquee = capabilities.marquee || [];

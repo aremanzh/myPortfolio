@@ -2,7 +2,8 @@ import React, { useRef } from "react";
 import { gsap, useGSAP } from "../lib/gsap";
 import { reducedMotion } from "../lib/env";
 import { useDocumentTitle, useIntro } from "../lib/hooks";
-import { projects } from "../data/projects";
+import { archive, projects } from "../data/projects";
+import { ArrowUpRight } from "../components/Icons";
 import { TLink } from "../components/Transition";
 import ProjectCover from "../components/ProjectCover";
 
@@ -40,7 +41,7 @@ export default function Works() {
   return (
     <div ref={root} className="theme-ink">
       <header className="wrap pb-[clamp(3rem,6vw,6rem)] pt-[clamp(8rem,16vw,14rem)]">
-        <p className="works__fade t-mono eyebrow">Work, {pad(projects.length)} projects</p>
+        <p className="works__fade t-mono eyebrow">Work, {pad(projects.length)} case studies</p>
         <h1 className="t-mega mt-8">
           <span className="line">
             <span className="line__in">Built,</span>
@@ -53,7 +54,7 @@ export default function Works() {
         </h1>
       </header>
 
-      <ul className="wrap grid gap-x-8 gap-y-16 pb-[clamp(5rem,11vw,11rem)] md:grid-cols-2 md:gap-y-24">
+      <ul className="wrap grid gap-x-8 gap-y-16 pb-[clamp(5rem,10vw,10rem)] md:grid-cols-2 md:gap-y-24">
         {projects.map((project, index) => (
           // Odd cards drop down a step so the grid reads as a ladder.
           <li key={project.slug} className={index % 2 === 1 ? "md:mt-32" : ""}>
@@ -79,6 +80,44 @@ export default function Works() {
           </li>
         ))}
       </ul>
+
+      {archive.length > 0 && (
+        <section aria-labelledby="archive-title" className="wrap pb-[clamp(5rem,11vw,11rem)]">
+          <div className="flex flex-wrap items-baseline justify-between gap-4">
+            <h2 id="archive-title" className="t-mono eyebrow">
+              Archive
+            </h2>
+            <p className="t-mono text-[color:var(--muted)]">Earlier and smaller work, without a page of its own</p>
+          </div>
+          <ul className="archive mt-6">
+            {archive.map((project) => {
+              const link = project.links[0];
+              return (
+                <li key={project.slug} className="archive__row">
+                  <span className="archive__title">{project.title}</span>
+                  <span className="t-mono text-[color:var(--muted)]">
+                    {[project.type, project.year].filter(Boolean).join(" · ")}
+                  </span>
+                  <span className="t-mono text-[color:var(--muted)]">{project.stack.slice(0, 3).join(", ")}</span>
+                  <span className="archive__link">
+                    {link && (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="link t-mono inline-flex items-center gap-2"
+                        aria-label={`${link.label}: ${project.title}`}
+                      >
+                        {link.label} <ArrowUpRight className="h-2.5 w-2.5" />
+                      </a>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

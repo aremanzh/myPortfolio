@@ -2,6 +2,7 @@
   "title": "Anonymous Blog",
   "published": true,
   "featured": false,
+  "archived": true,
   "order": 60,
   "type": "Web app",
   "year": "",

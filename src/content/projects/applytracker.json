@@ -2,6 +2,7 @@
   "title": "ApplyTracker",
   "published": true,
   "featured": true,
+  "archived": false,
   "order": 40,
   "type": "Web app",
   "year": "",

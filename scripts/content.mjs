@@ -109,6 +109,13 @@ if (capabilities) {
   }
   (capabilities.stages || []).forEach((stage, i) => {
     if (!isText(stage.name) || !isText(stage.summary)) fail("capabilities.json", `stages[${i}] needs a name and a summary`);
+    const log = stage.log || [];
+    if (!Array.isArray(log) || log.some((line) => !isText(line))) {
+      fail("capabilities.json", `stages[${i}].log must be a list of non-empty lines`);
+    } else if (log.length > 5) {
+      // The log pane has a fixed height so the stacked cards line up.
+      fail("capabilities.json", `stages[${i}].log has ${log.length} lines; keep it to 5`);
+    }
   });
 }
 
@@ -126,29 +133,40 @@ const projects = projectFiles
     if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) {
       fail(file, "file name becomes the URL, so use lowercase letters, digits and hyphens only");
     }
-    requireText(file, data, ["title", "type", "summary", "body"]);
+    const archived = Boolean(data.archived);
+    // Archived projects are one line in a list, with no page of their own.
+    requireText(file, data, archived ? ["title", "type"] : ["title", "type", "summary", "body"]);
     if (data.tone && !TONES.includes(data.tone)) fail(file, `"tone" must be one of ${TONES.join(", ")}`);
     if (data.mark && !/^[A-Za-z0-9]{1,6}$/.test(data.mark)) {
       fail(file, `"mark" is drawn in pods, so keep it to 1-6 letters or digits (got "${data.mark}")`);
     }
-    if (!data.cover && !data.mark) fail(file, `needs either a cover image or a "mark" for the generated cover`);
+    if (!archived && !data.cover && !data.mark) {
+      fail(file, `needs either a cover image or a "mark" for the generated cover`);
+    }
     if (data.order !== undefined && !Number.isFinite(Number(data.order))) fail(file, `"order" must be a number`);
     checkImage(file, "cover", data.cover, data.coverAlt);
     checkLinks(file, "links", data.links);
     (data.highlights || []).forEach((item, i) => {
       if (!isText(item.title) || !isText(item.text)) fail(file, `highlights[${i}] needs a title and text`);
     });
-    return { slug, published: data.published !== false, order: Number(data.order) || 0 };
+    return { slug, published: data.published !== false, archived, order: Number(data.order) || 0 };
   })
   .filter(Boolean);
 
-if (projects.length && !projects.some((p) => p.published)) fail("projects/", "every project is unpublished");
+if (projects.length && !projects.some((p) => p.published && !p.archived)) {
+  fail("projects/", "no published case studies: at least one project must be published and not archived");
+}
 
 if (errors.length) {
   console.error(`\nContent check failed (${errors.length}):\n${errors.join("\n")}\n`);
   process.exit(1);
 }
-console.log(`content: ${projects.length} projects, ${projects.filter((p) => p.published).length} published, all valid`);
+const live = projects.filter((p) => p.published);
+console.log(
+  `content: ${projects.length} projects, ${live.filter((p) => !p.archived).length} case studies, ${
+    live.filter((p) => p.archived).length
+  } archived, all valid`
+);
 if (checkOnly) process.exit(0);
 
 /* ---------------------------------------------------------------- images */
@@ -199,7 +217,7 @@ const paths = [
   "/works",
   "/contact",
   ...projects
-    .filter((p) => p.published)
+    .filter((p) => p.published && !p.archived)
     .sort((a, b) => a.order - b.order)
     .map((p) => `/works/${p.slug}`),
 ];

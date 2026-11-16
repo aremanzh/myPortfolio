@@ -802,6 +802,100 @@ body::after {
   line-height: 0.78;
 }
 
+/* Status chip: hollow square queued, pulsing dot running, solid square passed.
+   Drawn in currentColor so it reads on every card colour. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.chip__dot {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 1px;
+}
+.chip__time {
+  opacity: 0.7;
+}
+.chip--queued {
+  opacity: 0.55;
+}
+.chip--running .chip__dot {
+  border-radius: 50%;
+  background: currentColor;
+  animation: chip-pulse 1s ease-in-out infinite;
+}
+.chip--passed .chip__dot {
+  background: currentColor;
+}
+@keyframes chip-pulse {
+  50% {
+    opacity: 0.2;
+    transform: scale(0.65);
+  }
+}
+
+/* Job log. Lines are always in the page, dimmed until "executed", so the
+   resting state reads as a complete card. */
+.log {
+  display: grid;
+  align-content: start;
+  min-height: calc(var(--rows) * 1.65em + 1.7rem);
+  padding: 0.85rem 1rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--fg) 7%, transparent);
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.74rem;
+  line-height: 1.65;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.log__line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  opacity: 0.28;
+  transition: opacity 0.25s;
+}
+.log__line.is-on {
+  opacity: 1;
+}
+.log__out.is-on {
+  opacity: 0.7;
+}
+.log__done {
+  font-weight: 700;
+}
+.log__line.is-current::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 0.4em;
+  vertical-align: -0.18em;
+  background: currentColor;
+  animation: log-cursor 1s steps(1) infinite;
+}
+@keyframes log-cursor {
+  50% {
+    opacity: 0;
+  }
+}
+
+.pipeline-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.75rem;
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
 /* -------------------------------------------------------------------------
    Work list
    ---------------------------------------------------------------------- */
@@ -878,6 +972,35 @@ body::after {
 .preview__slide.is-active {
   z-index: 2;
   clip-path: inset(0);
+}
+
+/* -------------------------------------------------------------------------
+   Archive: one line per project, no page
+   ---------------------------------------------------------------------- */
+.archive__row {
+  display: grid;
+  gap: 0.4rem;
+  padding-block: 1.15rem;
+  border-top: 1px solid var(--line);
+}
+.archive__row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.archive__title {
+  font-size: clamp(1.15rem, 1.6vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+@media (min-width: 768px) {
+  .archive__row {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 11rem);
+    align-items: baseline;
+    gap: 2rem;
+  }
+  .archive__link {
+    justify-self: end;
+  }
 }
 
 /* -------------------------------------------------------------------------

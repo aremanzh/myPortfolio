@@ -11,6 +11,11 @@
         "Tailwind CSS",
         "MySQL",
         "MongoDB"
+      ],
+      "log": [
+        "$ composer install --no-dev --optimize-autoloader",
+        "$ npm ci && npm run build",
+        "$ php artisan test"
       ]
     },
     {
@@ -20,6 +25,10 @@
         "Docker",
         "GitLab CI",
         "Jenkins"
+      ],
+      "log": [
+        "$ docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .",
+        "$ docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
       ]
     },
     {
@@ -30,6 +39,11 @@
         "Nginx",
         "Apache",
         "Linux"
+      ],
+      "log": [
+        "$ kubectl set image deploy/app app=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA",
+        "$ kubectl rollout status deploy/app",
+        "deployment \"app\" successfully rolled out"
       ]
     }
   ],
