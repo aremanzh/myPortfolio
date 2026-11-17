@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import { lockScroll, scrollToTarget } from "../lib/scroll";
-import { normalizePath, reducedMotion } from "../lib/env";
+import { normalizePath } from "../lib/env";
 import { useContent } from "../data/site";
 import { useProjects } from "../data/projects";
 import { stripLocale, useLocale, useT } from "../i18n";
@@ -57,8 +57,7 @@ export default function CommandPalette() {
     }));
 
     const actions = [
-      pathname === "/" &&
-        !reducedMotion && {
+      pathname === "/" && {
           id: "chaos",
           group: t("palette.action"),
           label: t("hero.chaos"),

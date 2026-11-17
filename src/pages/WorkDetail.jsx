@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useParams } from "react-router";
-import { finePointer, reducedMotion, useHydrated } from "../lib/env";
+import { finePointer, useHydrated } from "../lib/env";
 import { useDocumentTitle, useIntro } from "../lib/hooks";
 import { projectsFor, useProjects } from "../data/projects";
 import { localeOf, translate, useT } from "../i18n";
@@ -90,7 +90,7 @@ function Case({ project, index, next }) {
   const [lead, ...rest] = project.body;
   const caption = project.cover
     ? project.cover.caption
-    : `${t("case.podCover")} ${!hydrated || reducedMotion ? "" : finePointer ? t("case.pointAt") : t("case.tapIt")}`;
+    : `${t("case.podCover")} ${!hydrated ? "" : finePointer ? t("case.pointAt") : t("case.tapIt")}`;
 
   return (
     <article ref={root} className="theme-ink">

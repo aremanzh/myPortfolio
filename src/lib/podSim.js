@@ -12,7 +12,13 @@ import { reducedMotion } from "./env";
  * pod after a short delay. Every few seconds a rolling restart sweeps across.
  *
  * Drawn on a 2D canvas; the loop stops whenever the canvas is off screen or
- * the tab is hidden, and never starts under prefers-reduced-motion.
+ * the tab is hidden.
+ *
+ * Under prefers-reduced-motion the ambient motion goes (no shimmer, no rolling
+ * restart sweeping across), but the pods still answer the visitor: pointing at
+ * them or running the chaos test kills pods and the controller brings them
+ * back. The loop then runs only while something is changing and stops once
+ * every pod is running again, so nothing moves on its own.
  */
 
 const RUNNING = 0;
@@ -56,7 +62,10 @@ export function createPodSim(canvas, host, options) {
 
   const ctx = canvas.getContext("2d");
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const animated = live && !reducedMotion;
+  // `live` pods answer the pointer and the chaos test. Ambient motion (the
+  // shimmer and the rolling restart) is extra, and off under reduced motion.
+  const interactive = live;
+  const ambient = live && !reducedMotion;
 
   let width = 0;
   let height = 0;
@@ -113,7 +122,7 @@ export function createPodSim(canvas, host, options) {
   }
 
   function step(dt, now) {
-    if (!wave && now > nextWaveAt) {
+    if (ambient && !wave && now > nextWaveAt) {
       wave = { x: -40 };
       nextWaveAt = now + WAVE_EVERY_MS;
     }
@@ -171,7 +180,8 @@ export function createPodSim(canvas, host, options) {
           if (pod.t >= PENDING_MS) {
             pod.state = RUNNING;
             pod.t = 0;
-            pod.flash = 0.75;
+            // The arrival flash is ambient sparkle; reduced motion skips it.
+            pod.flash = ambient ? 0.75 : 0;
             if (pod.counted) {
               healed += 1;
               pod.counted = false;
@@ -195,7 +205,7 @@ export function createPodSim(canvas, host, options) {
       const { x, y, alpha } = pod;
 
       if (pod.state === RUNNING) {
-        const twinkle = animated ? Math.sin(now * pod.speed + pod.phase) * 0.05 : 0;
+        const twinkle = ambient ? Math.sin(now * pod.speed + pod.phase) * 0.05 : 0;
         ctx.fillStyle = `rgba(${color}, ${Math.min(1, pod.base + twinkle + pod.flash) * alpha})`;
         ctx.fillRect(x, y, cell, cell);
       } else if (pod.state === TERMINATING) {
@@ -224,17 +234,26 @@ export function createPodSim(canvas, host, options) {
     onStats({ running, total: pods.length, killed, healed });
   }
 
+  // Nothing left to animate: every pod running and the pointer away.
+  const settled = () =>
+    !pointer.active && pods.every((pod) => pod.state === RUNNING && pod.flash < 0.01);
+
   function frame(now) {
     const dt = Math.min(50, now - (last || now));
     last = now;
     const running = step(dt, now);
     draw(now);
     report(running);
+    if (!ambient && settled()) {
+      // Reduced motion: sleep until the visitor does something.
+      raf = 0;
+      return;
+    }
     raf = requestAnimationFrame(frame);
   }
 
   function start() {
-    if (raf || !animated || !visible || document.hidden || destroyed) return;
+    if (raf || !interactive || !visible || document.hidden || destroyed) return;
     last = 0;
     raf = requestAnimationFrame(frame);
   }
@@ -259,6 +278,7 @@ export function createPodSim(canvas, host, options) {
     pointer.y = event.clientY - rect.top;
     pointer.active =
       pointer.x >= 0 && pointer.y >= 0 && pointer.x <= rect.width && pointer.y <= rect.height;
+    if (pointer.active) start(); // wakes a sleeping loop
   }
 
   function onPointerEnd() {
@@ -283,7 +303,7 @@ export function createPodSim(canvas, host, options) {
   });
   const onVisibility = () => (document.hidden ? stop() : start());
 
-  if (animated) {
+  if (interactive) {
     inView.observe(host);
     document.addEventListener("visibilitychange", onVisibility);
     pointerTarget.addEventListener("pointermove", onPointer, { passive: true });
@@ -301,7 +321,7 @@ export function createPodSim(canvas, host, options) {
   return {
     /** Kill a random share of the running pods, as if the visitor did it. */
     chaos(fraction = 0.35) {
-      if (!animated) return;
+      if (!interactive) return;
       pods.forEach((pod) => {
         if (pod.state === RUNNING && Math.random() < fraction) {
           kill(pod, true);
@@ -309,6 +329,7 @@ export function createPodSim(canvas, host, options) {
           pod.t = -Math.random() * 420;
         }
       });
+      start();
     },
     destroy() {
       destroyed = true;

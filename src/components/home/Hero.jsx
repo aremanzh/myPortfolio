@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import { useIntro } from "../../lib/hooks";
 import { scrollToTarget } from "../../lib/scroll";
-import { finePointer, reducedMotion, useHydrated } from "../../lib/env";
+import { finePointer, useHydrated } from "../../lib/env";
 import { useContent } from "../../data/site";
 import { useT } from "../../i18n";
 import { play } from "../../lib/sound";
@@ -77,19 +77,19 @@ export default function Hero() {
               <dt>{t("hero.status.healed")}</dt>
               <dd ref={healed}>0000</dd>
             </dl>
-            {!(hydrated && reducedMotion) && (
-              <button
-                type="button"
-                className="hud__chaos"
-                onClick={() => {
-                  play("blip");
-                  cluster.current.chaos(0.4);
-                }}
-                data-cursor={t("hero.chaosCursor")}
-              >
-                {t("hero.chaos")}
-              </button>
-            )}
+            {/* The chaos test is something the visitor does, so it stays under
+                reduced motion; only the ambient motion of the cluster goes. */}
+            <button
+              type="button"
+              className="hud__chaos"
+              onClick={() => {
+                play("blip");
+                cluster.current.chaos(0.4);
+              }}
+              data-cursor={t("hero.chaosCursor")}
+            >
+              {t("hero.chaos")}
+            </button>
           </div>
         </div>
 

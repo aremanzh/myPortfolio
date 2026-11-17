@@ -1,5 +1,4 @@
 import { gsap } from "./gsap";
-import { reducedMotion } from "./env";
 import { play } from "./sound";
 
 /*
@@ -35,8 +34,14 @@ export function addSnap(tl, svg, { gap = 56, duration = 0.42, position, sound = 
   return tl;
 }
 
-/** Play a one-off snap on a mark, e.g. on hover. Returns the timeline. */
+/**
+ * Play a one-off snap on a mark, e.g. on hover. Returns the timeline.
+ *
+ * It runs under reduced motion too: it is short, small and only ever answers
+ * the visitor's own pointer. The preloader's snap, which plays by itself, is
+ * skipped there instead.
+ */
 export function snapMark(svg, options = {}) {
-  if (!svg || reducedMotion) return null;
+  if (!svg) return null;
   return addSnap(gsap.timeline(), svg, { position: 0, ...options });
 }
