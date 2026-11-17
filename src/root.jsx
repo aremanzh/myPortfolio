@@ -1,5 +1,5 @@
 import React from "react";
-import { Links, Meta, Scripts } from "react-router";
+import { Links, Meta, Scripts, useLocation } from "react-router";
 
 import "@fontsource-variable/bricolage-grotesque/standard.css";
 import "@fontsource/instrument-serif/latin-400-italic.css";
@@ -11,6 +11,7 @@ import App from "./App";
 import NotFound from "./pages/NotFound";
 import { site } from "./data/site";
 import { pageMeta } from "./lib/meta";
+import { HTML_LANG, localeOf } from "./i18n";
 
 const person = {
   "@context": "https://schema.org",
@@ -31,8 +32,10 @@ export const meta = () => pageMeta({ noindex: true });
 
 /** The HTML document around every page, prerendered or not. */
 export function Layout({ children }) {
+  // English at the root, Malay under /ms: the prerendered page says which.
+  const lang = HTML_LANG[localeOf(useLocation().pathname)];
   return (
-    <html lang="en">
+    <html lang={lang}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

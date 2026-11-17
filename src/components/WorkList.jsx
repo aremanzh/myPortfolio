@@ -4,6 +4,7 @@ import { finePointer, reducedMotion } from "../lib/env";
 import { TLink } from "./Transition";
 import ProjectCover from "./ProjectCover";
 import { ArrowUpRight } from "./Icons";
+import { useT } from "../i18n";
 
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -26,6 +27,7 @@ function Meta({ project, className = "" }) {
  * jumps when the page hydrates.
  */
 export default function WorkList({ projects }) {
+  const t = useT();
   const preview = useRef(null);
   const [active, setActive] = useState(-1);
   const [previous, setPrevious] = useState(-1);
@@ -75,7 +77,7 @@ export default function WorkList({ projects }) {
               to={`/works/${project.slug}`}
               name={project.title}
               className="work-row"
-              data-cursor="Open"
+              data-cursor={t("work.open")}
               onMouseEnter={() => show(index)}
             >
               <span className="t-mono hidden text-[color:var(--muted)] lg:block">{pad(index + 1)}</span>

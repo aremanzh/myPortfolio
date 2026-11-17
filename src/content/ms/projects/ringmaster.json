@@ -1,0 +1,37 @@
+{
+  "type": "Alat sumber terbuka",
+  "summary": "Jalankan setiap projek Laravel dan PHP tempatan dari satu tempat di Windows, setiap satu dengan versi PHP sendiri.",
+  "body": "Ringmaster menjalankan semua projek Laravel dan PHP tempatan awak dari satu tempat di Windows, menggunakan PHP dan Node yang sudah dipasang dalam mesin.\n\nKerja PHP tempatan di Windows biasanya bermaksud satu versi PHP aktif pada satu masa dan sederet terminal: artisan serve, Vite dan queue worker untuk setiap projek. Ringmaster ialah satu daemon yang mengawasi semuanya, dikawal dari web UI, app desktop atau CLI.",
+  "coverAlt": "Web UI Ringmaster menyenaraikan tiga projek, task salah satu projek beserta statusnya, dan panel log langsung",
+  "coverCaption": "Web UI yang menjalankan registry demo Ringmaster. Dirakam di Linux, jadi laluan menunjukkan /usr/bin/php, bukan pemasangan PHP Windows.",
+  "highlights": [
+    {
+      "title": "Satu versi PHP bagi setiap projek",
+      "text": "Setiap projek dipadankan dengan php.exe sebenar daripada pemasangan yang sudah ada dalam mesin. 8.2 dan 8.4 berjalan serentak, dan tiada tetapan global yang ditukar."
+    },
+    {
+      "title": "Berhenti bermaksud berhenti",
+      "text": "Setiap task berjalan dalam Windows Job Object, jadi bila ia dihentikan, seluruh pokok prosesnya ikut sekali dan port dibebaskan."
+    },
+    {
+      "title": "Port yang tak pernah bertembung",
+      "text": "Port disemak sebelum start. Kalau ada yang memegangnya, Ringmaster sebut PID dan nama programnya. Projek tanpa port tetap dapat port unik daripada satu julat."
+    },
+    {
+      "title": "Ujian di telefon yang tahan DHCP",
+      "text": "Bila bind ke LAN, alamat mesin dikesan semula setiap kali start, jadi config semalam masih jalan selepas router restart."
+    },
+    {
+      "title": "Pembersihan teliti selepas crash",
+      "text": "Ia bersihkan proses yang ia mulakan, dan semak identiti setiap PID dulu supaya ia tak bunuh program lain yang guna semula nombor itu."
+    }
+  ],
+  "links": [
+    {
+      "label": "Sumber di GitHub"
+    },
+    {
+      "label": "Release"
+    }
+  ]
+}

@@ -11,6 +11,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { gsap, ScrollTrigger } from "../lib/gsap";
 import { normalizePath, reducedMotion } from "../lib/env";
 import { scrollToTarget } from "../lib/scroll";
+import { localeOf, localize } from "../i18n";
 
 // useLayoutEffect warns when the page is prerendered; it only matters in the browser.
 const useBrowserLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -39,7 +40,10 @@ export function TransitionProvider({ children }) {
   const busy = useRef(false);
 
   const go = useCallback(
-    (to, name = "") => {
+    (target, name = "", { locale } = {}) => {
+      // Links are written without the language prefix; add the right one.
+      // Pass `locale` to switch language, otherwise the current one is kept.
+      const to = localize(target, locale || localeOf(location.pathname));
       const { path, hash } = splitTarget(to);
 
       if (normalizePath(path) === normalizePath(location.pathname)) {
@@ -112,8 +116,11 @@ export const usePageTransition = () => useContext(TransitionContext);
  * Drop-in for router <Link>. Modified clicks (new tab, etc.) keep their
  * native behaviour.
  */
-export function TLink({ to, name, onClick, children, ...rest }) {
+export function TLink({ to, name, locale, onClick, children, ...rest }) {
   const { go } = usePageTransition();
+  // The real href (for new tabs, crawlers and the prerendered HTML) carries
+  // the language prefix too.
+  const href = localize(to, locale || localeOf(useLocation().pathname));
 
   const handleClick = (event) => {
     if (onClick) onClick(event);
@@ -128,11 +135,11 @@ export function TLink({ to, name, onClick, children, ...rest }) {
       return;
     }
     event.preventDefault();
-    go(to, name);
+    go(to, name, { locale });
   };
 
   return (
-    <Link to={to} onClick={handleClick} {...rest}>
+    <Link to={href} onClick={handleClick} hrefLang={locale} {...rest}>
       {children}
     </Link>
   );

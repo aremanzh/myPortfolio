@@ -2,7 +2,8 @@ import React, { useRef } from "react";
 import { useParams } from "react-router";
 import { finePointer, reducedMotion, useHydrated } from "../lib/env";
 import { useDocumentTitle, useIntro } from "../lib/hooks";
-import { findProject, projects } from "../data/projects";
+import { projectsFor, useProjects } from "../data/projects";
+import { localeOf, translate, useT } from "../i18n";
 import { TLink } from "../components/Transition";
 import ProjectCover from "../components/ProjectCover";
 import { FadeUp, SplitReveal } from "../components/Reveal";
@@ -74,6 +75,8 @@ function Manifest({ project }) {
 }
 
 function Case({ project, index, next }) {
+  const t = useT();
+  const { projects } = useProjects();
   const root = useRef(null);
   const hydrated = useHydrated();
   useDocumentTitle(project.title);
@@ -87,20 +90,18 @@ function Case({ project, index, next }) {
   const [lead, ...rest] = project.body;
   const caption = project.cover
     ? project.cover.caption
-    : `No public screenshots for this one, so the cover is set in pods. ${
-        !hydrated || reducedMotion ? "" : finePointer ? "Point at it." : "Tap it."
-      }`;
+    : `${t("case.podCover")} ${!hydrated || reducedMotion ? "" : finePointer ? t("case.pointAt") : t("case.tapIt")}`;
 
   return (
     <article ref={root} className="theme-ink">
       <header className="wrap pb-[clamp(2.5rem,5vw,5rem)] pt-[clamp(8rem,16vw,14rem)]">
         <p className="case__fade t-mono eyebrow">
-          <TLink to="/works" name="Work" className="link">
-            Work
+          <TLink to="/works" name={t("nav.work")} className="link">
+            {t("nav.work")}
           </TLink>
           <span>/</span>
           <span>
-            {pad(index + 1)} of {pad(projects.length)}
+            {t("case.of", { n: pad(index + 1), total: pad(projects.length) })}
           </span>
         </p>
         <h1 className="t-display mt-8 max-w-[14ch]">
@@ -114,7 +115,7 @@ function Case({ project, index, next }) {
         <div
           className="case__cover frame aspect-[16/9]"
           style={{ clipPath: "inset(0)" }}
-          data-cursor={project.cover ? undefined : "Kill pods"}
+          data-cursor={project.cover ? undefined : t("case.killPods")}
         >
           {/* Shown whole and still: screenshots are UI, so nothing is cropped,
               and a generated cover is a live canvas under the pointer. */}
@@ -160,7 +161,7 @@ function Case({ project, index, next }) {
       {project.gallery.length > 0 && (
         <section aria-labelledby="screens-title" className="wrap pb-[clamp(4rem,9vw,9rem)]">
           <h2 id="screens-title" className="t-mono eyebrow">
-            Screens
+            {t("case.screens")}
           </h2>
           <FadeUp as="ul" className="mt-8 grid gap-x-8 gap-y-12 md:grid-cols-2" stagger={0.06}>
             {project.gallery.map((shot) => (
@@ -171,8 +172,8 @@ function Case({ project, index, next }) {
                     target="_blank"
                     rel="noreferrer"
                     className="card block"
-                    data-cursor="View"
-                    aria-label={`Open full size: ${shot.alt}`}
+                    data-cursor={t("case.view")}
+                    aria-label={t("case.openFull", { alt: shot.alt })}
                   >
                     <span className="frame block aspect-[16/9]">
                       <span className="cover">
@@ -203,10 +204,10 @@ function Case({ project, index, next }) {
         to={`/works/${next.slug}`}
         name={next.title}
         className="group block border-t border-[color:var(--line)]"
-        data-cursor="Next"
+        data-cursor={t("case.next")}
       >
         <div className="wrap py-[clamp(3.5rem,8vw,8rem)]">
-          <p className="t-mono eyebrow">Next project</p>
+          <p className="t-mono eyebrow">{t("case.nextProject")}</p>
           <p className="t-display mt-6 transition-transform duration-700 ease-out group-hover:translate-x-4">
             {next.title}
           </p>
@@ -216,9 +217,10 @@ function Case({ project, index, next }) {
   );
 }
 
-export function meta({ params }) {
-  const found = findProject(params.slug);
-  if (!found) return pageMeta({ title: "Not found", noindex: true });
+export function meta({ params, location }) {
+  const locale = localeOf(location.pathname);
+  const found = projectsFor(locale).findProject(params.slug);
+  if (!found) return pageMeta({ title: translate(locale, "notFound.title"), noindex: true, locale });
   const { project } = found;
   return pageMeta({
     title: project.title,
@@ -226,12 +228,13 @@ export function meta({ params }) {
     path: `/works/${project.slug}`,
     image: project.coverSrc || undefined,
     imageAlt: project.cover ? project.cover.alt : undefined,
+    locale,
   });
 }
 
 export default function WorkDetail() {
   const { slug } = useParams();
-  const found = findProject(slug);
+  const found = useProjects().findProject(slug);
 
   if (!found) return <NotFound />;
 

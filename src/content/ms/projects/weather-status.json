@@ -1,0 +1,11 @@
+{
+  "type": "App web",
+  "summary": "Carian cuaca kecil menggunakan API OpenWeatherMap.",
+  "body": "Carian cuaca kecil: cari lokasi dan dapatkan keadaan semasa, kelajuan angin, tekanan dan kelembapan daripada API OpenWeatherMap.",
+  "coverAlt": "Weather Status menunjukkan hujan renyai di Kuala Lumpur",
+  "links": [
+    {
+      "label": "Sumber di GitHub"
+    }
+  ]
+}

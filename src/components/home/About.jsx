@@ -1,10 +1,13 @@
 import React, { useRef } from "react";
 import { gsap, useGSAP } from "../../lib/gsap";
 import { reducedMotion } from "../../lib/env";
-import { about } from "../../data/site";
+import { useContent } from "../../data/site";
+import { useT } from "../../i18n";
 import { FadeUp, ScrubWords } from "../Reveal";
 
 export default function About() {
+  const t = useT();
+  const { about } = useContent();
   const root = useRef(null);
 
   useGSAP(
@@ -35,7 +38,7 @@ export default function About() {
     <section ref={root} id="about" className="section theme-paper lip relative z-10 -mt-[clamp(1.25rem,3vw,2.5rem)]">
       <div className="wrap grid gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-4">
-          <h2 className="t-mono eyebrow">About</h2>
+          <h2 className="t-mono eyebrow">{t("about.eyebrow")}</h2>
           {about.portrait && (
             <div className="about__frame frame mt-8 aspect-[4/5] max-w-md" style={{ clipPath: "inset(0)" }}>
               <div className="frame__in">

@@ -174,7 +174,7 @@ jobs:
           # Smoke test through the host nginx (vhost + TLS), not Cloudflare:
           # Cloudflare answers 403 to the GitHub runners' data-centre IPs.
           site() { curl -sS -o /dev/null -w '%{http_code}' --resolve mumtaaz.xyz:443:127.0.0.1 -k "https://mumtaaz.xyz\$1"; }
-          for p in / /works /contact /admin/ /sitemap.xml /robots.txt; do
+          for p in / /works /contact /ms /ms/works /admin/ /sitemap.xml /robots.txt; do
             [ "\$(site "\$p")" = 200 ] || { echo "smoke failed: \$p" >&2; exit 1; }
           done
           [ "\$(site /no-such-page)" = 404 ] || { echo "smoke failed: unknown page is not a 404" >&2; exit 1; }

@@ -4,6 +4,8 @@ import { reducedMotion } from "./env";
 import { useReady } from "./ready";
 import { introDelay } from "../components/Transition";
 import { site } from "../data/site";
+import { pageTitle } from "./meta";
+import { useLocale } from "../i18n";
 
 /**
  * Entrance timeline for the top of a page.
@@ -36,9 +38,11 @@ export function useIntro(scope, build) {
 }
 
 export function useDocumentTitle(title) {
+  const locale = useLocale();
   useEffect(() => {
-    document.title = title ? `${title} · ${site.name}` : `${site.name} · ${site.role}`;
-  }, [title]);
+    document.title = pageTitle(title, locale);
+    document.documentElement.lang = locale;
+  }, [title, locale]);
 }
 
 const clock = new Intl.DateTimeFormat("en-GB", {

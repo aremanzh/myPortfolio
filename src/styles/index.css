@@ -537,9 +537,111 @@ body::after {
   pointer-events: auto;
 }
 .nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: -0.02em;
+}
+.nav__mark {
+  width: 1.75rem;
+  height: auto;
+}
+
+/* EN / BM: the current language at full strength, the other one dimmed. */
+.nav__lang {
+  letter-spacing: inherit;
+}
+.nav__lang-off {
+  opacity: 0.45;
+  transition: opacity 0.2s var(--ease-out);
+}
+.nav__lang-sep {
+  margin: 0 0.35em;
+  opacity: 0.45;
+}
+@media (hover: hover) {
+  .nav__lang:hover .nav__lang-off {
+    opacity: 1;
+  }
+}
+
+/* Sound toggle: three bars, still when off, moving when on. */
+.nav__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+.nav__sound {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 0.7rem;
+}
+.nav__sound i {
+  display: block;
+  width: 2px;
+  height: 45%;
+  background: currentColor;
+  opacity: 0.6;
+}
+.nav__sound.is-on i {
+  opacity: 1;
+  animation: sound-bar 0.9s var(--ease-out) infinite alternate;
+}
+.nav__sound.is-on i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.nav__sound.is-on i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+@keyframes sound-bar {
+  from {
+    height: 25%;
+  }
+  to {
+    height: 100%;
+  }
+}
+/* The word only fits the bar on wide screens; the bars say it on their own. */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .nav__sound-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav__sound.is-on i {
+    animation: none;
+    height: 100%;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   The mark: two mirrored halves (components/Mark.jsx, lib/snap.js)
+   ---------------------------------------------------------------------- */
+.mark {
+  display: block;
+  fill: currentColor;
+  overflow: visible;
+}
+.mark__seam {
+  fill: var(--signal);
+  opacity: 0;
+}
+.preloader__mark {
+  align-self: center;
+  width: clamp(7rem, 20vw, 15rem);
+  height: auto;
+  color: var(--paper);
 }
 
 .menu {

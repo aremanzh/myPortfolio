@@ -2,22 +2,22 @@ import React, { useRef } from "react";
 import { gsap, useGSAP } from "../lib/gsap";
 import { reducedMotion } from "../lib/env";
 import { useDocumentTitle, useIntro } from "../lib/hooks";
-import { archive, projects } from "../data/projects";
+import { projectsFor, useProjects } from "../data/projects";
+import { contentFor } from "../data/site";
+import { localeOf, translate, useT } from "../i18n";
 import { ArrowUpRight } from "../components/Icons";
 import { TLink } from "../components/Transition";
 import ProjectCover from "../components/ProjectCover";
 import { pageMeta } from "../lib/meta";
-import { site } from "../data/site";
 
 const pad = (n) => String(n).padStart(2, "0");
-
-const leadSpans = projects.length % 2 === 1;
 
 /**
  * A project card. The lead card sits beside its text instead of above it, so
  * a full-width row stays about as tall as a normal one.
  */
 function Card({ project, index, lead }) {
+  const t = useT();
   const meta = [project.type, project.year].filter(Boolean).join(" · ");
 
   return (
@@ -25,7 +25,7 @@ function Card({ project, index, lead }) {
       to={`/works/${project.slug}`}
       name={project.title}
       className={`card group block ${lead ? "md:grid md:grid-cols-12 md:items-end md:gap-8" : ""}`}
-      data-cursor="Open"
+      data-cursor={t("work.open")}
     >
       <div className={`frame aspect-[16/10] ${lead ? "md:col-span-8" : ""}`}>
         <ProjectCover
@@ -50,16 +50,26 @@ function Card({ project, index, lead }) {
   );
 }
 
-export const meta = () =>
-  pageMeta({
-    title: "Work",
-    description: `Case studies by ${site.name}: ${projects.map((p) => p.title).join(", ")}. Laravel products, the pipelines that ship them and the clusters they run on.`,
+export function meta({ location }) {
+  const locale = localeOf(location.pathname);
+  const { projects } = projectsFor(locale);
+  return pageMeta({
+    title: translate(locale, "works.title"),
+    description: translate(locale, "works.description", {
+      name: contentFor(locale).site.name,
+      titles: projects.map((p) => p.title).join(", "),
+    }),
     path: "/works",
+    locale,
   });
+}
 
 export default function Works() {
+  const t = useT();
+  const { projects, archive } = useProjects();
+  const leadSpans = projects.length % 2 === 1;
   const root = useRef(null);
-  useDocumentTitle("Work");
+  useDocumentTitle(t("works.title"));
 
   useIntro(root, (tl) => {
     tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.07 }).from(
@@ -89,14 +99,15 @@ export default function Works() {
   return (
     <div ref={root} className="theme-ink">
       <header className="wrap pb-[clamp(3rem,6vw,6rem)] pt-[clamp(8rem,16vw,14rem)]">
-        <p className="works__fade t-mono eyebrow">Work, {pad(projects.length)} case studies</p>
+        <p className="works__fade t-mono eyebrow">{t("works.eyebrow", { n: pad(projects.length) })}</p>
         <h1 className="t-mega mt-8">
           <span className="line">
-            <span className="line__in">Built,</span>
+            <span className="line__in">{t("works.line1")}</span>
           </span>
           <span className="line">
             <span className="line__in">
-              shipped, <span className="serif accent">running.</span>
+              {t("works.line2Pre")}
+              <span className="serif accent">{t("works.line2Accent")}</span>
             </span>
           </span>
         </h1>
@@ -121,9 +132,9 @@ export default function Works() {
         <section aria-labelledby="archive-title" className="wrap pb-[clamp(5rem,11vw,11rem)]">
           <div className="flex flex-wrap items-baseline justify-between gap-4">
             <h2 id="archive-title" className="t-mono eyebrow">
-              Archive
+              {t("works.archive")}
             </h2>
-            <p className="t-mono text-[color:var(--muted)]">Earlier and smaller work, without a page of its own</p>
+            <p className="t-mono text-[color:var(--muted)]">{t("works.archiveNote")}</p>
           </div>
           <ul className="archive mt-6">
             {archive.map((project) => {

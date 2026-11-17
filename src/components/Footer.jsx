@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { useLocalTime } from "../lib/hooks";
 import { scrollToTarget } from "../lib/scroll";
-import { site } from "../data/site";
+import { useContent } from "../data/site";
+import { useT } from "../i18n";
 import { TLink } from "./Transition";
 import { SplitReveal } from "./Reveal";
 import Magnetic from "./Magnetic";
 import { ArrowUpRight } from "./Icons";
 
 function LocalTime() {
+  const { site } = useContent();
   const time = useLocalTime();
   return (
     <span className="tabular-nums">
@@ -17,6 +19,8 @@ function LocalTime() {
 }
 
 function CopyEmail() {
+  const t = useT();
+  const { site } = useContent();
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
@@ -31,9 +35,9 @@ function CopyEmail() {
   };
 
   return (
-    <button type="button" onClick={copy} className="text-left" data-cursor={copied ? "Copied" : "Copy"}>
+    <button type="button" onClick={copy} className="text-left" data-cursor={copied ? t("footer.copiedCursor") : t("footer.copyCursor")}>
       <span className="t-mono block text-[color:var(--muted)]" aria-live="polite">
-        {copied ? "Copied to clipboard" : "Email, click to copy"}
+        {copied ? t("footer.copied") : t("footer.copyHint")}
       </span>
       <span className="link mt-2 inline-block break-all text-[clamp(1.15rem,2.4vw,2.2rem)] font-medium tracking-tight">
         {site.email}
@@ -43,6 +47,8 @@ function CopyEmail() {
 }
 
 function FooterBar() {
+  const t = useT();
+  const { site } = useContent();
   return (
     <div className="t-mono grid gap-6 border-t border-[color:var(--line)] pt-6 md:grid-cols-[1fr_auto_1fr] md:items-baseline">
       {/* The prerendered year is the build's; the browser may be in a newer one. */}
@@ -69,7 +75,7 @@ function FooterBar() {
           className="link uppercase tracking-[inherit]"
           onClick={() => scrollToTarget(0)}
         >
-          Back to top
+          {t("footer.top")}
         </button>
       </div>
     </div>
@@ -81,6 +87,7 @@ function FooterBar() {
  * (contact) that already are the call to action.
  */
 export default function Footer({ cta = true }) {
+  const t = useT();
   if (!cta) {
     return (
       <footer className="theme-ink wrap pb-8">
@@ -92,18 +99,19 @@ export default function Footer({ cta = true }) {
   return (
     <footer className="theme-paper lip relative z-10">
       <div className="wrap pb-8 pt-[clamp(4.5rem,10vw,10rem)]">
-        <p className="t-mono eyebrow">Contact</p>
+        <p className="t-mono eyebrow">{t("footer.eyebrow")}</p>
 
         <SplitReveal as="h2" className="t-display mt-8">
-          Let’s ship something <span className="serif accent">solid.</span>
+          {t("footer.titlePre")}
+          <span className="serif accent">{t("footer.titleAccent")}</span>
         </SplitReveal>
 
         <div className="mb-[clamp(4rem,8vw,8rem)] mt-[clamp(3rem,6vw,6rem)] grid gap-10 md:grid-cols-2 md:items-end">
           <CopyEmail />
           <div className="md:justify-self-end">
             <Magnetic>
-              <TLink to="/contact" name="Contact" className="btn btn--solid t-mono">
-                Start a project <ArrowUpRight />
+              <TLink to="/contact" name={t("nav.contact")} className="btn btn--solid t-mono">
+                {t("footer.start")} <ArrowUpRight />
               </TLink>
             </Magnetic>
           </div>

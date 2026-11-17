@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { gsap, useGSAP } from "../../lib/gsap";
 import { reducedMotion } from "../../lib/env";
 import { scrollToTarget } from "../../lib/scroll";
-import { pipeline } from "../../data/site";
+import { pipeline as englishPipeline, useContent } from "../../data/site";
+import { useT } from "../../i18n";
+import { play } from "../../lib/sound";
 import { SplitReveal } from "../Reveal";
 
 const THEMES = ["theme-ink-2 stage--bordered", "theme-paper", "theme-signal"];
@@ -17,6 +19,8 @@ const TICK_MS = 100;
 const FINISH_AT = 0.6;
 
 // The log pane is as tall as the longest log, so the stacked cards line up.
+// Logs are commands, the same in every language.
+const pipeline = englishPipeline;
 const LOG_ROWS = Math.max(1, ...pipeline.map((stage) => stage.log.length)) + 1;
 
 const pad2 = (n) => String(n).padStart(2, "0");
@@ -51,16 +55,18 @@ function snapshot(runs, t) {
   }
   if (first.status === QUEUED) return { stages, overall: QUEUED, total: "", note: "" };
 
+  // The note names a stage by index; the component words it in the page's language.
   const running = runs.findIndex((run) => run.status === RUNNING);
   const note =
     running >= 0
-      ? `${pipeline[running].name} in progress`
-      : `Waiting for you at ${pipeline[runs.findIndex((run) => run.status === QUEUED)].name}`;
+      ? { key: "pipeline.inProgress", stage: running }
+      : { key: "pipeline.waiting", stage: runs.findIndex((run) => run.status === QUEUED) };
   return { stages, overall: RUNNING, total: clock(t - first.startedAt), note };
 }
 
 function Status({ status, time }) {
-  const label = status === QUEUED ? "Queued" : status === RUNNING ? "Running" : "Passed";
+  const t = useT();
+  const label = status === QUEUED ? t("pipeline.queued") : status === RUNNING ? t("pipeline.running") : t("pipeline.passed");
   return (
     <span className={`chip chip--${status}`}>
       <span className="chip__dot" aria-hidden="true" />
@@ -84,6 +90,8 @@ function Status({ status, time }) {
  * script; the script adds the run and the slight scale-back of covered cards.
  */
 export default function Pipeline() {
+  const t = useT();
+  const { pipeline: stages } = useContent();
   const root = useRef(null);
   const deck = useRef(null);
   const cards = useRef([]);
@@ -94,6 +102,14 @@ export default function Pipeline() {
   const armed = useRef(true);
   const last = useRef("");
   const [view, setView] = useState(() => snapshot(runs.current, 0));
+
+  // A blip for every log line that prints (only when sound is on).
+  const printed = view.stages.reduce((sum, stage) => sum + stage.printed, 0);
+  const lastPrinted = useRef(printed);
+  useEffect(() => {
+    if (printed > lastPrinted.current) play("blip");
+    lastPrinted.current = printed;
+  }, [printed]);
 
   const publish = useCallback((t) => {
     const next = snapshot(runs.current, t);
@@ -186,18 +202,20 @@ export default function Pipeline() {
   return (
     <section ref={root} className="section theme-ink">
       <div className="wrap">
-        <p className="t-mono eyebrow">What I do</p>
+        <p className="t-mono eyebrow">{t("pipeline.eyebrow")}</p>
         <SplitReveal as="h2" className="t-display mt-8 max-w-[11ch]">
-          One person. The <span className="serif accent">whole</span> pipeline.
+          {t("pipeline.titlePre")}
+          <span className="serif accent">{t("pipeline.titleAccent")}</span>
+          {t("pipeline.titlePost")}
         </SplitReveal>
 
         <ol
           ref={deck}
           tabIndex={-1}
-          aria-label="Pipeline stages"
+          aria-label={t("pipeline.stages")}
           className="mt-[clamp(3rem,7vw,7rem)] grid gap-6 outline-none"
         >
-          {pipeline.map((stage, i) => {
+          {stages.map((stage, i) => {
             const state = view.stages[i];
             return (
               <li
@@ -210,7 +228,7 @@ export default function Pipeline() {
               >
                 <div className="stage__head t-mono">
                   <span>
-                    Stage {pad2(i + 1)} / {pad2(pipeline.length)}
+                    {t("pipeline.stage", { n: pad2(i + 1), total: pad2(stages.length) })}
                     <span className="mx-3 opacity-50">/</span>
                     {stage.name}
                   </span>
@@ -220,7 +238,7 @@ export default function Pipeline() {
                 <div className="stage__body grid items-end gap-8 lg:grid-cols-12">
                   <h3 className="stage__name t-display lg:col-span-6">{stage.name}</h3>
                   <div className="grid gap-7 lg:col-span-6">
-                    <ol className="log" style={{ "--rows": LOG_ROWS }} aria-label={`${stage.name} job log`}>
+                    <ol className="log" style={{ "--rows": LOG_ROWS }} aria-label={t("pipeline.jobLog", { name: stage.name })}>
                       {stage.log.map((line, n) => (
                         <li
                           key={`${n}:${line}`}
@@ -238,7 +256,7 @@ export default function Pipeline() {
                         className={`log__line log__done ${state.status === PASSED ? "is-on" : ""}`}
                         aria-hidden={state.status !== PASSED}
                       >
-                        {state.status === PASSED ? "Job succeeded" : " "}
+                        {state.status === PASSED ? t("pipeline.succeeded") : " "}
                       </li>
                     </ol>
                     <p className="max-w-[36ch] text-[clamp(1.1rem,1.7vw,1.6rem)] font-medium leading-snug tracking-tight">
@@ -260,16 +278,16 @@ export default function Pipeline() {
 
         <div ref={summary} className="pipeline-summary t-mono">
           <span className="flex items-center gap-3">
-            Pipeline <Status status={view.overall} time={view.total} />
+            {t("pipeline.label")} <Status status={view.overall} time={view.total} />
           </span>
           <p className="text-[color:var(--muted)]">
-            {view.overall === QUEUED && "It runs as you scroll through it."}
-            {view.overall === RUNNING && view.note}
-            {view.overall === PASSED && "Every duration is the time you spent on that card."}
+            {view.overall === QUEUED && t("pipeline.idle")}
+            {view.overall === RUNNING && view.note && t(view.note.key, { name: stages[view.note.stage].name })}
+            {view.overall === PASSED && t("pipeline.done")}
           </p>
           {view.overall === PASSED && (
             <button type="button" className="link uppercase tracking-[inherit]" onClick={runAgain}>
-              Run it again
+              {t("pipeline.again")}
             </button>
           )}
         </div>

@@ -251,3 +251,104 @@ collections:
             label: Marquee words
             widget: list
             hint: The scrolling band of technologies on the home page.
+
+  # ---------------------------------------------------- Bahasa Melayu (/ms)
+  # Translations are overlays: each file holds only the fields that change,
+  # laid over the English entry with the same name. Anything left empty here
+  # (stack, links, images, order) comes from the English entry.
+  - name: projects_ms
+    label: Projects (Bahasa Melayu)
+    label_singular: Project translation
+    description: >-
+      Malay text for /ms/works/<file-name>. The file name must match the
+      English project. Leave a field empty to show the English text.
+    folder: /src/content/ms/projects
+    format: json
+    extension: json
+    create: true
+    editor:
+      preview: false
+    identifier_field: summary
+    summary: "{{slug}}"
+    fields:
+      - { name: title, label: Title, widget: string, required: false, hint: Usually the same as the English title; leave empty to keep it. }
+      - { name: type, label: Type, widget: string, required: false }
+      - { name: role, label: Role, widget: string, required: false }
+      - { name: summary, label: Summary, widget: text, required: false }
+      - { name: body, label: Description, widget: text, required: false, hint: Leave a blank line between paragraphs. }
+      - name: highlights
+        label: Highlights
+        label_singular: Highlight
+        widget: list
+        required: false
+        summary: "{{title}}"
+        hint: Same order and number as the English highlights.
+        fields:
+          - { name: title, label: Title, widget: string }
+          - { name: text, label: Text, widget: text }
+      - { name: coverAlt, label: Cover alt text, widget: string, required: false }
+      - { name: coverCaption, label: Cover caption, widget: string, required: false }
+      - name: gallery
+        label: Screen captions
+        label_singular: Screen
+        widget: list
+        required: false
+        summary: "{{caption}}"
+        hint: One per English screen, in the same order. Images come from the English entry.
+        fields:
+          - { name: alt, label: Alt text, widget: string }
+          - { name: caption, label: Caption, widget: string, required: false }
+      - name: links
+        label: Link labels
+        label_singular: Link label
+        widget: list
+        required: false
+        summary: "{{label}}"
+        hint: One per English link, in the same order. URLs come from the English entry.
+        fields:
+          - { name: label, label: Label, widget: string }
+
+  - name: site_ms
+    label: Site (Bahasa Melayu)
+    description: Malay text for the site-wide entries. Empty fields show the English text.
+    format: json
+    editor:
+      preview: false
+    files:
+      - name: settings
+        label: Settings
+        file: /src/content/ms/site.json
+        fields:
+          - { name: role, label: Role, widget: string, required: false }
+          - { name: location, label: Location, widget: string, required: false }
+          - { name: availabilityLabel, label: Badge text when available, widget: string, required: false }
+          - { name: unavailableLabel, label: Badge text when not available, widget: string, required: false }
+      - name: about
+        label: About
+        file: /src/content/ms/about.json
+        fields:
+          - { name: statement, label: Statement, widget: text, required: false }
+          - { name: portraitAlt, label: Portrait alt text, widget: string, required: false }
+          - name: facts
+            label: Facts
+            label_singular: Fact
+            widget: list
+            required: false
+            summary: "{{label}}: {{value}}"
+            fields:
+              - { name: label, label: Label, widget: string }
+              - { name: value, label: Value, widget: string }
+      - name: capabilities
+        label: What I do
+        file: /src/content/ms/capabilities.json
+        fields:
+          - name: stages
+            label: Stages
+            label_singular: Stage
+            widget: list
+            required: false
+            summary: "{{name}}"
+            hint: Same order as the English stages. Tools and job logs come from the English entry.
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: summary, label: Summary, widget: text }

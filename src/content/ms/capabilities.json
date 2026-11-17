@@ -1,0 +1,16 @@
+{
+  "stages": [
+    {
+      "name": "Bina",
+      "summary": "Backend Laravel dengan seni bina yang jelas dan mudah dibaca, dan front end Vue atau React di atasnya. Kod yang developer seterusnya boleh ambil alih tanpa perlu dibawa melawat."
+    },
+    {
+      "name": "Hantar",
+      "summary": "Setiap perubahan dibina menjadi image dan ditolak melalui pipeline, jadi setiap release ialah langkah yang boleh diulang, bukan satu peristiwa."
+    },
+    {
+      "name": "Jalan",
+      "summary": "Workload Kubernetes, reverse proxy dan hos Linux, dikendalikan dengan uptime dan observability diutamakan berbanding kelajuan ciri baharu."
+    }
+  ]
+}

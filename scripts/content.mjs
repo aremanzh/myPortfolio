@@ -157,6 +157,40 @@ const projects = projectFiles
   })
   .filter(Boolean);
 
+/* ----------------------------------------------- Malay translations (ms) */
+// Overlays: each file holds only the fields that change and is laid over the
+// English file with the same name. They must parse, match an English file,
+// and keep the same shape where they translate lists.
+const msDir = join(contentDir, "ms");
+const msProjectsDir = join(msDir, "projects");
+if (existsSync(msDir)) {
+  ["site.json", "about.json", "capabilities.json"].forEach((name) => {
+    if (existsSync(join(msDir, name))) readJson(`ms/${name}`);
+  });
+  const msAbout = existsSync(join(msDir, "about.json")) ? readJson("ms/about.json") : null;
+  if (msAbout && about && Array.isArray(msAbout.facts)) {
+    msAbout.facts.forEach((fact, i) => {
+      if (!isText(fact.label) || !isText(fact.value)) fail("ms/about.json", `facts[${i}] needs a label and a value`);
+    });
+  }
+}
+if (existsSync(msProjectsDir)) {
+  const englishSlugs = new Set(projectFiles.map((name) => basename(name, ".json")));
+  readdirSync(msProjectsDir)
+    .filter((f) => f.endsWith(".json"))
+    .forEach((name) => {
+      const file = `ms/projects/${name}`;
+      const data = readJson(file);
+      if (!data) return;
+      if (!englishSlugs.has(basename(name, ".json"))) {
+        fail(file, `there is no projects/${name} for this translation to belong to`);
+      }
+      (data.highlights || []).forEach((item, i) => {
+        if (!isText(item.title) || !isText(item.text)) fail(file, `highlights[${i}] needs a title and text`);
+      });
+    });
+}
+
 if (projects.length && !projects.some((p) => p.published && !p.archived)) {
   fail("projects/", "no published case studies: at least one project must be published and not archived");
 }
@@ -216,7 +250,7 @@ console.log(`images: ${sources.length} sources, ${resized} variants written`);
 /* --------------------------------------------------------------- sitemap */
 
 const base = site.url.replace(/\/$/, "");
-const paths = [
+const english = [
   "/",
   "/works",
   "/contact",
@@ -225,6 +259,8 @@ const paths = [
     .sort((a, b) => a.order - b.order)
     .map((p) => `/works/${p.slug}`),
 ];
+// Every page also exists in Malay under /ms.
+const paths = [...english, ...english.map((path) => (path === "/" ? "/ms" : `/ms${path}`))];
 writeFileSync(
   join(root, "public/sitemap.xml"),
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${paths

@@ -4,12 +4,17 @@ import { TLink } from "../components/Transition";
 import PodType from "../components/PodType";
 import { ArrowUpRight } from "../components/Icons";
 import { pageMeta } from "../lib/meta";
+import { localeOf, translate, useT } from "../i18n";
 
-export const meta = () => pageMeta({ title: "Not found", noindex: true });
+export const meta = ({ location }) => {
+  const locale = localeOf(location.pathname);
+  return pageMeta({ title: translate(locale, "notFound.title"), noindex: true, locale });
+};
 
 export default function NotFound() {
+  const t = useT();
   const root = useRef(null);
-  useDocumentTitle("Not found");
+  useDocumentTitle(t("notFound.title"));
 
   useIntro(root, (tl) => {
     tl.from(".nf__type", { opacity: 0, duration: 1.6, ease: "power2.out" })
@@ -22,26 +27,26 @@ export default function NotFound() {
       ref={root}
       className="theme-ink wrap flex min-h-[100svh] flex-col justify-end gap-10 pb-[clamp(3rem,6vw,6rem)] pt-28"
     >
-      <div className="nf__type relative min-h-[11rem] flex-1" data-cursor="Kill pods">
+      <div className="nf__type relative min-h-[11rem] flex-1" data-cursor={t("case.killPods")}>
         <PodType text="404" tone="ink" live fill={0.92} />
       </div>
 
       <div>
-        <p className="nf__fade t-mono eyebrow">Error 404 / Not scheduled</p>
+        <p className="nf__fade t-mono eyebrow">{t("notFound.eyebrow")}</p>
         <h1 className="t-display mt-6">
           <span className="line">
             <span className="line__in">
-              No pod at this <span className="serif accent">address.</span>
+              {t("notFound.headPre")}
+              <span className="serif accent">{t("notFound.headAccent")}</span>
             </span>
           </span>
         </h1>
         <div className="nf__fade mt-8 flex flex-wrap items-center gap-6">
           <p className="t-body max-w-[40ch]">
-            The page you asked for was never scheduled, or it has been moved. The rest of the
-            cluster is fine.
+            {t("notFound.body")}
           </p>
-          <TLink to="/" name="Home" className="btn btn--solid t-mono">
-            Back to home <ArrowUpRight />
+          <TLink to="/" name={t("nav.home")} className="btn btn--solid t-mono">
+            {t("notFound.back")} <ArrowUpRight />
           </TLink>
         </div>
       </div>

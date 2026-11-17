@@ -1,0 +1,22 @@
+{
+  "statement": "Saya Mumtaz. Saya belajar seni halus, kemudian belajar menjalankan kluster Kubernetes, dan saya masih ambil berat tentang kedua-dua hujung kerja ini. Saya reka backend Laravel, bina front end dalam Vue atau React, masukkan ke dalam kontena, dan pastikan ia terus berjalan dalam production.",
+  "portraitAlt": "Potret Mumtaz Che Ismail, diterangi cahaya merah dan biru dengan latar gelap",
+  "facts": [
+    {
+      "label": "Berpangkalan di",
+      "value": "Putrajaya, Malaysia"
+    },
+    {
+      "label": "Fokus",
+      "value": "Laravel, Kubernetes, CI/CD"
+    },
+    {
+      "label": "Bertauliah",
+      "value": "Kubernetes Administrator (CKA)"
+    },
+    {
+      "label": "Pengajian",
+      "value": "Seni Halus, Universiti Sains Malaysia"
+    }
+  ]
+}

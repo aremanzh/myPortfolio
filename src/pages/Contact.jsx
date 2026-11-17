@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useDocumentTitle, useIntro, useLocalTime } from "../lib/hooks";
-import { site } from "../data/site";
+import { contentFor, useContent } from "../data/site";
+import { localeOf, translate, useT } from "../i18n";
 import { preview } from "../lib/env";
 import { ArrowUpRight } from "../components/Icons";
 import { pageMeta } from "../lib/meta";
@@ -11,6 +12,8 @@ const SENT = "sent";
 const FAILED = "failed";
 
 function ContactForm() {
+  const t = useT();
+  const { site } = useContent();
   const [status, setStatus] = useState(IDLE);
 
   // The form also works without JS: it posts straight to the endpoint.
@@ -52,15 +55,14 @@ function ContactForm() {
     return (
       <div role="status" className="border-t border-[color:var(--line)] pt-8">
         <p className="t-lead">
-          Message sent. <span className="serif accent">Thank you.</span>
+          {t("contact.sentPre")}
+          <span className="serif accent">{t("contact.sentAccent")}</span>
         </p>
         <p className="t-body mt-4">
-          {preview
-            ? "Preview build: this is what a visitor sees after sending. Nothing was actually sent."
-            : "I’ll reply to the address you gave."}
+          {preview ? t("contact.sentPreview") : t("contact.sentNote")}
         </p>
         <button type="button" className="btn t-mono mt-8" onClick={() => setStatus(IDLE)}>
-          Send another
+          {t("contact.again")}
         </button>
       </div>
     );
@@ -76,20 +78,27 @@ function ContactForm() {
       <div className="grid gap-10 sm:grid-cols-2">
         <div className="field">
           <label htmlFor="name" className="t-mono">
-            01 / Your name
+            {t("contact.name")}
           </label>
-          <input id="name" name="name" type="text" autoComplete="name" placeholder="Jane Doe" required />
+          <input
+            id="name"
+            name="name"
+            type="text"
+            autoComplete="name"
+            placeholder={t("contact.namePlaceholder")}
+            required
+          />
         </div>
         <div className="field">
           <label htmlFor="email" className="t-mono">
-            02 / Your email
+            {t("contact.email")}
           </label>
           <input
             id="email"
             name="email"
             type="email"
             autoComplete="email"
-            placeholder="jane@company.com"
+            placeholder={t("contact.emailPlaceholder")}
             required
           />
         </div>
@@ -97,28 +106,28 @@ function ContactForm() {
 
       <div className="field">
         <label htmlFor="message" className="t-mono">
-          03 / What are you building?
+          {t("contact.message")}
         </label>
         <textarea
           id="message"
           name="message"
-          placeholder="The product, where it runs today, and what you need."
+          placeholder={t("contact.messagePlaceholder")}
           required
         />
       </div>
 
       <div className="hidden" aria-hidden="true">
-        <label htmlFor="website">Leave this empty</label>
+        <label htmlFor="website">{t("contact.honeypot")}</label>
         <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
       <div className="flex flex-wrap items-center gap-6">
         <button type="submit" className="btn btn--solid t-mono" disabled={status === SENDING}>
-          {status === SENDING ? "Sending" : "Send message"} <ArrowUpRight />
+          {status === SENDING ? t("contact.sending") : t("contact.send")} <ArrowUpRight />
         </button>
         {status === FAILED && (
           <p role="alert" className="t-body max-w-[40ch]">
-            That didn’t go through. Try again, or email{" "}
+            {t("contact.failed")}{" "}
             <a href={`mailto:${site.email}`} className="link link--on text-[color:var(--fg)]">
               {site.email}
             </a>
@@ -130,17 +139,27 @@ function ContactForm() {
   );
 }
 
-export const meta = () =>
-  pageMeta({
-    title: "Contact",
-    description: `Tell ${site.shortName} what you are building. ${site.availabilityLabel}. Based in ${site.location}.`,
+export function meta({ location }) {
+  const locale = localeOf(location.pathname);
+  const { site } = contentFor(locale);
+  return pageMeta({
+    title: translate(locale, "contact.title"),
+    description: translate(locale, "contact.description", {
+      name: site.shortName,
+      availability: site.availabilityLabel,
+      location: site.location,
+    }),
     path: "/contact",
+    locale,
   });
+}
 
 export default function Contact() {
+  const t = useT();
+  const { site } = useContent();
   const root = useRef(null);
   const time = useLocalTime();
-  useDocumentTitle("Contact");
+  useDocumentTitle(t("contact.title"));
 
   useIntro(root, (tl) => {
     tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.07 }).from(
@@ -153,14 +172,15 @@ export default function Contact() {
   return (
     <div ref={root} className="theme-ink">
       <header className="wrap pb-[clamp(3rem,6vw,6rem)] pt-[clamp(8rem,16vw,14rem)]">
-        <p className="contact__fade t-mono eyebrow">Contact</p>
+        <p className="contact__fade t-mono eyebrow">{t("contact.eyebrow")}</p>
         <h1 className="t-mega mt-8">
           <span className="line">
-            <span className="line__in">Tell me what</span>
+            <span className="line__in">{t("contact.line1")}</span>
           </span>
           <span className="line">
             <span className="line__in">
-              you’re <span className="serif accent">building.</span>
+              {t("contact.line2Pre")}
+              <span className="serif accent">{t("contact.line2Accent")}</span>
             </span>
           </span>
         </h1>
@@ -173,7 +193,7 @@ export default function Contact() {
 
         <aside className="contact__fade grid content-start gap-8 lg:col-span-4 lg:col-start-9">
           <div className="border-t border-[color:var(--line)] pt-4">
-            <h2 className="t-mono text-[color:var(--muted)]">Email</h2>
+            <h2 className="t-mono text-[color:var(--muted)]">{t("contact.emailLabel")}</h2>
             <a
               href={`mailto:${site.email}`}
               className="link link--on mt-2 inline-block break-all text-lg font-medium tracking-tight"
@@ -182,7 +202,7 @@ export default function Contact() {
             </a>
           </div>
           <div className="border-t border-[color:var(--line)] pt-4">
-            <h2 className="t-mono text-[color:var(--muted)]">Elsewhere</h2>
+            <h2 className="t-mono text-[color:var(--muted)]">{t("contact.elsewhere")}</h2>
             <ul className="mt-2 grid gap-1 text-lg font-medium tracking-tight">
               {site.socials.map((social) => (
                 <li key={social.label}>
@@ -194,7 +214,7 @@ export default function Contact() {
             </ul>
           </div>
           <div className="border-t border-[color:var(--line)] pt-4">
-            <h2 className="t-mono text-[color:var(--muted)]">Where and when</h2>
+            <h2 className="t-mono text-[color:var(--muted)]">{t("contact.whereWhen")}</h2>
             <p className="mt-2 text-lg font-medium tracking-tight">
               {site.location}
               <br />

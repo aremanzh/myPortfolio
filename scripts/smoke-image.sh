@@ -34,6 +34,14 @@ done
 first_case=$(curl -s "$BASE/sitemap.xml" | grep -o '/works/[a-z0-9-]*' | head -1)
 check "200 $first_case (from sitemap)" 200 "$(status "$first_case")"
 
+# The Malay copy of every page, under /ms.
+for path in /ms /ms/ /ms/works /ms/contact "/ms$first_case"; do
+  check "200 $path" 200 "$(status "$path")"
+done
+check "/ms page is in Malay" yes "$(curl -s "$BASE/ms/works" | grep -q '<html lang="ms"' && echo yes)"
+check "English page names its Malay copy" yes "$(curl -s "$BASE/works" | grep -q 'hrefLang="ms"' && echo yes)"
+check "404 unknown Malay page" 404 "$(status /ms/no-such-page)"
+
 check "404 unknown page" 404 "$(status /no-such-page)"
 check "404 unknown case study" 404 "$(status /works/no-such-project)"
 check "404 missing asset" 404 "$(status /assets/missing.js)"

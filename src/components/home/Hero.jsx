@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { useIntro } from "../../lib/hooks";
 import { scrollToTarget } from "../../lib/scroll";
 import { finePointer, reducedMotion, useHydrated } from "../../lib/env";
-import { site } from "../../data/site";
+import { useContent } from "../../data/site";
+import { useT } from "../../i18n";
+import { play } from "../../lib/sound";
 import PodCluster from "../PodCluster";
 import Magnetic from "../Magnetic";
 import { TLink } from "../Transition";
@@ -12,6 +14,8 @@ import { RUN_CHAOS } from "../CommandPalette";
 const pad = (n) => String(n).padStart(4, "0");
 
 export default function Hero() {
+  const t = useT();
+  const { site } = useContent();
   const root = useRef(null);
   const hydrated = useHydrated();
   const cluster = useRef(null);
@@ -30,17 +34,20 @@ export default function Hero() {
 
     const healthy = stats.running >= stats.total * 0.985;
     const [text, color] = healthy
-      ? ["Healthy", "var(--ok)"]
+      ? [t("hero.status.healthy"), "var(--ok)"]
       : stats.killed > stats.healed
-      ? ["Self-healing", "var(--signal)"]
-      : ["Rolling update", "var(--fg)"];
+      ? [t("hero.status.healing"), "var(--signal)"]
+      : [t("hero.status.rolling"), "var(--fg)"];
     status.current.textContent = text;
     status.current.style.color = color;
-  }, []);
+  }, [t]);
 
   // The command palette can trigger the chaos test too.
   useEffect(() => {
-    const onChaos = () => cluster.current && cluster.current.chaos(0.4);
+    const onChaos = () => {
+      play("blip");
+      if (cluster.current) cluster.current.chaos(0.4);
+    };
     window.addEventListener(RUN_CHAOS, onChaos);
     return () => window.removeEventListener(RUN_CHAOS, onChaos);
   }, []);
@@ -59,25 +66,28 @@ export default function Hero() {
         <div className="hero__fade flex justify-end">
           <div className="hud t-mono">
             <dl className="hud__stats">
-              <dt>Cluster</dt>
+              <dt>{t("hero.status.cluster")}</dt>
               <dd ref={status} style={{ color: "var(--ok)" }}>
-                Healthy
+                {t("hero.status.healthy")}
               </dd>
-              <dt>Pods ready</dt>
+              <dt>{t("hero.status.ready")}</dt>
               <dd ref={ready}>0000/0000</dd>
-              <dt>Killed by you</dt>
+              <dt>{t("hero.status.killed")}</dt>
               <dd ref={killed}>0000</dd>
-              <dt>Self-healed</dt>
+              <dt>{t("hero.status.healed")}</dt>
               <dd ref={healed}>0000</dd>
             </dl>
             {!(hydrated && reducedMotion) && (
               <button
                 type="button"
                 className="hud__chaos"
-                onClick={() => cluster.current.chaos(0.4)}
-                data-cursor="Break it"
+                onClick={() => {
+                  play("blip");
+                  cluster.current.chaos(0.4);
+                }}
+                data-cursor={t("hero.chaosCursor")}
               >
-                Run chaos test
+                {t("hero.chaos")}
               </button>
             )}
           </div>
@@ -87,27 +97,27 @@ export default function Hero() {
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-end lg:gap-12">
             <h1 className="t-mega">
               <span className="line">
-                <span className="line__in">Build it.</span>
+                <span className="line__in">{t("hero.line1")}</span>
               </span>
               <span className="line">
-                <span className="line__in">Ship it.</span>
+                <span className="line__in">{t("hero.line2")}</span>
               </span>
               <span className="line">
                 <span className="line__in">
-                  Keep it <span className="serif accent">up.</span>
+                  {t("hero.line3Pre")}
+                  <span className="serif accent">{t("hero.line3Accent")}</span>
                 </span>
               </span>
             </h1>
 
             <div className="grid gap-6 lg:pb-3">
               <p className="hero__fade text-[clamp(1rem,1.25vw,1.2rem)] leading-snug">
-                {site.name}. {site.role}, based in {site.location}. I write the product, wire the
-                pipeline, and run the cluster it lives on.
+                {t("hero.intro", { name: site.name, role: site.role, location: site.location })}
               </p>
               <div className="hero__fade flex flex-wrap items-center gap-x-6 gap-y-4">
                 <Magnetic>
-                  <TLink to="/works" name="Work" className="btn btn--solid t-mono">
-                    See the work <ArrowUpRight />
+                  <TLink to="/works" name={t("nav.work")} className="btn btn--solid t-mono">
+                    {t("hero.cta")} <ArrowUpRight />
                   </TLink>
                 </Magnetic>
                 <span className={`badge t-mono ${site.available ? "badge--on" : ""}`}>
@@ -124,11 +134,10 @@ export default function Hero() {
               className="flex items-center gap-3 uppercase"
               onClick={() => scrollToTarget("#about")}
             >
-              <ArrowDown className="h-3 w-3" /> Scroll
+              <ArrowDown className="h-3 w-3" /> {t("hero.scroll")}
             </button>
             <p className="text-right">
-              {hydrated && !finePointer ? "Tap the cluster" : "Hover the cluster"} to kill a pod. It comes
-              back.
+              {hydrated && !finePointer ? t("hero.hintTap") : t("hero.hintHover")}
             </p>
           </div>
         </div>

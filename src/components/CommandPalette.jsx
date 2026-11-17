@@ -2,8 +2,10 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import { lockScroll, scrollToTarget } from "../lib/scroll";
 import { normalizePath, reducedMotion } from "../lib/env";
-import { site } from "../data/site";
-import { projects } from "../data/projects";
+import { useContent } from "../data/site";
+import { useProjects } from "../data/projects";
+import { stripLocale, useLocale, useT } from "../i18n";
+import { toggleSound, useSound } from "../lib/sound";
 import { usePageTransition } from "./Transition";
 
 export const OPEN_PALETTE = "palette:open";
@@ -24,25 +26,31 @@ export default function CommandPalette() {
   const input = useRef(null);
   const list = useRef(null);
   const returnFocus = useRef(null);
+  const t = useT();
+  const locale = useLocale();
+  const sound = useSound();
+  const { site } = useContent();
+  const { projects } = useProjects();
   const { go } = usePageTransition();
-  const pathname = normalizePath(useLocation().pathname);
+  const { pathname: rawPath, hash } = useLocation();
+  const pathname = stripLocale(normalizePath(rawPath));
 
   const commands = useMemo(() => {
     const nav = [
-      { label: "Home", to: "/" },
-      { label: "Work", to: "/works" },
-      { label: "About", to: "/#about" },
-      { label: "Contact", to: "/contact" },
+      { label: t("nav.home"), to: "/" },
+      { label: t("nav.work"), to: "/works" },
+      { label: t("nav.about"), to: "/#about" },
+      { label: t("nav.contact"), to: "/contact" },
     ].map((item) => ({
       id: `go:${item.to}`,
-      group: "Go to",
+      group: t("palette.goTo"),
       label: item.label,
       run: () => go(item.to, item.label),
     }));
 
     const work = projects.map((project) => ({
       id: `project:${project.slug}`,
-      group: "Project",
+      group: t("palette.project"),
       label: project.title,
       keywords: `${project.type} ${project.stack.join(" ")}`,
       run: () => go(`/works/${project.slug}`, project.title),
@@ -52,8 +60,8 @@ export default function CommandPalette() {
       pathname === "/" &&
         !reducedMotion && {
           id: "chaos",
-          group: "Action",
-          label: "Run chaos test",
+          group: t("palette.action"),
+          label: t("hero.chaos"),
           keywords: "kill pods cluster break",
           run: () => {
             scrollToTarget(0);
@@ -61,28 +69,42 @@ export default function CommandPalette() {
           },
         },
       {
+        id: "language",
+        group: t("palette.action"),
+        label: t("palette.language"),
+        keywords: "english malay bahasa melayu bm en language",
+        run: () => go(`${pathname}${hash}`, locale === "ms" ? "EN" : "BM", { locale: locale === "ms" ? "en" : "ms" }),
+      },
+      {
+        id: "sound",
+        group: t("palette.action"),
+        label: sound ? t("sound.turnOff") : t("sound.turnOn"),
+        keywords: "sound audio bunyi mute",
+        run: toggleSound,
+      },
+      {
         id: "copy-email",
-        group: "Action",
-        label: "Copy email address",
+        group: t("palette.action"),
+        label: t("palette.copyEmail"),
         keywords: site.email,
         run: () => navigator.clipboard && navigator.clipboard.writeText(site.email).catch(() => {}),
       },
       {
         id: "top",
-        group: "Action",
-        label: "Back to top",
+        group: t("palette.action"),
+        label: t("palette.top"),
         run: () => scrollToTarget(0),
       },
       ...site.socials.map((social) => ({
         id: `open:${social.label}`,
-        group: "Open",
+        group: t("palette.open"),
         label: social.label,
         run: () => window.open(social.href, "_blank", "noopener,noreferrer"),
       })),
     ].filter(Boolean);
 
     return [...nav, ...work, ...actions];
-  }, [go, pathname]);
+  }, [go, pathname, hash, locale, sound, site, projects, t]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -175,21 +197,21 @@ export default function CommandPalette() {
         className="palette__panel"
         role="dialog"
         aria-modal="true"
-        aria-label="Command palette"
+        aria-label={t("palette.label")}
         onMouseDown={(event) => event.stopPropagation()}
       >
         <label className="palette__input t-mono">
           <span aria-hidden="true" className="accent">
             $
           </span>
-          <span className="sr-only">Search pages, projects and actions</span>
+          <span className="sr-only">{t("palette.search")}</span>
           <input
             ref={input}
             type="text"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             onKeyDown={onKeyDown}
-            placeholder="Where to? Try “ringmaster” or “chaos”"
+            placeholder={t("palette.placeholder")}
             role="combobox"
             aria-expanded="true"
             aria-controls="palette-list"
@@ -215,14 +237,14 @@ export default function CommandPalette() {
             </li>
           ))}
           {results.length === 0 && (
-            <li className="palette__empty t-mono">Nothing matches “{query}”.</li>
+            <li className="palette__empty t-mono">{t("palette.empty", { q: query })}</li>
           )}
         </ul>
 
         <p className="palette__hint t-mono" aria-hidden="true">
-          <span>↑↓ move</span>
-          <span>↵ run</span>
-          <span>esc close</span>
+          <span>{t("palette.move")}</span>
+          <span>{t("palette.run")}</span>
+          <span>{t("palette.close")}</span>
         </p>
       </div>
     </div>

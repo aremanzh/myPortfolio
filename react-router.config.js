@@ -21,5 +21,10 @@ function caseStudyPaths() {
 export default {
   appDirectory: "src",
   ssr: false,
-  prerender: () => ["/", "/works", "/contact", ...caseStudyPaths()],
+  // Every page twice: English at the root, Malay under /ms.
+  prerender: () => {
+    const english = ["/", "/works", "/contact", ...caseStudyPaths()];
+    const malay = english.map((path) => (path === "/" ? "/ms" : `/ms${path}`));
+    return [...english, ...malay];
+  },
 };
