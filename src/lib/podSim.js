@@ -14,7 +14,7 @@ import { reducedMotion } from "./env";
  * Drawn on a 2D canvas; the loop stops whenever the canvas is off screen or
  * the tab is hidden.
  *
- * Under prefers-reduced-motion the ambient motion goes (no shimmer, no rolling
+ * With motion turned down (lib/env.js) the ambient motion goes (no shimmer, no rolling
  * restart sweeping across), but the pods still answer the visitor: pointing at
  * them or running the chaos test kills pods and the controller brings them
  * back. The loop then runs only while something is changing and stops once

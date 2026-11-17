@@ -20,6 +20,7 @@ import "lenis/dist/lenis.css";
 import "./styles/index.css";
 
 import App from "./App";
+import { MOTION_CLASS, reducedMotion } from "./lib/env";
 import Home from "./pages/Home";
 import Works from "./pages/Works";
 import WorkDetail from "./pages/WorkDetail";
@@ -70,6 +71,10 @@ const pathToHash = (fullPath) => {
   if (pathname.startsWith("/works/")) return `${prefix}work-${pathname.slice(7)}`;
   return malay ? "ms" : "home";
 };
+
+// root.jsx does this with an inline script on real pages; there is no
+// document template here, so set the reduced-motion class before rendering.
+if (reducedMotion) document.documentElement.classList.add(MOTION_CLASS);
 
 const router = createMemoryRouter(routes, { initialEntries: [hashToPath()] });
 router.subscribe((state) => {

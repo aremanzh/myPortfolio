@@ -6,8 +6,9 @@ let lenis = null;
 
 /**
  * Smooth scroll, driven by the GSAP ticker so Lenis and ScrollTrigger share a
- * single frame loop. Skipped entirely under prefers-reduced-motion, in which
- * case every helper below falls back to native scrolling.
+ * single frame loop. Skipped entirely when the visitor has turned motion
+ * down (lib/env.js), in which case every helper below falls back to native
+ * scrolling.
  */
 export function initScroll() {
   if (lenis || reducedMotion) return () => {};

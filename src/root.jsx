@@ -35,7 +35,8 @@ export function Layout({ children }) {
   // English at the root, Malay under /ms: the prerendered page says which.
   const lang = HTML_LANG[localeOf(useLocation().pathname)];
   return (
-    <html lang={lang}>
+    // The motion class is added by the script below, before React hydrates.
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -54,6 +55,14 @@ export function Layout({ children }) {
           type="application/ld+json"
           // Static data from site.json, not user input.
           dangerouslySetInnerHTML={{ __html: JSON.stringify(person) }}
+        />
+        {/* Reduced motion is the visitor's choice on this site (lib/env.js).
+            Set the class before the first paint so nothing flashes in. */}
+        <script
+          // Static string, no user input.
+          dangerouslySetInnerHTML={{
+            __html: 'try{if(localStorage.getItem("motion")==="reduced")document.documentElement.classList.add("motion-reduced")}catch(e){}',
+          }}
         />
         {/* Without JS the preloader would cover the prerendered page forever. */}
         <noscript>

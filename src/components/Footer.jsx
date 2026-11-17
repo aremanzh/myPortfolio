@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocalTime } from "../lib/hooks";
 import { scrollToTarget } from "../lib/scroll";
+import { reducedMotion, setReducedMotion, useHydrated } from "../lib/env";
 import { useContent } from "../data/site";
 import { useT } from "../i18n";
 import { TLink } from "./Transition";
@@ -46,6 +47,27 @@ function CopyEmail() {
   );
 }
 
+/**
+ * Motion is on by default; this is where a visitor turns it down (and back
+ * up). The page reloads so every effect starts in the chosen mode.
+ */
+function MotionToggle() {
+  const t = useT();
+  // The prerendered page cannot know the stored choice: show it after hydration.
+  const reduced = useHydrated() && reducedMotion;
+  return (
+    <button
+      type="button"
+      className="link uppercase tracking-[inherit]"
+      aria-pressed={reduced}
+      aria-label={reduced ? t("motion.restore") : t("motion.reduce")}
+      onClick={() => setReducedMotion(!reduced)}
+    >
+      {reduced ? t("motion.reduced") : t("motion.full")}
+    </button>
+  );
+}
+
 function FooterBar() {
   const t = useT();
   const { site } = useContent();
@@ -70,6 +92,7 @@ function FooterBar() {
         <span>
           {site.location} <LocalTime />
         </span>
+        <MotionToggle />
         <button
           type="button"
           className="link uppercase tracking-[inherit]"

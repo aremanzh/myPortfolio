@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import { lockScroll, scrollToTarget } from "../lib/scroll";
-import { normalizePath } from "../lib/env";
+import { normalizePath, reducedMotion, setReducedMotion } from "../lib/env";
 import { useContent } from "../data/site";
 import { useProjects } from "../data/projects";
 import { stripLocale, useLocale, useT } from "../i18n";
@@ -80,6 +80,13 @@ export default function CommandPalette() {
         label: sound ? t("sound.turnOff") : t("sound.turnOn"),
         keywords: "sound audio bunyi mute",
         run: toggleSound,
+      },
+      {
+        id: "motion",
+        group: t("palette.action"),
+        label: reducedMotion ? t("motion.restore") : t("motion.reduce"),
+        keywords: "motion animation reduce gerakan animasi kurang",
+        run: () => setReducedMotion(!reducedMotion),
       },
       {
         id: "copy-email",

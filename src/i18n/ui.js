@@ -24,6 +24,10 @@ export const ui = {
     "sound.off": "Sound off",
     "sound.turnOn": "Turn sound on",
     "sound.turnOff": "Turn sound off",
+    "motion.full": "Motion: full",
+    "motion.reduced": "Motion: reduced",
+    "motion.reduce": "Reduce motion",
+    "motion.restore": "Turn motion back on",
     "skip": "Skip to content",
 
     "preloader.deploying": "Deploying portfolio",
@@ -172,6 +176,10 @@ export const ui = {
     "sound.off": "Bunyi: tutup",
     "sound.turnOn": "Hidupkan bunyi",
     "sound.turnOff": "Matikan bunyi",
+    "motion.full": "Gerakan: penuh",
+    "motion.reduced": "Gerakan: kurang",
+    "motion.reduce": "Kurangkan gerakan",
+    "motion.restore": "Hidupkan semula gerakan",
     "skip": "Langkau ke kandungan",
 
     "preloader.deploying": "Sedang deploy portfolio",

@@ -618,11 +618,9 @@ body::after {
     white-space: nowrap;
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .nav__sound.is-on i {
-    animation: none;
-    height: 100%;
-  }
+.motion-reduced .nav__sound.is-on i {
+  animation: none;
+  height: 100%;
 }
 
 /* -------------------------------------------------------------------------
@@ -1039,35 +1037,36 @@ body::after {
 .preview {
   display: none;
 }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .work-row__thumb {
+/* Unless the visitor turned motion down on this site (the motion-reduced class). */
+@media (hover: hover) and (pointer: fine) {
+  :root:not(.motion-reduced) .work-row__thumb {
     display: none;
   }
-  .preview {
+  :root:not(.motion-reduced) .preview {
     display: block;
   }
 }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
-  .work-row {
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  :root:not(.motion-reduced) .work-row {
     grid-template-columns: 5rem minmax(0, 1fr) minmax(0, 18rem) auto;
   }
   /* Title and meta become their own grid columns. */
-  .work-row__text {
+  :root:not(.motion-reduced) .work-row__text {
     display: contents;
   }
-  .work-row__meta {
+  :root:not(.motion-reduced) .work-row__meta {
     flex-direction: column;
   }
-  .work-list:hover .work-row {
+  :root:not(.motion-reduced) .work-list:hover .work-row {
     opacity: 0.32;
   }
-  .work-list .work-row:hover {
+  :root:not(.motion-reduced) .work-list .work-row:hover {
     opacity: 1;
   }
-  .work-row:hover .work-row__title {
+  :root:not(.motion-reduced) .work-row:hover .work-row__title {
     transform: translateX(1.5rem);
   }
-  .work-row:hover .work-row__arrow {
+  :root:not(.motion-reduced) .work-row:hover .work-row__arrow {
     transform: rotate(45deg);
   }
 }
@@ -1307,17 +1306,16 @@ body::after {
 }
 
 /* -------------------------------------------------------------------------
-   Reduced motion: keep the layout, drop the movement.
+   Reduced motion: keep the layout, drop the movement. On when the visitor
+   chose it on this site (footer or command palette), see lib/env.js.
    ---------------------------------------------------------------------- */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+.motion-reduced *,
+.motion-reduced *::before,
+.motion-reduced *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
 
 @tailwind utilities;
