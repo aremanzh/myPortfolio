@@ -1,0 +1,53 @@
+{
+  "title": "DailyJournal",
+  "published": true,
+  "featured": false,
+  "archived": false,
+  "order": 50,
+  "type": "Mobile app",
+  "year": "2023–2024",
+  "role": "Sole developer: app, API and Play Store release",
+  "summary": "A journal app on Google Play. Each entry is kept private or shared to a public feed.",
+  "body": "A journal app for Android, published on Google Play, where each entry is either kept private or shared to a public feed.\n\nThe app is built with Expo and React Native on an Express and MongoDB API with JWT sign-in. It is free to use and carries AdMob ads.\n\nI built it on my own, from the API to the store listing, between August 2023 and March 2024.",
+  "highlights": [
+    {
+      "title": "Private or public, per entry",
+      "text": "Every entry is saved as public or private. Public entries join a shared feed; the writer's own list keeps both, in separate tabs."
+    },
+    {
+      "title": "Entries with their own colours",
+      "text": "Writers pick a background and text colour for each entry, and the feed lays entries out in a masonry grid, six to a page."
+    },
+    {
+      "title": "Built for a store release",
+      "text": "The feed checks for a connection before loading, a banner ad sits after every fourth entry, and a full-screen ad follows a new post. The current release is version 1.2.6."
+    },
+    {
+      "title": "Moderation and ownership",
+      "text": "Readers can report an entry with a reason, and only an entry's author can edit or delete it, enforced on the server."
+    },
+    {
+      "title": "Account recovery by email",
+      "text": "A forgotten password is reset with a five-character code sent by email. Passwords are hashed with bcrypt and sessions use JWT."
+    }
+  ],
+  "stack": [
+    "React Native (Expo)",
+    "Express",
+    "MongoDB",
+    "JWT",
+    "AdMob",
+    "Nginx"
+  ],
+  "links": [
+    {
+      "label": "Google Play",
+      "href": "https://play.google.com/store/apps/details?id=com.mumtaaz.xyz.daily.journal"
+    }
+  ],
+  "cover": "",
+  "coverAlt": "",
+  "coverCaption": "",
+  "mark": "DAILY",
+  "tone": "signal"
+}

@@ -1,0 +1,69 @@
+{
+  "type": "App web SaaS",
+  "role": "Produk, pembangunan dan operasi",
+  "summary": "Penjejak permohonan kerja yang mengisi dirinya sendiri daripada pautan iklan kerja, dengan analitik balasan, alat penulisan AI dan pelan berbayar.",
+  "body": "Pencarian kerja di satu tempat: setiap permohonan, temu duga dan follow-up, dengan bantuan AI di mana ia benar-benar menjimatkan masa.\n\nTampal pautan iklan kerja dan borang mengisi dirinya sendiri. Setiap permohonan bergerak melalui peringkatnya dengan temu duga dan follow-up direkod, dan halaman analitik menunjukkan berapa kerap syarikat membalas dan berapa lama mereka ambil. Pembina resume, dua belas alat penulisan AI dan kad kemajuan yang boleh dikongsi tersedia bersama. Laman ini berfungsi dalam English dan BM, dengan log masuk Google atau LinkedIn serta pelan percuma dan Pro yang dibilkan melalui Stripe.\n\nIa dibina dengan Laravel 11, Inertia dan Vue 3, dan berjalan dalam Docker di AWS EC2. Setiap push menjalankan linting, suite ujian dan ujian end-to-end Playwright, dan ia hanya di-deploy selepas semua ujian lulus.",
+  "coverAlt": "Dashboard ApplyTracker menyapa pengguna, dengan kiraan permohonan aktif, temu duga, kadar balasan dan tawaran, bar pipeline, permohonan terkini dan senarai Seterusnya",
+  "coverCaption": "Dashboard. Semua skrin daripada larian tempatan dengan data contoh rekaan.",
+  "highlights": [
+    {
+      "title": "Simpan kerja daripada pautannya",
+      "text": "Tanpa AI: pembaca mencari data JSON-LD JobPosting dalam halaman, kemudian markup khusus laman, kemudian tajuk halaman. Ia mencadangkan jawatan, syarikat, lokasi, mod kerja dan gaji, ditukar kepada angka bulanan."
+    },
+    {
+      "title": "Mengambil URL orang asing dengan selamat",
+      "text": "Pautan datang daripada pengguna, jadi setiap redirect diikut secara manual dan setiap lompatan disemak terhadap alamat peribadi, terpelihara dan metadata. Respons dihadkan kepada 2 MB dengan timeout yang singkat, dan halaman cabaran bot dikenal pasti, bukan dibaca sebagai iklan kerja."
+    },
+    {
+      "title": "Analitik daripada rekod sendiri",
+      "text": "Kadar balasan, temu duga dan berapa lama syarikat ambil untuk menjawab dikira daripada sejarah status dalam log aktiviti, jadi tiada apa yang perlu dimasukkan dua kali."
+    },
+    {
+      "title": "AI dengan bajet",
+      "text": "Dua belas alat, dari surat iringan hingga soalan temu duga dan penanda aras gaji, dijawab oleh Claude dengan model yang ditetapkan dalam admin. Prompt dibina di server daripada alat dan inputnya, setiap jawapan guna kredit daripada peruntukan bulanan mengikut pelan, satu berjalan pada satu masa bagi setiap orang, dan jawapan yang ditolak atau kosong tak dikenakan apa-apa."
+    },
+    {
+      "title": "Kemajuan yang boleh dikongsi",
+      "text": "Perjalanan sesuatu permohonan, dari memohon hingga diterima, boleh dikongsi sebagai pautan atau sebagai kad PNG bersaiz story dan pratonton pautan yang dilukis di server."
+    },
+    {
+      "title": "Bil yang tak menunggu webhook",
+      "text": "Langganan Stripe disegerakkan terus daripada sesi Checkout di halaman berjaya, jadi Pro bermula serta-merta. Pembatalan mengekalkan Pro sehingga tempoh berbayar tamat."
+    },
+    {
+      "title": "Padam bermaksud padam",
+      "text": "Memadam akaun membuang semua yang orang itu tambah, termasuk fail, sejarah AI dan entri log aktivitinya, dan membatalkan langganan yang sedang berjalan terlebih dahulu."
+    }
+  ],
+  "gallery": [
+    {
+      "alt": "Papan permohonan dengan lajur Memohon, Dalam Semakan, Saringan Telefon, Temu Duga dan Ditawarkan, setiap kad menunjukkan jawatan, syarikat, julat gaji, mod kerja dan langkah seterusnya",
+      "caption": "Permohonan sebagai papan, satu lajur bagi setiap status."
+    },
+    {
+      "alt": "Halaman analitik menunjukkan kadar balasan dan temu duga serta corong di mana permohonan terhenti",
+      "caption": "Analitik: di mana permohonan terhenti, daripada sejarah status."
+    },
+    {
+      "alt": "Borang refleksi temu duga dengan skala keyakinan, cip topik dan nota tentang apa yang mengejutkan calon",
+      "caption": "Selepas setiap temu duga: keyakinan, topik dan apa yang perlu dilatih."
+    },
+    {
+      "alt": "Pembina resume dengan senarai semak kekuatan, medan borang dan pratonton A4 langsung",
+      "caption": "Pembina resume, dengan senarai semak kekuatan dan pratonton A4 langsung."
+    },
+    {
+      "alt": "Halaman kad kongsi dengan kad hijau Dapat tawaran yang menunjukkan 22 permohonan, 6 temu duga dan 70 hari mencari kerja, di sebelah butang muat turun dan salin pautan",
+      "caption": "Kad pencapaian, dilukis di server. Nama syarikat disembunyikan secara lalai."
+    },
+    {
+      "alt": "Laman utama awam ApplyTracker dengan tajuk Every application, one calm place dan pertukaran bahasa English dan BM",
+      "caption": "Laman awam, dalam English dan BM."
+    }
+  ],
+  "links": [
+    {
+      "label": "Laman live"
+    }
+  ]
+}

@@ -1,0 +1,354 @@
+# CMS configuration (Sveltia CMS; the format is Decap CMS compatible).
+#
+# What is editable here is content only: text, lists, images, ordering.
+# Layout, typography and motion stay in code.
+#
+# Every save is a commit to `branch`. Your deploy pipeline rebuilds the site;
+# `npm run build` validates the content first and fails on a bad edit.
+
+backend:
+  name: github
+  repo: aremanzh/myPortfolio
+  branch: main
+  commit_messages:
+    create: "content: add {{collection}} “{{slug}}”"
+    update: "content: update {{collection}} “{{slug}}”"
+    delete: "content: remove {{collection}} “{{slug}}”"
+    uploadMedia: "content: upload {{path}}"
+    deleteMedia: "content: delete {{path}}"
+
+site_url: https://mumtaaz.xyz
+display_url: https://mumtaaz.xyz
+logo:
+  src: /logo192.png
+
+# New entries get an ASCII file name, because the file name is the URL.
+slug:
+  encoding: ascii
+  clean_accents: true
+
+# Uploads land in public/uploads. The build resizes each one to 800px and
+# 1600px WebP, so upload the largest clean original you have.
+media_folder: /public/uploads
+public_folder: /uploads
+
+collections:
+  # ------------------------------------------------------------- projects
+  - name: projects
+    label: Projects
+    label_singular: Project
+    description: >-
+      One entry per project. The file name becomes the URL
+      (/works/<file-name>) and does not change when you rename the title.
+    folder: /src/content/projects
+    format: json
+    extension: json
+    create: true
+    # The entries are data, not pages, so the generic preview pane adds nothing.
+    editor:
+      preview: false
+    slug: "{{title}}"
+    identifier_field: title
+    summary: "{{order}} · {{title}} ({{type}}){{archived | ternary(' · archive', '')}}"
+    sortable_fields: [order, title, type]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: published
+        label: Published
+        widget: boolean
+        default: true
+        hint: Off hides the project from the site without deleting it.
+      - name: featured
+        label: Featured on home
+        widget: boolean
+        default: false
+        hint: The home page shows the first four featured projects.
+      - name: archived
+        label: Archive only
+        widget: boolean
+        default: false
+        hint: >-
+          On: listed as one line in the archive at the bottom of Work, with no
+          project page. Use it for older or smaller work, so the case studies
+          stay a short, strong list.
+      - name: order
+        label: Order
+        widget: number
+        value_type: int
+        default: 100
+        hint: Lower numbers come first. Leave gaps (10, 20, 30) so reordering is one edit.
+      - name: type
+        label: Type
+        widget: string
+        hint: One or two words, for example "Web application" or "Open-source tool".
+      - { name: year, label: Year, widget: string, required: false }
+      - name: role
+        label: Role
+        widget: string
+        required: false
+        hint: Your part in it, for example "Design and development".
+      - name: summary
+        label: Summary
+        widget: text
+        required: false
+        hint: One sentence. Shown in lists and cards. Required unless the project is archive only.
+      - name: body
+        label: Description
+        widget: text
+        required: false
+        hint: >-
+          Leave a blank line between paragraphs. The first paragraph is set
+          large. Required unless the project is archive only.
+      - name: highlights
+        label: Highlights
+        label_singular: Highlight
+        widget: list
+        required: false
+        summary: "{{title}}"
+        hint: Shown as a numbered list on the project page.
+        fields:
+          - { name: title, label: Title, widget: string }
+          - { name: text, label: Text, widget: text }
+      - name: stack
+        label: Stack
+        widget: list
+        required: false
+        hint: Tools and technologies. Lists show the first three.
+      - name: links
+        label: Links
+        label_singular: Link
+        widget: list
+        required: false
+        summary: "{{label}}"
+        fields:
+          - { name: label, label: Label, widget: string, hint: 'For example "Source on GitHub".' }
+          - { name: href, label: URL, widget: string, pattern: ["^https?://", "Must start with http:// or https://"] }
+      - name: cover
+        label: Cover image
+        widget: image
+        required: false
+        hint: A 16:9 screenshot works best. Leave empty to have the mark below drawn in pods instead.
+      - name: coverAlt
+        label: Cover alt text
+        widget: string
+        required: false
+        hint: Required when there is a cover. Describe what the image shows.
+      - { name: coverCaption, label: Cover caption, widget: string, required: false }
+      - name: gallery
+        label: More screens
+        label_singular: Screen
+        widget: list
+        required: false
+        summary: "{{caption}}"
+        thumbnail: image
+        hint: >-
+          Extra screenshots, shown two to a row under the case study. 16:9 works
+          best. An even number fills the rows.
+        fields:
+          - { name: image, label: Image, widget: image }
+          - { name: alt, label: Alt text, widget: string, hint: Describe what the screen shows. }
+          - { name: caption, label: Caption, widget: string, required: false }
+      - name: mark
+        label: Mark
+        widget: string
+        required: false
+        hint: Up to 6 letters or digits, drawn in pods when there is no cover image. Required then.
+        pattern: ["^[A-Za-z0-9]{1,6}$", "1 to 6 letters or digits"]
+      - name: tone
+        label: Generated cover colour
+        widget: select
+        default: ink
+        options:
+          - { label: Signal (orange), value: signal }
+          - { label: Paper (light), value: paper }
+          - { label: Ink (dark), value: ink }
+
+  # ------------------------------------------------------------- site-wide
+  - name: site
+    label: Site
+    description: Text that is not tied to one project.
+    format: json
+    editor:
+      preview: false
+    files:
+      - name: settings
+        label: Settings
+        file: /src/content/site.json
+        fields:
+          - { name: name, label: Full name, widget: string }
+          - { name: shortName, label: Short name, widget: string, hint: Shown in the navigation bar. }
+          - { name: role, label: Role, widget: string }
+          - { name: location, label: Location, widget: string }
+          - name: timeZone
+            label: Time zone
+            widget: string
+            hint: IANA name, for example Asia/Kuala_Lumpur. Drives the live clock.
+          - { name: timeZoneLabel, label: Time zone label, widget: string, hint: For example MYT. }
+          - { name: url, label: Site URL, widget: string, hint: Used for the sitemap. }
+          - { name: email, label: Email, widget: string }
+          - name: available
+            label: Available for work
+            widget: boolean
+            hint: Switches the green badge on the home and contact pages.
+          - { name: availabilityLabel, label: Badge text when available, widget: string }
+          - { name: unavailableLabel, label: Badge text when not available, widget: string }
+          - name: formEndpoint
+            label: Contact form endpoint
+            widget: string
+            hint: The Getform (or compatible) URL the contact form posts to.
+          - name: socials
+            label: Social links
+            label_singular: Social link
+            widget: list
+            summary: "{{label}}"
+            fields:
+              - { name: label, label: Label, widget: string }
+              - { name: href, label: URL, widget: string, pattern: ["^https?://", "Must start with http:// or https://"] }
+
+      - name: about
+        label: About
+        file: /src/content/about.json
+        fields:
+          - name: statement
+            label: Statement
+            widget: text
+            hint: The large paragraph beside your portrait. Three or four sentences.
+          - { name: portrait, label: Portrait, widget: image, required: false }
+          - { name: portraitAlt, label: Portrait alt text, widget: string, required: false }
+          - name: facts
+            label: Facts
+            label_singular: Fact
+            widget: list
+            summary: "{{label}}: {{value}}"
+            hint: Short label and value pairs under the statement. Four fit one row.
+            fields:
+              - { name: label, label: Label, widget: string }
+              - { name: value, label: Value, widget: string }
+
+      - name: capabilities
+        label: What I do
+        file: /src/content/capabilities.json
+        fields:
+          - name: stages
+            label: Stages
+            label_singular: Stage
+            widget: list
+            summary: "{{name}}"
+            hint: The stacked cards on the home page. Three reads best; they echo "Build it. Ship it. Keep it up."
+            fields:
+              - { name: name, label: Name, widget: string, hint: "One short word. It is set very large." }
+              - { name: summary, label: Summary, widget: text }
+              - { name: tools, label: Tools, widget: list, required: false }
+              - name: log
+                label: Job log
+                widget: list
+                required: false
+                hint: >-
+                  Up to 5 lines, printed one by one while this stage runs as
+                  the visitor scrolls. Start a command with "$ "; other lines
+                  are shown as output. "Job succeeded" is added automatically.
+          - name: marquee
+            label: Marquee words
+            widget: list
+            hint: The scrolling band of technologies on the home page.
+
+  # ---------------------------------------------------- Bahasa Melayu (/ms)
+  # Translations are overlays: each file holds only the fields that change,
+  # laid over the English entry with the same name. Anything left empty here
+  # (stack, links, images, order) comes from the English entry.
+  - name: projects_ms
+    label: Projects (Bahasa Melayu)
+    label_singular: Project translation
+    description: >-
+      Malay text for /ms/works/<file-name>. The file name must match the
+      English project. Leave a field empty to show the English text.
+    folder: /src/content/ms/projects
+    format: json
+    extension: json
+    create: true
+    editor:
+      preview: false
+    identifier_field: summary
+    summary: "{{slug}}"
+    fields:
+      - { name: title, label: Title, widget: string, required: false, hint: Usually the same as the English title; leave empty to keep it. }
+      - { name: type, label: Type, widget: string, required: false }
+      - { name: role, label: Role, widget: string, required: false }
+      - { name: summary, label: Summary, widget: text, required: false }
+      - { name: body, label: Description, widget: text, required: false, hint: Leave a blank line between paragraphs. }
+      - name: highlights
+        label: Highlights
+        label_singular: Highlight
+        widget: list
+        required: false
+        summary: "{{title}}"
+        hint: Same order and number as the English highlights.
+        fields:
+          - { name: title, label: Title, widget: string }
+          - { name: text, label: Text, widget: text }
+      - { name: coverAlt, label: Cover alt text, widget: string, required: false }
+      - { name: coverCaption, label: Cover caption, widget: string, required: false }
+      - name: gallery
+        label: Screen captions
+        label_singular: Screen
+        widget: list
+        required: false
+        summary: "{{caption}}"
+        hint: One per English screen, in the same order. Images come from the English entry.
+        fields:
+          - { name: alt, label: Alt text, widget: string }
+          - { name: caption, label: Caption, widget: string, required: false }
+      - name: links
+        label: Link labels
+        label_singular: Link label
+        widget: list
+        required: false
+        summary: "{{label}}"
+        hint: One per English link, in the same order. URLs come from the English entry.
+        fields:
+          - { name: label, label: Label, widget: string }
+
+  - name: site_ms
+    label: Site (Bahasa Melayu)
+    description: Malay text for the site-wide entries. Empty fields show the English text.
+    format: json
+    editor:
+      preview: false
+    files:
+      - name: settings
+        label: Settings
+        file: /src/content/ms/site.json
+        fields:
+          - { name: role, label: Role, widget: string, required: false }
+          - { name: location, label: Location, widget: string, required: false }
+          - { name: availabilityLabel, label: Badge text when available, widget: string, required: false }
+          - { name: unavailableLabel, label: Badge text when not available, widget: string, required: false }
+      - name: about
+        label: About
+        file: /src/content/ms/about.json
+        fields:
+          - { name: statement, label: Statement, widget: text, required: false }
+          - { name: portraitAlt, label: Portrait alt text, widget: string, required: false }
+          - name: facts
+            label: Facts
+            label_singular: Fact
+            widget: list
+            required: false
+            summary: "{{label}}: {{value}}"
+            fields:
+              - { name: label, label: Label, widget: string }
+              - { name: value, label: Value, widget: string }
+      - name: capabilities
+        label: What I do
+        file: /src/content/ms/capabilities.json
+        fields:
+          - name: stages
+            label: Stages
+            label_singular: Stage
+            widget: list
+            required: false
+            summary: "{{name}}"
+            hint: Same order as the English stages. Tools and job logs come from the English entry.
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: summary, label: Summary, widget: text }

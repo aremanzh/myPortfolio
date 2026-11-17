@@ -1,0 +1,1323 @@
+@tailwind base;
+@tailwind components;
+/* `@tailwind utilities` is at the bottom of this file on purpose: utilities
+   must come after the component classes below so a utility on an element
+   (pt-0, text-[...]) wins over that element's component class. */
+
+/* -------------------------------------------------------------------------
+   Tokens
+   ---------------------------------------------------------------------- */
+:root {
+  --ink: #0c0b0a;
+  --ink-2: #161513;
+  --paper: #ede9e0;
+  --signal: #ff4a1c;
+  --ok: #7be08a;
+
+  --fg: var(--paper);
+  --bg: var(--ink);
+
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Derived colours are declared on every themed element, not just :root, so
+   they are recomputed from that element's own --fg. */
+:root,
+.theme-ink,
+.theme-ink-2,
+.theme-paper,
+.theme-signal {
+  --line: color-mix(in srgb, var(--fg) 16%, transparent);
+  --muted: color-mix(in srgb, var(--fg) 64%, transparent);
+  --accent: var(--signal);
+}
+/* The signal orange is under 3:1 on paper, so headline accents there use a
+   deeper cut of it. */
+.theme-paper {
+  --accent: #dd370b;
+}
+
+/* Any block can flip its own palette; children read --fg / --bg / --line. */
+.theme-ink {
+  --fg: var(--paper);
+  --bg: var(--ink);
+  background: var(--bg);
+  color: var(--fg);
+}
+.theme-paper {
+  --fg: var(--ink);
+  --bg: var(--paper);
+  background: var(--bg);
+  color: var(--fg);
+}
+.theme-signal {
+  --fg: var(--ink);
+  --bg: var(--signal);
+  background: var(--bg);
+  color: var(--fg);
+}
+.theme-ink-2 {
+  --fg: var(--paper);
+  --bg: var(--ink-2);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* -------------------------------------------------------------------------
+   Base
+   ---------------------------------------------------------------------- */
+@layer base {
+  html {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: "Bricolage Grotesque Variable", system-ui, sans-serif;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html.is-locked {
+    overflow: hidden;
+  }
+
+  body {
+    /* Explicit, so an embedding page's background never shows through. */
+    background: var(--ink);
+    min-height: 100svh;
+    overflow-x: clip;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  ::selection {
+    background: var(--signal);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+}
+
+/* Film grain. One static tile, no animation, so it costs a single layer. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 200;
+  padding: 0.6rem 1rem;
+  background: var(--signal);
+  color: var(--ink);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* -------------------------------------------------------------------------
+   Layout + type
+   ---------------------------------------------------------------------- */
+.wrap {
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(5rem, 11vw, 11rem);
+}
+
+/* Paper sections slide over the dark ones with a rounded lip. */
+.lip {
+  border-radius: clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 3vw, 2.5rem) 0 0;
+}
+
+.t-mega,
+.t-display,
+.t-title {
+  font-weight: 800;
+  font-stretch: 75%;
+  text-transform: uppercase;
+  letter-spacing: 0.004em;
+}
+
+.t-mega {
+  font-size: clamp(3.3rem, min(15.4vw, 21.5svh), 17rem);
+  line-height: 0.84;
+}
+
+@media (max-width: 639px) {
+  .t-mega {
+    font-size: min(21.5vw, 15.5svh);
+  }
+}
+
+.t-display {
+  font-size: clamp(2.9rem, 10.2vw, 11rem);
+  line-height: 0.86;
+}
+
+.t-title {
+  font-size: clamp(1.9rem, 5vw, 5rem);
+  line-height: 0.92;
+}
+
+.t-lead {
+  font-size: clamp(1.55rem, 3.25vw, 3.35rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.t-body {
+  font-size: clamp(1rem, 1.25vw, 1.2rem);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.t-mono {
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Serif italic accent used inside the grotesque headlines. */
+.serif {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-stretch: 100%;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+.t-mega .serif,
+.t-display .serif,
+.t-title .serif {
+  font-size: 1.08em;
+  line-height: 0;
+}
+
+.accent {
+  color: var(--accent);
+}
+
+/* Reveal masks. `.line` clips, `.line__in` is what moves. */
+.line {
+  display: block;
+  overflow: hidden;
+  /* room for the serif's descenders and italic overhang inside the clip */
+  padding: 0.08em 0.08em 0.26em 0;
+  margin: -0.08em -0.08em -0.26em 0;
+}
+.line__in {
+  display: block;
+  will-change: transform;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--muted);
+}
+.eyebrow::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 1px;
+  background: var(--signal);
+}
+
+.rule {
+  height: 1px;
+  background: var(--line);
+  transform-origin: 0 50%;
+}
+
+/* -------------------------------------------------------------------------
+   Links + buttons
+   ---------------------------------------------------------------------- */
+.link {
+  background: linear-gradient(currentColor, currentColor) no-repeat 100% 100% / 0 1px;
+  transition: background-size 0.3s var(--ease-out);
+  padding-bottom: 0.15em;
+}
+.link--on {
+  background-size: 100% 1px;
+  background-position: 0 100%;
+}
+@media (hover: hover) {
+  .link:hover {
+    background-size: 100% 1px;
+    background-position: 0 100%;
+  }
+  .link--on:hover {
+    background-size: 0 1px;
+    background-position: 100% 100%;
+  }
+}
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.05rem 1.5rem;
+  border: 1px solid var(--fg);
+  border-radius: 999px;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--fg);
+  transition: color 0.25s var(--ease-out), transform 0.16s var(--ease-out);
+}
+/* Press feedback: a slight give, on every button-like control. */
+.btn:active:not(:disabled),
+.nav__kbd:active,
+.hud__chaos:active {
+  transform: scale(0.97);
+}
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--fg);
+  border-radius: inherit;
+  transform: translateY(101%);
+  transition: transform 0.3s var(--ease-out);
+}
+.btn--solid {
+  background: var(--signal);
+  border-color: var(--signal);
+  color: var(--ink);
+}
+.btn--solid::before {
+  background: var(--ink);
+}
+.btn svg {
+  width: 0.8rem;
+  height: 0.8rem;
+  transition: transform 0.25s var(--ease-out);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+@media (hover: hover) {
+  .btn:hover:not(:disabled) {
+    color: var(--bg);
+  }
+  .btn--solid:hover:not(:disabled) {
+    color: var(--paper);
+  }
+  .btn:hover:not(:disabled)::before {
+    transform: none;
+  }
+  .btn:hover:not(:disabled) svg {
+    transform: translate(3px, -3px);
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.badge__dot {
+  position: relative;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.badge--on .badge__dot {
+  background: var(--ok);
+}
+.badge--on .badge__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--ok);
+  animation: ping 2.4s var(--ease-out) infinite;
+}
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  70%,
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+.tag {
+  display: inline-flex;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+/* -------------------------------------------------------------------------
+   Cursor
+   ---------------------------------------------------------------------- */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.cursor.is-on {
+  opacity: 1;
+}
+.cursor__dot {
+  position: absolute;
+  top: -0.375rem;
+  left: -0.375rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.45s var(--ease-out);
+}
+.cursor__label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%) scale(0.4);
+  color: var(--ink);
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.25s, transform 0.45s var(--ease-out);
+}
+.cursor.is-link .cursor__dot {
+  transform: scale(3.4);
+}
+.cursor.is-label {
+  mix-blend-mode: normal;
+}
+.cursor.is-label .cursor__dot {
+  background: var(--signal);
+  transform: scale(7.4);
+}
+.cursor.is-label .cursor__label {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.cursor.is-down .cursor__dot {
+  transform: scale(0.6);
+}
+
+/* -------------------------------------------------------------------------
+   Preloader + page transition
+   ---------------------------------------------------------------------- */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+}
+.preloader__panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--gutter);
+  background: var(--ink);
+  color: var(--paper);
+}
+.preloader__wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--signal);
+}
+.preloader__count {
+  font-variant-numeric: tabular-nums;
+}
+.preloader__stage {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: color-mix(in srgb, var(--paper) 35%, transparent);
+  transition: color 0.3s;
+}
+.preloader__stage::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 1px;
+  border: 1px solid currentColor;
+  transition: background 0.3s, border-color 0.3s;
+}
+.preloader__stage.is-done {
+  color: var(--paper);
+}
+.preloader__stage.is-done::before {
+  background: var(--ok);
+  border-color: var(--ok);
+}
+
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: none;
+  place-items: center;
+  background: var(--signal);
+  color: var(--ink);
+}
+.curtain__label {
+  font-size: clamp(3.5rem, 13vw, 13rem);
+  line-height: 1;
+}
+
+/* -------------------------------------------------------------------------
+   Nav + menu
+   ---------------------------------------------------------------------- */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Clears the notch / status bar when the page runs edge to edge. */
+  padding: calc(1.35rem + env(safe-area-inset-top, 0px)) var(--gutter) 1.35rem;
+  color: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  transition: transform 0.6s var(--ease-out);
+}
+/* Out of the way while reading down the page; back on any upward scroll,
+   and always present for keyboard focus. */
+.nav.is-hidden:not(:focus-within) {
+  transform: translateY(-110%);
+}
+.nav a,
+.nav button {
+  pointer-events: auto;
+}
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+.nav__mark {
+  width: 1.75rem;
+  height: auto;
+}
+
+/* EN / BM: the current language at full strength, the other one dimmed. */
+.nav__lang {
+  letter-spacing: inherit;
+}
+.nav__lang-off {
+  opacity: 0.45;
+  transition: opacity 0.2s var(--ease-out);
+}
+.nav__lang-sep {
+  margin: 0 0.35em;
+  opacity: 0.45;
+}
+@media (hover: hover) {
+  .nav__lang:hover .nav__lang-off {
+    opacity: 1;
+  }
+}
+
+/* Sound toggle: three bars, still when off, moving when on. */
+.nav__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+.nav__sound {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 0.7rem;
+}
+.nav__sound i {
+  display: block;
+  width: 2px;
+  height: 45%;
+  background: currentColor;
+  opacity: 0.6;
+}
+.nav__sound.is-on i {
+  opacity: 1;
+  animation: sound-bar 0.9s var(--ease-out) infinite alternate;
+}
+.nav__sound.is-on i:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.nav__sound.is-on i:nth-child(3) {
+  animation-delay: -0.6s;
+}
+@keyframes sound-bar {
+  from {
+    height: 25%;
+  }
+  to {
+    height: 100%;
+  }
+}
+/* The word only fits the bar on wide screens; the bars say it on their own. */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .nav__sound-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav__sound.is-on i {
+    animation: none;
+    height: 100%;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   The mark: two mirrored halves (components/Mark.jsx, lib/snap.js)
+   ---------------------------------------------------------------------- */
+.mark {
+  display: block;
+  fill: currentColor;
+  overflow: visible;
+}
+.mark__seam {
+  fill: var(--signal);
+  opacity: 0;
+}
+.preloader__mark {
+  align-self: center;
+  width: clamp(7rem, 20vw, 15rem);
+  height: auto;
+  color: var(--paper);
+}
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6.5rem var(--gutter) var(--gutter);
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  overflow-y: auto;
+}
+.menu__in {
+  font-size: clamp(3.5rem, 20vw, 8rem);
+}
+
+.nav__kbd {
+  padding: 0.3rem 0.55rem;
+  border: 1px solid currentColor;
+  border-radius: 0.3rem;
+  font: inherit;
+  letter-spacing: inherit;
+  opacity: 0.75;
+  transition: opacity 0.2s var(--ease-out), transform 0.16s var(--ease-out);
+}
+@media (hover: hover) {
+  .nav__kbd:hover {
+    opacity: 1;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Command palette
+   ---------------------------------------------------------------------- */
+.palette {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 16vh var(--gutter) 2rem;
+  background: color-mix(in srgb, var(--ink) 72%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  /* No open animation: it is opened from the keyboard, where any delay reads as lag. */
+}
+.palette__panel {
+  --fg: var(--paper);
+  --line: color-mix(in srgb, var(--paper) 16%, transparent);
+  --muted: color-mix(in srgb, var(--paper) 64%, transparent);
+  width: min(40rem, 100%);
+  border: 1px solid var(--line);
+  border-radius: 0.9rem;
+  background: var(--ink-2);
+  color: var(--paper);
+  box-shadow: 0 2rem 5rem rgb(0 0 0 / 0.5);
+  overflow: hidden;
+}
+.palette__input {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.95rem;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.palette__input input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+.palette__input input:focus,
+.palette__input input:focus-visible {
+  outline: none;
+}
+.palette__input input::placeholder {
+  color: color-mix(in srgb, var(--paper) 36%, transparent);
+}
+.palette__list {
+  max-height: min(22rem, 46vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.4rem;
+}
+.palette__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.palette__item.is-active {
+  background: var(--signal);
+  color: var(--ink);
+}
+.palette__group {
+  color: var(--muted);
+}
+.palette__item.is-active .palette__group {
+  color: inherit;
+}
+.palette__empty {
+  padding: 1.25rem 0.85rem;
+  color: var(--muted);
+}
+.palette__hint {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+
+/* -------------------------------------------------------------------------
+   Hero
+   ---------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  overflow: hidden;
+}
+.hero__cluster {
+  position: absolute;
+  inset: 0;
+}
+.hero__cluster canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.hud {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--ink) 76%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  font-variant-numeric: tabular-nums;
+}
+.hud__stats {
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 1.5rem;
+  row-gap: 0.25rem;
+}
+.hud__stats dt {
+  color: var(--muted);
+}
+.hud__stats dd {
+  text-align: right;
+}
+.hud__chaos {
+  display: block;
+  width: 100%;
+  margin-top: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--signal);
+  border-radius: 0.3rem;
+  color: var(--signal);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: uppercase;
+  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out), transform 0.16s var(--ease-out);
+}
+@media (hover: hover) {
+  .hud__chaos:hover {
+    background: var(--signal);
+    color: var(--ink);
+  }
+}
+.hud__chaos:active {
+  background: var(--signal);
+  color: var(--ink);
+}
+
+/* -------------------------------------------------------------------------
+   Marquee
+   ---------------------------------------------------------------------- */
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+}
+.marquee__track {
+  display: inline-flex;
+  will-change: transform;
+}
+.marquee__item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+  padding-right: clamp(1rem, 2.5vw, 2.5rem);
+}
+.marquee__item::after {
+  content: "";
+  flex: none;
+  width: 0.28em;
+  height: 0.28em;
+  border-radius: 0.04em;
+  background: var(--signal);
+}
+/* Variable fonts keep overlapping contours inside a glyph, which a plain
+   text-stroke would trace. Painting the fill over the stroke leaves only the
+   outer edge. */
+.marquee--outline .marquee__item {
+  color: var(--bg);
+  -webkit-text-stroke: 2px var(--muted);
+  paint-order: stroke fill;
+}
+
+/* -------------------------------------------------------------------------
+   Pipeline cards
+   ---------------------------------------------------------------------- */
+.stage {
+  --tab: 3.5rem;
+  --pad: clamp(1.25rem, 3.4vw, 3.25rem);
+  position: sticky;
+  /* Each card stops one tab lower than the last, so covered stages keep
+     their header strip showing. */
+  top: calc(4.75rem + var(--i) * var(--tab));
+  display: grid;
+  grid-template-rows: var(--tab) 1fr;
+  min-height: clamp(20rem, 50svh, 29rem);
+  padding: 0 var(--pad) var(--pad);
+  border-radius: clamp(1.1rem, 2vw, 1.75rem);
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+.stage__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.stage__body {
+  align-self: end;
+  padding-top: 2.5rem;
+}
+.stage--bordered {
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.stage__name {
+  font-size: clamp(4.5rem, 15vw, 15rem);
+  line-height: 0.78;
+}
+
+/* Status chip: hollow square queued, pulsing dot running, solid square passed.
+   Drawn in currentColor so it reads on every card colour. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.chip__dot {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 1px;
+}
+.chip__time {
+  opacity: 0.7;
+}
+.chip--queued {
+  opacity: 0.55;
+}
+.chip--running .chip__dot {
+  border-radius: 50%;
+  background: currentColor;
+  animation: chip-pulse 1s ease-in-out infinite;
+}
+.chip--passed .chip__dot {
+  background: currentColor;
+}
+@keyframes chip-pulse {
+  50% {
+    opacity: 0.2;
+    transform: scale(0.65);
+  }
+}
+
+/* Job log. Lines are always in the page, dimmed until "executed", so the
+   resting state reads as a complete card. */
+.log {
+  display: grid;
+  align-content: start;
+  min-height: calc(var(--rows) * 1.65em + 1.7rem);
+  padding: 0.85rem 1rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--fg) 7%, transparent);
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.74rem;
+  line-height: 1.65;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.log__line {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  opacity: 0.28;
+  transition: opacity 0.25s;
+}
+.log__line.is-on {
+  opacity: 1;
+}
+.log__out.is-on {
+  opacity: 0.7;
+}
+.log__done {
+  font-weight: 700;
+}
+.log__line.is-current::after {
+  content: "";
+  display: inline-block;
+  width: 0.55em;
+  height: 1.05em;
+  margin-left: 0.4em;
+  vertical-align: -0.18em;
+  background: currentColor;
+  animation: log-cursor 1s steps(1) infinite;
+}
+@keyframes log-cursor {
+  50% {
+    opacity: 0;
+  }
+}
+
+.pipeline-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.75rem;
+  margin-top: clamp(3rem, 6vw, 5rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+/* -------------------------------------------------------------------------
+   Work list
+   ---------------------------------------------------------------------- */
+.work-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding-block: 1.5rem;
+  border-top: 1px solid var(--line);
+  transition: opacity 0.25s var(--ease-out);
+}
+.work-list > li:last-child .work-row {
+  border-bottom: 1px solid var(--line);
+}
+.work-row__thumb {
+  display: block;
+}
+.work-row__text {
+  display: grid;
+  gap: 0.75rem;
+}
+.work-row__title {
+  transition: transform 0.35s var(--ease-out);
+}
+.work-row__arrow {
+  width: clamp(1.25rem, 2.4vw, 2.5rem);
+  height: clamp(1.25rem, 2.4vw, 2.5rem);
+  transition: transform 0.35s var(--ease-out);
+}
+@media (min-width: 1024px) {
+  /* Touch and reduced motion: the cover rides in the row. */
+  .work-row {
+    grid-template-columns: 5rem 14rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2rem;
+    padding-block: clamp(1.4rem, 2.3vw, 2.4rem);
+  }
+}
+
+/* The preview only exists where a mouse can drive it. */
+.preview {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .work-row__thumb {
+    display: none;
+  }
+  .preview {
+    display: block;
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  .work-row {
+    grid-template-columns: 5rem minmax(0, 1fr) minmax(0, 18rem) auto;
+  }
+  /* Title and meta become their own grid columns. */
+  .work-row__text {
+    display: contents;
+  }
+  .work-row__meta {
+    flex-direction: column;
+  }
+  .work-list:hover .work-row {
+    opacity: 0.32;
+  }
+  .work-list .work-row:hover {
+    opacity: 1;
+  }
+  .work-row:hover .work-row__title {
+    transform: translateX(1.5rem);
+  }
+  .work-row:hover .work-row__arrow {
+    transform: rotate(45deg);
+  }
+}
+
+.preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  width: clamp(18rem, 27vw, 32rem);
+  aspect-ratio: 16 / 10;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  /* Edge and lift, so a dark screenshot still separates from the dark page. */
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--paper) 22%, transparent), 0 1.5rem 4rem rgb(0 0 0 / 0.55);
+}
+.preview__slide {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(100% 0 0 0);
+  transition: clip-path 0.45s var(--ease-in-out);
+}
+.preview__slide.is-prev {
+  z-index: 1;
+  clip-path: inset(0);
+  transition: none;
+}
+.preview__slide.is-active {
+  z-index: 2;
+  clip-path: inset(0);
+}
+
+/* -------------------------------------------------------------------------
+   Archive: one line per project, no page
+   ---------------------------------------------------------------------- */
+.archive__row {
+  display: grid;
+  gap: 0.4rem;
+  padding-block: 1.15rem;
+  border-top: 1px solid var(--line);
+}
+.archive__row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.archive__title {
+  font-size: clamp(1.15rem, 1.6vw, 1.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+@media (min-width: 768px) {
+  .archive__row {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 11rem);
+    align-items: baseline;
+    gap: 2rem;
+  }
+  .archive__link {
+    justify-self: end;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   Project cover (image, or generated when a project has no screenshot)
+   ---------------------------------------------------------------------- */
+.cover {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  container-type: inline-size;
+}
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.cover--signal {
+  background: var(--signal);
+  color: var(--ink);
+}
+.cover--paper {
+  background: #d9d3c5;
+  color: var(--ink);
+}
+.cover--ink {
+  background: #1f1d1a;
+  color: var(--paper);
+}
+.podtype {
+  position: absolute;
+  inset: 0;
+}
+.podtype canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.cover__meta {
+  position: absolute;
+  top: 4cqw;
+  left: 4cqw;
+  right: 4cqw;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: max(0.6rem, 1.5cqw);
+}
+
+/* Shared frame for covers on cards and case pages. */
+.frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: clamp(0.75rem, 1.4vw, 1.25rem);
+  background: var(--ink-2);
+}
+/* Hairline edge, so dark screenshots don't dissolve into the dark page. */
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--line);
+  pointer-events: none;
+}
+.frame__in {
+  position: absolute;
+  inset: -8% 0;
+  will-change: transform;
+}
+.card:focus-visible .frame .cover {
+  transform: scale(1.04);
+}
+@media (hover: hover) {
+  .card:hover .frame .cover {
+    transform: scale(1.04);
+  }
+}
+.frame .cover {
+  transition: transform 1.1s var(--ease-out);
+}
+
+/* -------------------------------------------------------------------------
+   Case page manifest: a definition list dressed as YAML
+   ---------------------------------------------------------------------- */
+.manifest {
+  padding: 1.25rem 1.4rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--ink-2);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+.manifest__file {
+  margin-bottom: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+.manifest__file::before {
+  content: "# ";
+}
+.manifest__row {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.6em;
+}
+.manifest__row dt {
+  color: var(--signal);
+}
+.manifest__row dt::after {
+  content: ":";
+  color: var(--muted);
+}
+/* A long scalar value wraps beside its key, as YAML would show it. */
+.manifest__row:not(.manifest__row--list) dd {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.manifest__row--list {
+  display: block;
+}
+.manifest__row--list li {
+  padding-left: 2.6em;
+  text-indent: -1.3em;
+}
+.manifest__row--list li::before {
+  content: "- ";
+  color: var(--muted);
+}
+
+/* -------------------------------------------------------------------------
+   Contact form
+   ---------------------------------------------------------------------- */
+.field {
+  display: grid;
+  gap: 0.6rem;
+}
+.field label {
+  color: var(--muted);
+}
+.field input,
+.field textarea {
+  width: 100%;
+  padding: 0.5rem 0 0.9rem;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-size: clamp(1.2rem, 2vw, 1.75rem);
+  letter-spacing: -0.01em;
+  transition: border-color 0.3s;
+}
+.field textarea {
+  min-height: 9rem;
+  resize: vertical;
+}
+.field input::placeholder,
+.field textarea::placeholder {
+  color: color-mix(in srgb, var(--fg) 28%, transparent);
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--signal);
+}
+.field input:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  box-shadow: 0 1px 0 0 var(--signal);
+}
+
+/* -------------------------------------------------------------------------
+   Reduced motion: keep the layout, drop the movement.
+   ---------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@tailwind utilities;

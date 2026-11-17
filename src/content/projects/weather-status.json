@@ -1,0 +1,30 @@
+{
+  "title": "Weather Status",
+  "published": true,
+  "featured": false,
+  "archived": true,
+  "order": 80,
+  "type": "Web app",
+  "year": "",
+  "role": "",
+  "summary": "A small weather lookup on the OpenWeatherMap API.",
+  "body": "A small weather lookup: search a location and get the current conditions, wind speed, pressure and humidity from the OpenWeatherMap API.",
+  "highlights": [],
+  "stack": [
+    "Node.js",
+    "Express",
+    "EJS",
+    "OpenWeatherMap API"
+  ],
+  "links": [
+    {
+      "label": "Source on GitHub",
+      "href": "https://github.com/aremanzh/SimpleWeatherStatus"
+    }
+  ],
+  "cover": "/uploads/weather-status.jpg",
+  "coverAlt": "Weather Status showing light rain in Kuala Lumpur",
+  "coverCaption": "",
+  "mark": "WX",
+  "tone": "ink"
+}

@@ -1,0 +1,96 @@
+{
+  "title": "ApplyTracker",
+  "published": true,
+  "featured": true,
+  "archived": false,
+  "order": 40,
+  "type": "SaaS web app",
+  "year": "2024–2026",
+  "role": "Product, development and operations",
+  "summary": "A job application tracker that fills itself in from a job ad's link, with reply analytics, AI writing tools and paid plans.",
+  "body": "A job search kept in one place: every application, interview and follow-up, with AI help where it saves real time.\n\nPaste a job ad's link and the form fills itself in. Each application moves through its stages with interviews and follow-ups on record, and the analytics page shows how often companies reply and how long they take. A resume builder, twelve AI writing tools and shareable progress cards sit alongside. The site works in English and Malay, with Google or LinkedIn sign-in and free and Pro plans billed through Stripe.\n\nIt is built with Laravel 11, Inertia and Vue 3 and runs in Docker on AWS EC2. Every push runs linting, the test suite and Playwright end-to-end tests, and it only deploys once the tests pass.",
+  "highlights": [
+    {
+      "title": "Save a job from its link",
+      "text": "No AI involved: the reader looks for the page's JSON-LD JobPosting data, then site-specific markup, then the page title. It suggests the title, company, location, working mode and salary, converted to a monthly figure."
+    },
+    {
+      "title": "Fetching a stranger's URL safely",
+      "text": "The link comes from the user, so every redirect is followed by hand and each hop is checked against private, reserved and metadata addresses. Responses are capped at 2 MB with short timeouts, and bot-challenge pages are recognised instead of being read as a job."
+    },
+    {
+      "title": "Analytics from your own records",
+      "text": "Reply rate, interviews and how long companies take to answer are worked out from the status history in the activity log, so nothing has to be entered twice."
+    },
+    {
+      "title": "AI with a budget",
+      "text": "Twelve tools, from cover letters to interview questions and salary benchmarks, answered by Claude with the model set in the admin. Prompts are built on the server from the tool and its inputs, each answer spends credits from a monthly allowance per plan, one runs at a time per person, and a refused or empty answer costs nothing."
+    },
+    {
+      "title": "Shareable progress",
+      "text": "An application's journey, from applied to accepted, can be shared as a link or as story-sized and link-preview PNG cards drawn on the server."
+    },
+    {
+      "title": "Billing that does not wait for webhooks",
+      "text": "Stripe subscriptions sync straight from the Checkout session on the success page, so Pro starts at once. Cancelling keeps Pro until the paid period ends."
+    },
+    {
+      "title": "Erase means erase",
+      "text": "Deleting an account removes everything the person added, including files, AI history and their activity log entries, and cancels any running subscription first."
+    }
+  ],
+  "stack": [
+    "Laravel",
+    "Vue",
+    "Claude API",
+    "Inertia",
+    "Stripe",
+    "MySQL",
+    "Docker",
+    "AWS EC2",
+    "Playwright"
+  ],
+  "links": [
+    {
+      "label": "Live site",
+      "href": "https://applytracker.mumtaaz.xyz"
+    }
+  ],
+  "cover": "/uploads/applytracker.jpg",
+  "coverAlt": "ApplyTracker dashboard greeting the user, with counts of active applications, interviews, response rate and offers, a pipeline bar, recent applications and an Up next list",
+  "coverCaption": "The dashboard. All screens are from a local run with fictional sample data.",
+  "mark": "APPLY",
+  "tone": "ink",
+  "gallery": [
+    {
+      "image": "/uploads/applytracker-board.jpg",
+      "alt": "Applications board with columns for Applied, Under Review, Phone Screen, Interview and Offered, each card showing role, company, salary band, working mode and next step",
+      "caption": "Applications as a board, one column per status."
+    },
+    {
+      "image": "/uploads/applytracker-analytics.jpg",
+      "alt": "Analytics page showing response and interview rates and a funnel of where applications stop",
+      "caption": "Analytics: where applications stop, from the status history."
+    },
+    {
+      "image": "/uploads/applytracker-interview.jpg",
+      "alt": "Interview reflection form with a confidence scale, topic chips and a note on what surprised the candidate",
+      "caption": "After each interview: confidence, topics and what to practise."
+    },
+    {
+      "image": "/uploads/applytracker-resume.jpg",
+      "alt": "Resume builder with a strength checklist, form fields and a live A4 preview",
+      "caption": "The resume builder, with a strength checklist and a live A4 preview."
+    },
+    {
+      "image": "/uploads/applytracker-card.jpg",
+      "alt": "Share card page with a green Got the offer card showing 22 applications, 6 interviews and 70 days of job hunting, beside download and copy link buttons",
+      "caption": "A milestone card, drawn on the server. The company name is hidden by default."
+    },
+    {
+      "image": "/uploads/applytracker-site.jpg",
+      "alt": "ApplyTracker public home page with the headline Every application, one calm place and an English and Malay language switch",
+      "caption": "The public site, in English and Malay."
+    }
+  ]
+}

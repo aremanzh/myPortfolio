@@ -1,0 +1,49 @@
+name: ci
+
+on:
+  # `main` is tested by deploy.yml (which calls this file); without
+  # branches-ignore every push to main would run the tests twice.
+  push:
+    branches-ignore: [main]
+  pull_request:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Same major as the Dockerfile (node:22.23.4-alpine).
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # Fails on a bad CMS edit (missing alt text, broken link, unknown file)
+      # with a list of what to fix, before anything else runs.
+      - run: npm run content:check
+
+      # Prerenders every page; a render error on any page fails here.
+      - run: npm run build
+
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/setup-buildx-action@v3
+
+      # Build the real image and run it the way production does, so a broken
+      # nginx config or a missing page fails CI instead of the deploy.
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: portfolio:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - run: scripts/smoke-image.sh portfolio:ci

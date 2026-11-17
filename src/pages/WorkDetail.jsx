@@ -1,95 +1,243 @@
 import React, { useRef } from "react";
-import { TbArrowDownRight } from "react-icons/tb";
-import { Link } from "react-scroll";
-import mumtaz from "../assets/mumtaz.jpg";
+import { useParams } from "react-router";
+import { finePointer, reducedMotion, useHydrated } from "../lib/env";
+import { useDocumentTitle, useIntro } from "../lib/hooks";
+import { projectsFor, useProjects } from "../data/projects";
+import { localeOf, translate, useT } from "../i18n";
+import { TLink } from "../components/Transition";
+import ProjectCover from "../components/ProjectCover";
+import { FadeUp, SplitReveal } from "../components/Reveal";
+import { ArrowUpRight } from "../components/Icons";
+import NotFound from "./NotFound";
+import { pageMeta } from "../lib/meta";
 
-import { gsap } from "gsap";
-import { useGSAP } from "@gsap/react";
-gsap.registerPlugin(useGSAP);
+const pad = (n) => String(n).padStart(2, "0");
 
-export default function WorkDetail() {
-  const item = {
-    id: 1,
-    title: "london royal theater",
-    category: "branding",
-    cover: mumtaz,
-  };
+/**
+ * Project facts, laid out like a manifest. It is still a plain definition
+ * list underneath; the YAML look is CSS.
+ */
+function Manifest({ project }) {
+  const rows = [
+    ["kind", project.type],
+    project.year && ["year", project.year],
+    project.role && ["role", project.role],
+  ].filter(Boolean);
+
   return (
-    <>
-      <div name="work-section" className="pt-32 pb-16 w-full bg-primary">
-        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:32px_32px] [mask-image:radial-gradient(ellipse_60%_60%_at_60%_60%,#000_20%,transparent_100%)] opacity-20"></div>
-        <div
-          id="hero"
-          className="max-w-[1000px] ml-4 lg:mx-auto px-8 flex flex-col justify-center h-full"
-        >
-          <div className="hero-wrapper pt-28 ">
-            <div className="hero-title flex flex-col">
-              <span className="uppercase text-7xl lg:text-9xl font-bold text-white drop-shadow-glow">
-                project
-              </span>
-              <span className="uppercase text-7xl lg:ml-52 lg:text-9xl font-bold text-white drop-shadow-glow">
-                name
-              </span>
-            </div>
-            <div className="hero-footer h-20 py-20 flex justify-between">
-              <div className="hero-footer-left">
-                <div className="button-wrap-scroll hover:animate-flipUpside">
-                  <div className="button-text block">
-                    <Link
-                      to="main"
-                      smooth={true}
-                      duration={500}
-                      className="flex items-center"
+    <div className="manifest t-mono">
+      <p className="manifest__file" aria-hidden="true">
+        {project.slug}.yaml
+      </p>
+      <dl>
+        {rows.map(([key, value]) => (
+          <div key={key} className="manifest__row">
+            <dt>{key}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+        {project.stack.length > 0 && (
+          <div className="manifest__row manifest__row--list">
+            <dt>stack</dt>
+            <dd>
+              <ul>
+                {project.stack.map((tool) => (
+                  <li key={tool}>{tool}</li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        )}
+        {project.links.length > 0 && (
+          <div className="manifest__row manifest__row--list">
+            <dt>links</dt>
+            <dd>
+              <ul>
+                {project.links.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="link link--on inline-flex items-center gap-2"
                     >
-                      <div className="btn-text">
-                        <h5 className="uppercase text-sm lg:text-sm font-light text-white drop-shadow-glow">
-                          Scroll to explore
-                        </h5>
-                      </div>
-                      <div className="btn-icon ml-4">
-                        <TbArrowDownRight size={25} className="text-white" />
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              <div className="hero-footer-left">
-                <div className="button-text ">
-                  <div className="btn-text hover:animate-float">
-                    <h5 className="uppercase text-sm lg:text-sm font-light text-white drop-shadow-glow">
-                      share project
-                    </h5>
-                  </div>
-                </div>
-              </div>
-            </div>
+                      {link.label} <ArrowUpRight className="h-2.5 w-2.5" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        )}
+      </dl>
+    </div>
+  );
+}
+
+function Case({ project, index, next }) {
+  const t = useT();
+  const { projects } = useProjects();
+  const root = useRef(null);
+  const hydrated = useHydrated();
+  useDocumentTitle(project.title);
+
+  useIntro(root, (tl) => {
+    tl.from(".line__in", { yPercent: 112, duration: 1.3, ease: "expo.out", stagger: 0.07 })
+      .from(".case__fade", { y: 24, opacity: 0, duration: 1, ease: "expo.out", stagger: 0.08 }, 0.5)
+      .from(".case__cover", { clipPath: "inset(100% 0 0 0)", duration: 1.4, ease: "power4.inOut" }, 0.35);
+  });
+
+  const [lead, ...rest] = project.body;
+  const caption = project.cover
+    ? project.cover.caption
+    : `${t("case.podCover")} ${!hydrated || reducedMotion ? "" : finePointer ? t("case.pointAt") : t("case.tapIt")}`;
+
+  return (
+    <article ref={root} className="theme-ink">
+      <header className="wrap pb-[clamp(2.5rem,5vw,5rem)] pt-[clamp(8rem,16vw,14rem)]">
+        <p className="case__fade t-mono eyebrow">
+          <TLink to="/works" name={t("nav.work")} className="link">
+            {t("nav.work")}
+          </TLink>
+          <span>/</span>
+          <span>
+            {t("case.of", { n: pad(index + 1), total: pad(projects.length) })}
+          </span>
+        </p>
+        <h1 className="t-display mt-8 max-w-[14ch]">
+          <span className="line">
+            <span className="line__in">{project.title}</span>
+          </span>
+        </h1>
+      </header>
+
+      <figure className="wrap">
+        <div
+          className="case__cover frame aspect-[16/9]"
+          style={{ clipPath: "inset(0)" }}
+          data-cursor={project.cover ? undefined : t("case.killPods")}
+        >
+          {/* Shown whole and still: screenshots are UI, so nothing is cropped,
+              and a generated cover is a live canvas under the pointer. */}
+          <div className="absolute inset-0">
+            <ProjectCover project={project} sizes="94vw" eager live />
           </div>
         </div>
-        <div
-          name="main"
-          className="content-wrapper max-w-full  lg:mx-auto flex flex-col justify-center h-screen"
-        >
-          <div id="itemsWrapperLinks" className="z-10">
-            <div className="portfolio-wrapper ladder-grid">
-              <div className="portfolio lg:justify-between">
-                <div className="portfolio-item hover:animate-float h-screen">
-                  <div className="item-parallex">
-                    <div className="item-appear">
-                      <div className="item-content">
-                        <img
-                          key={item.id}
-                          src={item.cover || null}
-                          className="w-full max-h-screen object-cover object-top rounded-xl"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        {caption && (
+          <figcaption className="case__fade t-mono mt-4 text-[color:var(--muted)]">{caption}</figcaption>
+        )}
+      </figure>
+
+      <div className="wrap grid gap-12 py-[clamp(4rem,9vw,9rem)] lg:grid-cols-12 lg:gap-10">
+        <FadeUp className="lg:col-span-4">
+          <Manifest project={project} />
+        </FadeUp>
+
+        <div className="grid content-start gap-8 lg:col-span-8">
+          <SplitReveal className="t-lead max-w-[24ch]">{lead}</SplitReveal>
+          {rest.map((paragraph) => (
+            <SplitReveal key={paragraph} className="t-body max-w-[58ch] text-[clamp(1.05rem,1.4vw,1.35rem)]">
+              {paragraph}
+            </SplitReveal>
+          ))}
+
+          {project.highlights && (
+            <FadeUp as="ol" className="mt-[clamp(1.5rem,3vw,3rem)]" stagger={0.06}>
+              {project.highlights.map((item, i) => (
+                <li
+                  key={item.title}
+                  className="grid gap-x-8 gap-y-2 border-t border-[color:var(--line)] py-6 md:grid-cols-[3rem_minmax(0,16rem)_minmax(0,1fr)]"
+                >
+                  <span className="t-mono pt-1 text-[color:var(--muted)]">{pad(i + 1)}</span>
+                  <h2 className="text-xl font-semibold leading-tight tracking-tight">{item.title}</h2>
+                  <p className="t-body">{item.text}</p>
+                </li>
+              ))}
+            </FadeUp>
+          )}
         </div>
       </div>
-    </>
+
+      {project.gallery.length > 0 && (
+        <section aria-labelledby="screens-title" className="wrap pb-[clamp(4rem,9vw,9rem)]">
+          <h2 id="screens-title" className="t-mono eyebrow">
+            {t("case.screens")}
+          </h2>
+          <FadeUp as="ul" className="mt-8 grid gap-x-8 gap-y-12 md:grid-cols-2" stagger={0.06}>
+            {project.gallery.map((shot) => (
+              <li key={shot.sm}>
+                <figure>
+                  <a
+                    href={shot.lg}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="card block"
+                    data-cursor={t("case.view")}
+                    aria-label={t("case.openFull", { alt: shot.alt })}
+                  >
+                    <span className="frame block aspect-[16/9]">
+                      <span className="cover">
+                        <img
+                          src={shot.sm}
+                          srcSet={shot.srcSet}
+                          sizes="(min-width: 768px) 46vw, 92vw"
+                          alt={shot.alt}
+                          width={shot.width}
+                          height={shot.height}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                    </span>
+                  </a>
+                  {shot.caption && (
+                    <figcaption className="t-mono mt-4 text-[color:var(--muted)]">{shot.caption}</figcaption>
+                  )}
+                </figure>
+              </li>
+            ))}
+          </FadeUp>
+        </section>
+      )}
+
+      <TLink
+        to={`/works/${next.slug}`}
+        name={next.title}
+        className="group block border-t border-[color:var(--line)]"
+        data-cursor={t("case.next")}
+      >
+        <div className="wrap py-[clamp(3.5rem,8vw,8rem)]">
+          <p className="t-mono eyebrow">{t("case.nextProject")}</p>
+          <p className="t-display mt-6 transition-transform duration-700 ease-out group-hover:translate-x-4">
+            {next.title}
+          </p>
+        </div>
+      </TLink>
+    </article>
   );
+}
+
+export function meta({ params, location }) {
+  const locale = localeOf(location.pathname);
+  const found = projectsFor(locale).findProject(params.slug);
+  if (!found) return pageMeta({ title: translate(locale, "notFound.title"), noindex: true, locale });
+  const { project } = found;
+  return pageMeta({
+    title: project.title,
+    description: project.summary || project.body[0],
+    path: `/works/${project.slug}`,
+    image: project.coverSrc || undefined,
+    imageAlt: project.cover ? project.cover.alt : undefined,
+    locale,
+  });
+}
+
+export default function WorkDetail() {
+  const { slug } = useParams();
+  const found = useProjects().findProject(slug);
+
+  if (!found) return <NotFound />;
+
+  // Keyed so intro and scroll animations rebuild when moving between cases.
+  return <Case key={found.project.slug} {...found} />;
 }

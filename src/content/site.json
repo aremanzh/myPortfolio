@@ -1,0 +1,28 @@
+{
+  "name": "Mumtaz Che Ismail",
+  "shortName": "Mumtaz",
+  "role": "Full-stack Laravel developer & DevOps engineer",
+  "location": "Putrajaya, Malaysia",
+  "timeZone": "Asia/Kuala_Lumpur",
+  "timeZoneLabel": "MYT",
+  "url": "https://mumtaaz.xyz",
+  "email": "mumtaz.che.ismail@gmail.com",
+  "available": true,
+  "availabilityLabel": "Open to full-time and freelance",
+  "unavailableLabel": "Booked for now",
+  "formEndpoint": "https://getform.io/f/0ba479c0-db9e-4462-b74c-c445d2652a3b",
+  "socials": [
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/mumtaz-che-ismail/"
+    },
+    {
+      "label": "GitHub",
+      "href": "https://github.com/aremanzh"
+    },
+    {
+      "label": "Instagram",
+      "href": "https://www.instagram.com/ismi_mumtaz/"
+    }
+  ]
+}

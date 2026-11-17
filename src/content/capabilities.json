@@ -1,0 +1,64 @@
+{
+  "stages": [
+    {
+      "name": "Build",
+      "summary": "Laravel backends with explicit, readable architecture, and a Vue or React front end on top. Code the next developer can pick up without a tour.",
+      "tools": [
+        "Laravel",
+        "PHP",
+        "Vue",
+        "React",
+        "Tailwind CSS",
+        "MySQL",
+        "MongoDB"
+      ],
+      "log": [
+        "$ composer install --no-dev --optimize-autoloader",
+        "$ npm ci && npm run build",
+        "$ php artisan test"
+      ]
+    },
+    {
+      "name": "Ship",
+      "summary": "Every change is built into an image and pushed through a pipeline, so a release is a repeatable step and not an event.",
+      "tools": [
+        "Docker",
+        "GitLab CI",
+        "Jenkins"
+      ],
+      "log": [
+        "$ docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA .",
+        "$ docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+      ]
+    },
+    {
+      "name": "Run",
+      "summary": "Kubernetes workloads, reverse proxies and Linux hosts, operated with uptime and observability ahead of feature speed.",
+      "tools": [
+        "Kubernetes",
+        "Nginx",
+        "Apache",
+        "Linux"
+      ],
+      "log": [
+        "$ kubectl set image deploy/app app=$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA",
+        "$ kubectl rollout status deploy/app",
+        "deployment \"app\" successfully rolled out"
+      ]
+    }
+  ],
+  "marquee": [
+    "Laravel",
+    "Kubernetes",
+    "Vue",
+    "Docker",
+    "React",
+    "GitLab CI",
+    "PHP",
+    "Jenkins",
+    "Tailwind CSS",
+    "Nginx",
+    "MySQL",
+    "Linux"
+  ]
+}

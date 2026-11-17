@@ -1,0 +1,28 @@
+{
+  "type": "App mudah alih",
+  "role": "Pembangun tunggal: app, API dan release Play Store",
+  "summary": "App jurnal di Google Play. Setiap entri disimpan peribadi atau dikongsi ke suapan awam.",
+  "body": "App jurnal untuk Android, diterbitkan di Google Play, di mana setiap entri sama ada disimpan secara peribadi atau dikongsi ke suapan awam.\n\nApp ini dibina dengan Expo dan React Native di atas API Express dan MongoDB dengan log masuk JWT. Ia percuma digunakan dan memaparkan iklan AdMob.\n\nSaya membinanya sendiri, dari API hingga senarai di kedai, antara Ogos 2023 dan Mac 2024.",
+  "highlights": [
+    {
+      "title": "Peribadi atau awam, bagi setiap entri",
+      "text": "Setiap entri disimpan sebagai awam atau peribadi. Entri awam masuk ke suapan bersama; senarai penulis sendiri menyimpan kedua-duanya, dalam tab berasingan."
+    },
+    {
+      "title": "Entri dengan warna sendiri",
+      "text": "Penulis memilih warna latar dan teks untuk setiap entri, dan suapan menyusun entri dalam grid masonry, enam satu halaman."
+    },
+    {
+      "title": "Dibina untuk release di kedai",
+      "text": "Suapan menyemak sambungan sebelum dimuatkan, iklan banner muncul selepas setiap entri keempat, dan iklan skrin penuh menyusul selepas entri baharu. Release semasa ialah versi 1.2.6."
+    },
+    {
+      "title": "Moderasi dan pemilikan",
+      "text": "Pembaca boleh melaporkan entri berserta sebab, dan hanya penulis entri boleh menyunting atau memadamnya, dikuatkuasakan di server."
+    },
+    {
+      "title": "Pemulihan akaun melalui emel",
+      "text": "Kata laluan yang terlupa diset semula dengan kod lima aksara yang dihantar melalui emel. Kata laluan di-hash dengan bcrypt dan sesi menggunakan JWT."
+    }
+  ]
+}

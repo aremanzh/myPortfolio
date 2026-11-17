@@ -1,6 +1,6 @@
 {
-  "short_name": "Mumtaz.dev",
-  "name": "Mumtaz's Portfolio | Web Developer",
+  "short_name": "Mumtaz",
+  "name": "Mumtaz Che Ismail · Developer & DevOps engineer",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#0C0B0A",
+  "background_color": "#0C0B0A"
 }

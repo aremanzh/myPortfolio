@@ -1,0 +1,212 @@
+name: deploy
+
+# Same pattern as confession-api and JobSphere: GitHub OIDC -> AWS, then SSM
+# Run Command on the instance. Port 22 is never opened to CI and there are no
+# long-lived AWS keys.
+#
+# The image is BUILT HERE and pushed to GHCR. The host (1.9 GB RAM, shared)
+# only pulls — no npm, no sharp, no Vite there.
+#
+# Content edits from the CMS are commits to main, so they deploy through this
+# same workflow.
+#
+# One-time prerequisites (see deploy/README.md):
+#   - repo variables: AWS_DEPLOY_ROLE_ARN, EC2_INSTANCE_ID, AWS_REGION
+#   - the role's trust policy allows this repo's main branch
+#   - on the host: `sudo docker login ghcr.io` (read:packages token) and the
+#     nginx vhost installed
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # GHCR names must be lowercase; the repository is myPortfolio.
+  IMAGE: ghcr.io/aremanzh/myportfolio
+
+jobs:
+  tests:
+    uses: ./.github/workflows/ci.yml
+
+  image:
+    needs: tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: tag
+        run: echo "tag=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.IMAGE }}:${{ steps.tag.outputs.tag }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+          # Without this buildx pushes untagged attestation manifests that fill
+          # the package and confuse the old-version cleanup below.
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Keep the 5 newest images: enough to roll back, without piling up.
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: myportfolio
+          package-type: container
+          min-versions-to-keep: 5
+
+  deploy:
+    needs: image
+    # Not configured yet = skipped visibly, not a red failure.
+    if: vars.AWS_DEPLOY_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    env:
+      INSTANCE_ID: ${{ vars.EC2_INSTANCE_ID }}
+      TAG: ${{ needs.image.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Check instance is running
+        id: state
+        run: |
+          STATE=$(aws ec2 describe-instances --instance-ids "$INSTANCE_ID" \
+            --query 'Reservations[0].Instances[0].State.Name' --output text)
+          echo "Instance state: $STATE"
+          echo "state=$STATE" >> "$GITHUB_OUTPUT"
+          if [ "$STATE" != "running" ]; then
+            echo "::warning::Instance is $STATE. Skipping deploy; start the instance and re-run this workflow."
+          fi
+
+      - name: Deploy via SSM Run Command
+        if: steps.state.outputs.state == 'running'
+        run: |
+          # compose.prod.yml travels with every deploy so the host copy always
+          # matches the repo.
+          COMPOSE_B64=$(base64 -w0 deploy/compose.prod.yml)
+
+          cat > script.sh <<SCRIPT
+          set -euo pipefail
+          DIR=/home/ubuntu/apps/portfolio
+          IMAGE=${IMAGE}
+          TAG=${TAG}
+          CONTAINER=portfolio-web-1
+
+          # First deploy bootstraps the directory and .env (nothing secret in it).
+          mkdir -p "\$DIR"
+          cd "\$DIR"
+          [ -f .env ] || printf 'IMAGE_TAG=\nHOST_PORT=32791\n' > .env
+          grep -q '^IMAGE_TAG=' .env || echo 'IMAGE_TAG=' >> .env
+          chown -R ubuntu:ubuntu "\$DIR" && chmod 600 .env
+
+          echo "$COMPOSE_B64" | base64 -d > compose.prod.yml
+          chown ubuntu:ubuntu compose.prod.yml
+
+          PREV=\$(sed -n 's/^IMAGE_TAG=//p' .env)
+          PORT=\$(sed -n 's/^HOST_PORT=//p' .env); PORT=\${PORT:-32791}
+          set_tag() {
+            sed -i "s/^IMAGE_TAG=.*/IMAGE_TAG=\$1/" .env
+            chown ubuntu:ubuntu .env && chmod 600 .env
+          }
+          up() { docker compose -f compose.prod.yml --env-file .env up -d --remove-orphans; }
+          healthy() {
+            for i in \$(seq 1 20); do
+              [ "\$(docker inspect -f '{{.State.Health.Status}}' \$CONTAINER 2>/dev/null)" = healthy ] \
+                && curl -fsS "http://127.0.0.1:\$PORT/healthz" >/dev/null && return 0
+              sleep 3
+            done
+            return 1
+          }
+
+          docker pull "\$IMAGE:\$TAG"
+          set_tag "\$TAG"
+          up
+
+          if ! healthy; then
+            docker logs --tail 50 \$CONTAINER >&2 || true
+            if [ -n "\$PREV" ]; then
+              echo "UNHEALTHY on \$TAG — rolling back to \$PREV" >&2
+              set_tag "\$PREV"
+              up
+              healthy && echo "Rolled back to \$PREV" >&2
+            else
+              echo "UNHEALTHY on \$TAG — first deploy, nothing to roll back to" >&2
+            fi
+            exit 1
+          fi
+
+          # Host disk is tight: keep the current and previous image only.
+          docker images --format '{{.Repository}}:{{.Tag}}' \
+            | grep -E '(^|/)myportfolio:' \
+            | grep -vxF -e "\$IMAGE:\$TAG" -e "\$IMAGE:\$PREV" \
+            | xargs -r docker rmi || true
+
+          # Smoke test through the host nginx (vhost + TLS), not Cloudflare:
+          # Cloudflare answers 403 to the GitHub runners' data-centre IPs.
+          site() { curl -sS -o /dev/null -w '%{http_code}' --resolve mumtaaz.xyz:443:127.0.0.1 -k "https://mumtaaz.xyz\$1"; }
+          for p in / /works /contact /ms /ms/works /admin/ /sitemap.xml /robots.txt; do
+            [ "\$(site "\$p")" = 200 ] || { echo "smoke failed: \$p" >&2; exit 1; }
+          done
+          [ "\$(site /no-such-page)" = 404 ] || { echo "smoke failed: unknown page is not a 404" >&2; exit 1; }
+
+          echo "Deployed \$TAG (previous: \${PREV:-none})"
+          SCRIPT
+
+          # AWS-RunShellScript uses /bin/sh (dash): send base64 and run it with
+          # bash, as confession-api and JobSphere do.
+          B64=$(base64 -w0 script.sh)
+          PARAMS=$(jq -n --arg b "$B64" '{commands: ["echo \($b) | base64 -d | bash"], executionTimeout: ["600"]}')
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$INSTANCE_ID" \
+            --document-name AWS-RunShellScript \
+            --comment "portfolio ${TAG}" \
+            --parameters "$PARAMS" \
+            --query 'Command.CommandId' --output text)
+          echo "SSM command: $COMMAND_ID"
+
+          for i in $(seq 1 60); do
+            sleep 10
+            STATUS=$(aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" \
+              --query Status --output text 2>/dev/null || echo Pending)
+            case "$STATUS" in Pending|InProgress|Delayed) continue ;; *) break ;; esac
+          done
+
+          echo "---- stdout ----"
+          aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" \
+            --query StandardOutputContent --output text
+          echo "---- stderr ----"
+          aws ssm get-command-invocation --command-id "$COMMAND_ID" --instance-id "$INSTANCE_ID" \
+            --query StandardErrorContent --output text
+
+          echo "Final status: $STATUS"
+          [ "$STATUS" = "Success" ]
