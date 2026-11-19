@@ -1,7 +1,7 @@
 {
   "statement": "I’m Mumtaz. I studied fine arts, then learned to run Kubernetes clusters, and I still care about both ends of the job. I design the Laravel backend, build the front end in Vue or React, put it in a container, and keep it running in production.",
-  "portrait": "/uploads/portrait.jpg",
-  "portraitAlt": "Portrait of Mumtaz Che Ismail, lit in red and blue against a dark background",
+  "portrait": "/uploads/portrait-ink.jpg",
+  "portraitAlt": "Portrait of Mumtaz Che Ismail in a black polo, lit in warm orange and cool blue against a dark background",
   "facts": [
     {
       "label": "Based in",
