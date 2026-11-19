@@ -47,7 +47,7 @@ pipeline rebuilds the site.
 | --- | --- | --- |
 | Projects | `src/content/projects/*.json` | One file per project: text, highlights, stack, links, cover image, order, and the featured, archive-only and published switches |
 | Site → Settings | `src/content/site.json` | Name, role, location, email, socials, availability badge, form endpoint |
-| Site → About | `src/content/about.json` | Statement, portrait, facts |
+| Site → About | `src/content/about.json` | Statement, portrait, facts, experience, certifications (with optional ID and verify link) |
 | Site → What I do | `src/content/capabilities.json` | The three pipeline stages (summary, tools, job log) and the marquee words |
 | Media | `public/uploads/` | Uploaded images |
 
