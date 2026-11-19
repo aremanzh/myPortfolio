@@ -1,9 +1,9 @@
 {
   "title": "DailyJournal",
-  "published": true,
+  "published": false,
   "featured": false,
   "archived": false,
-  "order": 50,
+  "order": 60,
   "type": "Mobile app",
   "year": "2023–2024",
   "role": "Sole developer: app, API and Play Store release",

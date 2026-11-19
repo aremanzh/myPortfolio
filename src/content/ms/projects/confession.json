@@ -1,0 +1,43 @@
+{
+  "type": "App mudah alih dan API",
+  "summary": "Confession tanpa nama daripada orang berdekatan, dibalas satu lawan satu. App Flutter di Google Play, atas API yang diport dari Laravel ke Node tanpa memecahkan app.",
+  "body": "Confession tanpa nama daripada orang berdekatan: satu kad pendek setiap orang, dibaca dalam radius yang awak pilih, dan hanya dibalas satu lawan satu.\n\nConfession ialah versi Flutter yang ditulis semula daripada CariGu, app Expo dan React Native atas API Laravel. Penulisan semula ini memindahkan API ke Node dengan Fastify dan Prisma atas MySQL, mengekalkan setiap respons yang app sudah bergantung padanya, dan menambah apa yang diperlukan untuk release di kedai: gerbang 18+, notifikasi push, panel admin dan padam akaun.\n\nApp ini ada di Google Play. API berjalan dalam Docker di AWS, dibina di GitHub Actions dan dilancarkan melalui SSM, sama seperti laman ini.",
+  "highlights": [
+    {
+      "title": "Kontrak sebelum penulisan semula",
+      "text": "API Laravel tu tak pernah ada git. Sebelum sebaris Node ditulis, satu perakam dijalankan terhadapnya dan menyimpan 45 fixture emas meliputi kesemua 32 laluan, dan setiap laluan diport serta disemak terhadapnya. Dua bentuk ralat, token pangkalan data yang boleh dibatalkan dan ID pengguna yang dihantar sebagai string semuanya kekal, sebab app ditulis ikut bentuk itu."
+    },
+    {
+      "title": "Realtime yang app dah faham",
+      "text": "App mendengar saluran peribadi melalui protokol Pusher. API Node menghidangkan protokol itu dalam proses yang sama, jadi jemputan dan mesej bilik sampai serta-merta tanpa pelayan realtime berasingan."
+    },
+    {
+      "title": "Lokasi yang tak mendedahkan awak",
+      "text": "Kedudukan disimpan pada grid 0.01°, lebih kurang satu kilometer, dan senarai orang berdekatan tak pernah memulangkan jarak. Siapa yang boleh jumpa awak ditentukan oleh radius, kali terakhir aktif dan julat umur."
+    },
+    {
+      "title": "Jemputan, bukan suapan",
+      "text": "Tiada siapa membalas di depan umum. Menegur menghantar jemputan peribadi, dan jemputan yang diterima membuka bilik yang ditutup selepas 48 jam."
+    },
+    {
+      "title": "Dibina untuk kedai",
+      "text": "Gerbang 18+ berdasarkan tarikh lahir, notifikasi push untuk jemputan baharu dan yang diterima, halaman privasi dan keselamatan kanak-kanak, serta padam akaun dari dalam app."
+    },
+    {
+      "title": "Moderasi dengan jejak audit",
+      "text": "Laporan dengan nota semakan, senarai pengguna dengan eksport CSV, metrik harian, dan log setiap tindakan admin."
+    }
+  ],
+  "coverAlt": "Grafik kedai Confession: tajuk Nobody knows it's you di sebelah dua kad confession tanpa nama",
+  "coverCaption": "Grafik senarai Google Play.",
+  "gallery": [
+    {
+      "alt": "Tiga skrin app: skrin pengenalan yang menyebut tiada foto dan tiada nama, kad confession berdekatan dengan butang balas, dan senarai jemputan peribadi dengan butang terima dan bukan sekarang",
+      "caption": "Pengenalan, confession berdekatan, dan jemputan peribadi."
+    },
+    {
+      "alt": "Tiga skrin app: bilik chat yang ditutup selepas 48 jam, profil dengan satu kad confession awak dan tetapan, dan penapis radius, kali terakhir aktif dan julat umur",
+      "caption": "Bilik 48 jam, kad awak, dan siapa yang boleh jumpa awak."
+    }
+  ]
+}

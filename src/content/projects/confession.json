@@ -1,0 +1,71 @@
+{
+  "title": "Confession",
+  "published": true,
+  "featured": true,
+  "archived": false,
+  "order": 30,
+  "type": "Mobile app and API",
+  "year": "2026",
+  "summary": "Anonymous confessions from people nearby, answered one to one. A Flutter app on Google Play, on an API ported from Laravel to Node without breaking the app.",
+  "body": "Anonymous confessions from people nearby: one short card each, read within a radius you choose, and answered only one to one.\n\nConfession is the Flutter rewrite of CariGu, an Expo and React Native app on a Laravel API. The rewrite moved the API to Node with Fastify and Prisma on MySQL, kept every response the app already depended on, and added what a store release needs: an 18+ gate, push notifications, an admin panel and account deletion.\n\nThe app is on Google Play. The API runs in Docker on AWS, built on GitHub Actions and rolled out through SSM, the same way as this site.",
+  "highlights": [
+    {
+      "title": "A contract before the rewrite",
+      "text": "The Laravel API had never been in git. Before any Node was written, a recorder ran against it and saved 45 golden fixtures covering all 32 routes, and each route was ported and checked against them. Two error shapes, revocable database tokens and a user ID sent as a string all survived, because the app was written against them."
+    },
+    {
+      "title": "Realtime the app already spoke",
+      "text": "The app listens on private channels over the Pusher protocol. The Node API serves that protocol in-process, so invites and room messages arrive live without a separate realtime server."
+    },
+    {
+      "title": "Location that does not give you away",
+      "text": "Positions are stored on a 0.01° grid, about a kilometre, and the nearby list never returns a distance. Who can find you is set by radius, last active and age range."
+    },
+    {
+      "title": "Invites, not a feed",
+      "text": "Nobody replies in public. Saying hello sends a private invite, and an accepted invite opens a room that closes after 48 hours."
+    },
+    {
+      "title": "Built for the store",
+      "text": "A date-of-birth 18+ gate, push notifications for new and accepted invites, privacy and child-safety pages, and account deletion from inside the app."
+    },
+    {
+      "title": "Moderation with an audit trail",
+      "text": "Reports with review notes, user lists with CSV export, daily metrics, and a log of every action an admin takes."
+    }
+  ],
+  "stack": [
+    "Flutter",
+    "Node.js",
+    "Fastify",
+    "Prisma",
+    "MySQL",
+    "Pusher protocol",
+    "Firebase Cloud Messaging",
+    "Docker",
+    "AWS"
+  ],
+  "links": [
+    {
+      "label": "Google Play",
+      "href": "https://play.google.com/store/apps/details?id=com.mumtaaz.xyz.confession"
+    }
+  ],
+  "cover": "/uploads/confession.jpg",
+  "coverAlt": "Confession store artwork: the headline Nobody knows it's you beside two anonymous confession cards",
+  "coverCaption": "The Google Play listing artwork.",
+  "gallery": [
+    {
+      "image": "/uploads/confession-nearby.jpg",
+      "alt": "Three app screens: the onboarding screen saying no photos and no names, a confession card nearby with a reply button, and a list of private invites with accept and not now buttons",
+      "caption": "Onboarding, a confession nearby, and private invites."
+    },
+    {
+      "image": "/uploads/confession-rooms.jpg",
+      "alt": "Three app screens: a chat room that closes after 48 hours, the profile with your one confession card and settings, and the filters for radius, last active and age range",
+      "caption": "A 48-hour room, your card, and who can find you."
+    }
+  ],
+  "mark": "CONF",
+  "tone": "ink"
+}

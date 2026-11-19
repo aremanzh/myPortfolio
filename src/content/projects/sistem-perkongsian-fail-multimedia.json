@@ -1,9 +1,9 @@
 {
   "title": "Sistem Perkongsian Fail Multimedia",
   "published": true,
-  "featured": true,
+  "featured": false,
   "archived": false,
-  "order": 30,
+  "order": 50,
   "type": "Web and mobile",
   "year": "2024",
   "role": "Sole developer: backend, web admin and mobile app",

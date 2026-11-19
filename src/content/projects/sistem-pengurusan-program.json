@@ -1,9 +1,9 @@
 {
   "title": "Sistem Pengurusan Program",
   "published": true,
-  "featured": true,
+  "featured": false,
   "archived": false,
-  "order": 20,
+  "order": 40,
   "type": "Web application",
   "year": "2024–2025",
   "role": "Sole developer",
