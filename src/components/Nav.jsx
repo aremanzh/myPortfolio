@@ -4,7 +4,7 @@ import { gsap, useGSAP } from "../lib/gsap";
 import { finePointer, normalizePath, reducedMotion, useHydrated } from "../lib/env";
 import { lockScroll } from "../lib/scroll";
 import { snapMark } from "../lib/snap";
-import { toggleSound, useSound } from "../lib/sound";
+import { toggleSound, useSoundState } from "../lib/sound";
 import { useContent } from "../data/site";
 import { LOCALE_SHORT, stripLocale, useLocale, useT } from "../i18n";
 import { TLink } from "./Transition";
@@ -47,17 +47,22 @@ function LanguageSwitch({ className = "", tabIndex }) {
 
 function SoundToggle({ className = "", tabIndex }) {
   const t = useT();
-  const on = useSound();
+  // "waiting": on, but the browser has not let anything play yet this visit.
+  // Pressing it then starts sound instead of turning it off.
+  const state = useSoundState();
+  const on = state !== "off";
+  const label = { off: t("sound.turnOn"), on: t("sound.turnOff"), waiting: t("sound.start") }[state];
   return (
     <button
       type="button"
       className={className}
       aria-pressed={on}
-      aria-label={on ? t("sound.turnOff") : t("sound.turnOn")}
+      aria-label={label}
+      title={state === "waiting" ? label : undefined}
       onClick={toggleSound}
       tabIndex={tabIndex}
     >
-      <span className={`nav__sound ${on ? "is-on" : ""}`} aria-hidden="true">
+      <span className={`nav__sound ${state === "on" ? "is-on" : ""} ${state === "waiting" ? "is-waiting" : ""}`} aria-hidden="true">
         <i />
         <i />
         <i />

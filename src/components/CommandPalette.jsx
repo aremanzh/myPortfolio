@@ -5,7 +5,7 @@ import { normalizePath, reducedMotion, setReducedMotion } from "../lib/env";
 import { useContent } from "../data/site";
 import { useProjects } from "../data/projects";
 import { stripLocale, useLocale, useT } from "../i18n";
-import { toggleSound, useSound } from "../lib/sound";
+import { toggleSound, useSoundState } from "../lib/sound";
 import { usePageTransition } from "./Transition";
 
 export const OPEN_PALETTE = "palette:open";
@@ -28,7 +28,7 @@ export default function CommandPalette() {
   const returnFocus = useRef(null);
   const t = useT();
   const locale = useLocale();
-  const sound = useSound();
+  const sound = useSoundState();
   const { site } = useContent();
   const { projects } = useProjects();
   const { go } = usePageTransition();
@@ -77,7 +77,7 @@ export default function CommandPalette() {
       {
         id: "sound",
         group: t("palette.action"),
-        label: sound ? t("sound.turnOff") : t("sound.turnOn"),
+        label: { off: t("sound.turnOn"), on: t("sound.turnOff"), waiting: t("sound.start") }[sound],
         keywords: "sound audio bunyi mute",
         run: toggleSound,
       },

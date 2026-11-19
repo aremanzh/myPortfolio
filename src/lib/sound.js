@@ -27,6 +27,7 @@ const TICK_GAP_MS = 70;
 
 let enabled = false;
 let read = false;
+let heard = false; // something has actually played this visit
 const listeners = new Set();
 
 function readPreference() {
@@ -60,7 +61,29 @@ export function setSound(on) {
   }
 }
 
-export const toggleSound = () => setSound(!isSoundOn());
+/*
+ * "off", "on", or "waiting": sound is on, but the browser has not let the page
+ * play anything yet this visit (no click or key press so far, or nothing has
+ * played since). A returning visitor who left sound on lands in "waiting".
+ */
+function soundState() {
+  if (!isSoundOn()) return "off";
+  return heard ? "on" : "waiting";
+}
+
+/**
+ * The sound switch. While waiting, the press starts sound instead of turning
+ * it off: otherwise a visitor who left sound on would have to press twice
+ * (off, then on again) to hear anything.
+ */
+export function toggleSound() {
+  if (soundState() === "waiting") {
+    preloadSounds();
+    play("snap");
+    return;
+  }
+  setSound(!isSoundOn());
+}
 
 const subscribe = (fn) => {
   listeners.add(fn);
@@ -70,6 +93,11 @@ const subscribe = (fn) => {
 /** Whether sound is on. Always off in the prerendered HTML. */
 export function useSound() {
   return useSyncExternalStore(subscribe, isSoundOn, () => false);
+}
+
+/** "off", "on" or "waiting" (see soundState). Always "off" in the prerendered HTML. */
+export function useSoundState() {
+  return useSyncExternalStore(subscribe, soundState, () => "off");
 }
 
 /* ------------------------------------------------------------- playback */
@@ -89,6 +117,12 @@ if (typeof window !== "undefined") {
     unlocked = true;
     window.removeEventListener("pointerdown", unlock, true);
     window.removeEventListener("keydown", unlock, true);
+    // Start audio inside the gesture itself: some browsers (Safari, stricter
+    // privacy settings) only allow it there, not on a later hover.
+    if (isSoundOn()) {
+      preloadSounds();
+      audio();
+    }
   };
   window.addEventListener("pointerdown", unlock, true);
   window.addEventListener("keydown", unlock, true);
@@ -166,6 +200,11 @@ export function play(name) {
     source.start();
   } else {
     synth(name, ctx, out);
+  }
+
+  if (!heard) {
+    heard = true;
+    listeners.forEach((fn) => fn());
   }
 }
 
