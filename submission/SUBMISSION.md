@@ -10,11 +10,8 @@ Nothing in this folder is deployed. It sits outside `public/`.
 
 These are not done yet, and juries will notice:
 
-- [ ] **Deploy** to https://mumtaaz.xyz with `npm ci && npm run build`. Juries
-      only review a live URL.
-- [ ] **Real visuals for Sistem Pengurusan Program and Sistem Perkongsian Fail
-      Multimedia** (anonymised screenshots or a short recording). Upload them
-      as covers in the CMS. This is the single biggest improvement left.
+- [x] **Deploy** to https://mumtaaz.xyz. Live, deployed from `main` by
+      `.github/workflows/deploy.yml`. Juries only review a live URL.
 - [ ] **Test on real phones** (iOS Safari and Android Chrome) and run
       Lighthouse on the live URL. Fix anything that breaks.
 - [ ] **Re-capture Ringmaster on Windows.** The current screenshot was taken on
