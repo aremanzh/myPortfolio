@@ -100,6 +100,13 @@ if (about) {
   (about.facts || []).forEach((fact, i) => {
     if (!isText(fact.label) || !isText(fact.value)) fail("about.json", `facts[${i}] needs a label and a value`);
   });
+  (about.experience || []).forEach((item, i) => {
+    if (!isText(item.role) || !isText(item.period)) fail("about.json", `experience[${i}] needs a role and a period`);
+  });
+  (about.certifications || []).forEach((cert, i) => {
+    if (!isText(cert.name) || !isText(cert.issuer)) fail("about.json", `certifications[${i}] needs a name and an issuer`);
+    if (cert.verify && !isUrl(cert.verify)) fail("about.json", `certifications[${i}] has an invalid verify URL (${cert.verify})`);
+  });
 }
 
 const capabilities = readJson("capabilities.json");

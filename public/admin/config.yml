@@ -224,6 +224,29 @@ collections:
             fields:
               - { name: label, label: Label, widget: string }
               - { name: value, label: Value, widget: string }
+          - name: experience
+            label: Experience
+            label_singular: Role
+            widget: list
+            required: false
+            summary: "{{period}} · {{role}}"
+            hint: Newest first. Leave the organisation empty to show the role alone.
+            fields:
+              - { name: role, label: Role or qualification, widget: string }
+              - { name: org, label: Organisation, widget: string, required: false }
+              - { name: period, label: Period, widget: string, hint: 'For example "Feb 2025 – now".' }
+          - name: certifications
+            label: Certifications
+            label_singular: Certification
+            widget: list
+            required: false
+            summary: "{{name}}"
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: issuer, label: Issuer, widget: string }
+              - { name: date, label: Date, widget: string, required: false }
+              - { name: id, label: Certificate ID, widget: string, required: false }
+              - { name: verify, label: Verification URL, widget: string, required: false, pattern: ["^https?://", "Must start with http:// or https://"] }
 
       - name: capabilities
         label: What I do
@@ -338,6 +361,25 @@ collections:
             fields:
               - { name: label, label: Label, widget: string }
               - { name: value, label: Value, widget: string }
+          - name: experience
+            label: Experience
+            label_singular: Role
+            widget: list
+            required: false
+            summary: "{{period}} · {{role}}"
+            hint: Same order as the English list. Organisations come from the English entry.
+            fields:
+              - { name: role, label: Role or qualification, widget: string }
+              - { name: period, label: Period, widget: string }
+          - name: certifications
+            label: Certifications
+            label_singular: Certification
+            widget: list
+            required: false
+            summary: "{{date}}"
+            hint: Same order as the English list. Only the date is translated; names, IDs and links come from the English entry.
+            fields:
+              - { name: date, label: Date, widget: string }
       - name: capabilities
         label: What I do
         file: /src/content/ms/capabilities.json

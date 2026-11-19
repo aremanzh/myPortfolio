@@ -53,6 +53,10 @@ export const ui = {
     "hero.hintTap": "Tap the cluster to kill a pod. It comes back.",
 
     "about.eyebrow": "About",
+    "about.experience": "Experience",
+    "about.certifications": "Certifications",
+    "about.verify": "Verify",
+    "about.verifyLabel": "Verify {name} (ID {id})",
 
     "pipeline.eyebrow": "What I do",
     "pipeline.titlePre": "One person. The ",
@@ -205,6 +209,10 @@ export const ui = {
     "hero.hintTap": "Ketik kluster untuk bunuh pod. Ia akan kembali.",
 
     "about.eyebrow": "Tentang",
+    "about.experience": "Pengalaman",
+    "about.certifications": "Sijil",
+    "about.verify": "Sahkan",
+    "about.verifyLabel": "Sahkan {name} (ID {id})",
 
     "pipeline.eyebrow": "Apa yang saya buat",
     "pipeline.titlePre": "Seorang. ",

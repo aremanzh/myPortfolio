@@ -5,7 +5,7 @@
   "facts": [
     {
       "label": "Based in",
-      "value": "Putrajaya, Malaysia"
+      "value": "Seremban, Malaysia"
     },
     {
       "label": "Focus",
@@ -18,6 +18,54 @@
     {
       "label": "Studied",
       "value": "Fine Arts, Universiti Sains Malaysia"
+    }
+  ],
+  "experience": [
+    {
+      "role": "Software Developer",
+      "org": "Softedge System Sdn. Bhd.",
+      "period": "Feb 2025 – now"
+    },
+    {
+      "role": "Web Developer",
+      "org": "Jabatan Komunikasi Komuniti (J-KOM)",
+      "period": "Jan 2023 – Dec 2024"
+    },
+    {
+      "role": "Graphic Designer",
+      "org": "",
+      "period": "Feb – Dec 2022"
+    },
+    {
+      "role": "BFA (Hons) New Media, Design and Technology",
+      "org": "Universiti Sains Malaysia",
+      "period": "2016 – 2020"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Certified Kubernetes Administrator (CKA)",
+      "issuer": "The Linux Foundation",
+      "date": "Aug 2024",
+      "id": "LF-3oe6uad2fa",
+      "verify": "https://training.linuxfoundation.org/certification/verify/"
+    },
+    {
+      "name": "Certified DevOps Foundation",
+      "issuer": "CCSD",
+      "date": "Jul 2024",
+      "id": "4533b7d",
+      "verify": "https://www.ccsdcouncil.org/certificate-verification"
+    },
+    {
+      "name": "Peneraju Certified DevOps Professional",
+      "issuer": "GKK Consultant",
+      "date": "2024"
+    },
+    {
+      "name": "Google Cybersecurity Certificate",
+      "issuer": "Coursera",
+      "date": "Jun 2023"
     }
   ]
 }

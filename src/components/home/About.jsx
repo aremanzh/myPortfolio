@@ -4,6 +4,7 @@ import { reducedMotion } from "../../lib/env";
 import { useContent } from "../../data/site";
 import { useT } from "../../i18n";
 import { FadeUp, ScrubWords } from "../Reveal";
+import { ArrowUpRight } from "../Icons";
 
 export default function About() {
   const t = useT();
@@ -69,6 +70,65 @@ export default function About() {
               </div>
             ))}
           </FadeUp>
+
+          {(about.experience.length > 0 || about.certifications.length > 0) && (
+            <div className="mt-[clamp(3rem,6vw,6rem)] grid gap-12 xl:grid-cols-2 xl:gap-10">
+              {about.experience.length > 0 && (
+                <div>
+                  <h3 className="t-mono text-[color:var(--muted)]">{t("about.experience")}</h3>
+                  <FadeUp as="ol" className="mt-4" stagger={0.06}>
+                    {about.experience.map((item) => (
+                      <li
+                        key={`${item.period}:${item.role}`}
+                        className="grid gap-1 border-t border-[color:var(--line)] py-4 sm:grid-cols-[9.5rem_minmax(0,1fr)] sm:gap-6"
+                      >
+                        <span className="t-mono pt-1 tabular-nums text-[color:var(--muted)]">{item.period}</span>
+                        <span>
+                          <span className="block text-lg font-medium leading-snug tracking-tight">{item.role}</span>
+                          {item.org && <span className="t-body mt-1 block">{item.org}</span>}
+                        </span>
+                      </li>
+                    ))}
+                  </FadeUp>
+                </div>
+              )}
+
+              {about.certifications.length > 0 && (
+                <div>
+                  <h3 className="t-mono text-[color:var(--muted)]">{t("about.certifications")}</h3>
+                  <FadeUp as="ul" className="mt-4" stagger={0.06}>
+                    {about.certifications.map((cert) => (
+                      <li
+                        key={cert.name}
+                        className="grid gap-1 border-t border-[color:var(--line)] py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-6"
+                      >
+                        <span>
+                          <span className="block text-lg font-medium leading-snug tracking-tight">{cert.name}</span>
+                          <span className="t-body mt-1 block">
+                            {[cert.issuer, cert.date].filter(Boolean).join(" · ")}
+                          </span>
+                        </span>
+                        {cert.verify && (
+                          <a
+                            href={cert.verify}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="link t-mono inline-flex items-center gap-2 self-start pt-1"
+                            aria-label={t("about.verifyLabel", { name: cert.name, id: cert.id || "" })}
+                          >
+                            {t("about.verify")}
+                            {/* IDs are case-sensitive: keep them as issued, not uppercased. */}
+                            {cert.id && <span className="normal-case">· {cert.id}</span>}
+                            <ArrowUpRight className="h-2.5 w-2.5" />
+                          </a>
+                        )}
+                      </li>
+                    ))}
+                  </FadeUp>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </section>

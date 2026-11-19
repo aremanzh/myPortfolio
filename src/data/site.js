@@ -24,6 +24,9 @@ function build(locale) {
       statement: aboutData.statement,
       facts: aboutData.facts || [],
       portrait: image(aboutData.portrait, aboutData.portraitAlt),
+      // Newest first. An entry without an organisation shows the role alone.
+      experience: aboutData.experience || [],
+      certifications: aboutData.certifications || [],
     },
     // The three stages mirror the hero line: build it, ship it, keep it up.
     // Ids come from the English names so they stay the same in both languages.

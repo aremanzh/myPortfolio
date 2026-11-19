@@ -20,7 +20,8 @@ const person = {
   url: `${site.url}/`,
   image: `${site.url}/og.jpg`,
   jobTitle: "Full-stack Laravel developer and DevOps engineer",
-  address: { "@type": "PostalAddress", addressLocality: "Putrajaya", addressCountry: "MY" },
+  address: { "@type": "PostalAddress", addressLocality: "Seremban", addressCountry: "MY" },
+  worksFor: { "@type": "Organization", name: "Softedge System Sdn. Bhd." },
   knowsAbout: ["Laravel", "PHP", "Vue", "React", "Docker", "Kubernetes", "CI/CD"],
   sameAs: site.socials.map((social) => social.href),
 };

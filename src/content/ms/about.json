@@ -4,7 +4,7 @@
   "facts": [
     {
       "label": "Berpangkalan di",
-      "value": "Putrajaya, Malaysia"
+      "value": "Seremban, Malaysia"
     },
     {
       "label": "Fokus",
@@ -17,6 +17,38 @@
     {
       "label": "Pengajian",
       "value": "Seni Halus, Universiti Sains Malaysia"
+    }
+  ],
+  "experience": [
+    {
+      "role": "Pembangun Perisian",
+      "period": "Feb 2025 – kini"
+    },
+    {
+      "role": "Pembangun Web",
+      "period": "Jan 2023 – Dis 2024"
+    },
+    {
+      "role": "Pereka Grafik",
+      "period": "Feb – Dis 2022"
+    },
+    {
+      "role": "Ijazah Sarjana Muda Seni Halus (Kepujian), New Media, Design and Technology",
+      "period": "2016 – 2020"
+    }
+  ],
+  "certifications": [
+    {
+      "date": "Ogos 2024"
+    },
+    {
+      "date": "Jul 2024"
+    },
+    {
+      "date": "2024"
+    },
+    {
+      "date": "Jun 2023"
     }
   ]
 }
