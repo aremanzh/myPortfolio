@@ -28,7 +28,7 @@
     },
     {
       "role": "Web Developer",
-      "org": "Jabatan Komunikasi Komuniti (J-KOM)",
+      "org": "",
       "period": "Jan 2023 – Dec 2024"
     },
     {
@@ -60,12 +60,16 @@
     {
       "name": "Peneraju Certified DevOps Professional",
       "issuer": "GKK Consultant",
-      "date": "2024"
+      "date": "2024",
+      "id": "",
+      "verify": ""
     },
     {
       "name": "Google Cybersecurity Certificate",
       "issuer": "Coursera",
-      "date": "Jun 2023"
+      "date": "Jun 2023",
+      "id": "",
+      "verify": ""
     }
   ]
 }
